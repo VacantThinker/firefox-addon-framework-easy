@@ -1,0 +1,59 @@
+import {tabOpCreate} from './opTab.js';
+import {browserNotificationCreate} from './browserNotification.js';
+
+export function browserRuntimeReload() {
+  browser.runtime.reload();
+}
+
+/**
+ *
+ * @param url{string}
+ */
+export async function browserRuntimeSetUninstallURL(
+    url = 'https://addons.mozilla.org/en-US/firefox/user/17783213/',
+) {
+  await browser.runtime.setUninstallURL(url);
+}
+
+/**
+ *
+ * @param doWhat{function}
+ */
+export function browserRuntimeOnUpdateAvailable(doWhat = async () => {
+  try {
+    let id = await browserNotificationCreate(
+        'There is a new version!',
+    );
+    browser.notifications.onClicked.addListener(async (notificationId) => {
+      if (notificationId === id) {
+        await tabOpCreate(
+            'https://addons.mozilla.org/en-US/firefox/user/17783213/');
+      }
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}) {
+  browser.runtime.onUpdateAvailable.addListener(async (details) => {
+    await doWhat(details);
+  });
+}
+
+/**
+ * @returns {browser._manifest.ExtensionID}
+ */
+export function browserRuntimeGeckoId() {
+  return browser.runtime.getManifest().browser_specific_settings.gecko.id;
+}
+
+/**
+ *
+ * @returns {Promise<browser.runtime.PlatformInfo>}
+ */
+export async function browserRuntimePlatformInfo() {
+  return await browser.runtime.getPlatformInfo();
+}
+
+export function browserRuntimeManifestVersion() {
+  return browser.runtime.getManifest().version;
+}

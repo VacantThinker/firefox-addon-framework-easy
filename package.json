@@ -1,0 +1,26 @@
+{
+  "name": "@vacantthinker/firefox-addon-framework-easy",
+  "version": "2026.0524.1634",
+  "description": "",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "npm_update": "npm update"
+  },
+  "author": "VacantThinker",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:VacantThinker/firefox-addon-framework-easy.git"
+  },
+  "homepage": "https://github.com/VacantThinker/firefox-addon-framework-easy",
+  "bugs": {
+    "url": "https://github.com/VacantThinker/firefox-addon-framework-easy/issues"
+  },
+  "dependencies": {
+    "@types/firefox-webext-browser": "^143.0.0"
+  }
+}

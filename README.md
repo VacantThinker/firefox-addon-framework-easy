@@ -1,0 +1,108 @@
+# firefox-addon-framework-easy
+
+[![License: AGPL v3](https://shields.io)](https://gnu.org)
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+
+## Source Code Access
+
+According to the terms of the AGPL-3.0, the source code for this network service must be made available to all users.
+
+You can download, clone, or view the complete source code for this application here: [Insert your GitHub/GitLab URL].
+
+## API Reference (Auto-Generated)
+
+Below is a list of all public functions found inside the `src` directory:
+
+### 📄 File: `src/baseORM.js`
+```javascript
+export class BaseORM {
+```
+
+### 📄 File: `src/browserNotification.js`
+```javascript
+export async function browserNotificationCreate(content, title = null) {
+```
+
+### 📄 File: `src/browserRuntime.js`
+```javascript
+export function browserRuntimeReload() {
+export async function browserRuntimeSetUninstallURL(
+export function browserRuntimeOnUpdateAvailable(doWhat = async () => {
+export function browserRuntimeGeckoId() {
+export async function browserRuntimePlatformInfo() {
+export function browserRuntimeManifestVersion() {
+```
+
+### 📄 File: `src/generate.js`
+```javascript
+export function generateHtmlByUserSettings(
+```
+
+### 📄 File: `src/opStorage.js`
+```javascript
+export async function stoOpCheck(k) {
+export async function stoOpGet(k) {
+export async function stoOpGetAll() {
+export async function stoOpQueryStartWith(k) {
+export async function stoOpSet(k, v) {
+export async function stoOpRem(k) {
+export async function stoOpSetNull(k) {
+```
+
+### 📄 File: `src/opTab.js`
+```javascript
+export async function tabOpGet(tabId) {
+export async function tabOpQueryAll() {
+export async function tabOpQueryUrl(urlQuery) {
+export async function tabOpQueryUrlThenRemove(urlQuery) {
+export async function tabOpReload(tabId) {
+export async function tabOpCreate(urlOrArgs) {
+export async function tabOpCreateNormal(urlOrArgs) {
+export async function tabOpRemove(tabId) {
+export async function tabOpHide(tabId) {
+export async function tabOpUpdate(tabId, updateProperties) {
+export async function tabOpUpdateActiveFalse(tabId) {
+export async function tabOpFocus(tabId) {
+export async function tabOpInsertCssCode(tabId, code) {
+export async function tabOpRemoveCssCode(tabId, code) {
+```
+
+### 📄 File: `src/serviceFetch.js`
+```javascript
+export async function servicePostJson(
+```
+
+### 📄 File: `src/serviceGet.js`
+```javascript
+export function serviceGetDomainByUrl(url) {
+export function serviceGetCurrentDateYYYYMMDDHHMMSS() {
+```
+
+### 📄 File: `src/serviceOpContent.js`
+```javascript
+export function serviceCopyContentToClipboard(content) {
+export function serviceSaveContentToLocal(content, filename, ext = 'txt') {
+export function serviceRemoveIllegalWord(value) {
+```
+
+### 📄 File: `src/servicePureVideolink.js`
+```javascript
+export function servicePureVideolinkYTB(videolinkOrigin) {
+```
+
+### 📄 File: `src/serviceUpdateALLStyle.js`
+```javascript
+export async function serviceUpdataALLTextNodeColor(message) {
+export async function serviceUpdataALLNodeBackgroundColor(message) {
+```
+
+### 📄 File: `src/serviceUserSettings.js`
+```javascript
+export async function serviceInitUserSettings(userSettings) {
+export async function serviceGetUserSettings(userSettings) {
+```
+
