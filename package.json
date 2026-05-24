@@ -1,15 +1,13 @@
 {
   "name": "@vacantthinker/firefox-addon-framework-easy",
-  "version": "2026.0524.1658",
+  "version": "2026.0524.1751",
   "description": "",
   "main": "index.js",
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
-  "scripts": {
-    "npm_update": "npm update"
-  },
+  "scripts": {},
   "author": "VacantThinker",
   "license": "AGPL-3.0-only",
   "repository": {

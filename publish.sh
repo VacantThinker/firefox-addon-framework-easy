@@ -44,15 +44,24 @@ Below is a list of all public functions found inside the `src` directory:
 
 EOF
 
-# 2. Iterate through all js files, capture lines containing "export " and append them to README
+# 2. Iterate through all js files, capture multi-line signatures, and append them to README
 for file in src/*.js; do
     if [ -f "$file" ]; then
-        echo "### 📄 File: \`$file\`" >> README.md
+        echo "### File: \`$file\`" >> README.md
         echo "\`\`\`javascript" >> README.md
 
-        # Capture all function or variable declarations starting with export
-        # Compatible with: export function name, export const name, export async function name
-        grep -E "^export (async )?(function|const|let|var|class) " "$file" >> README.md
+        # Reads multi-line signatures up to the opening brace or semicolon
+        awk '/^export (async )?(function|const|let|var|class) / {
+            line = $0
+            # Keep reading lines if there is no opening brace or semicolon yet
+            while (line !~ /\{/ && line !~ /;/ && (getline next_line) > 0) {
+                line = line "\n" next_line
+            }
+            # Clean up the function body and replace it with standard closing
+            sub(/\{.*/, "{  }", line)
+            print line
+            print ""
+        }' "$file" >> README.md
 
         echo "\`\`\`" >> README.md
         echo "" >> README.md

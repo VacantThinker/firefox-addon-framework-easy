@@ -17,92 +17,142 @@ You can download, clone, or view the complete source code for this application h
 
 Below is a list of all public functions found inside the `src` directory:
 
-### 📄 File: `src/baseORM.js`
+### File: `src/baseORM.js`
 ```javascript
-export class BaseORM {
+export class BaseORM {  }
+
 ```
 
-### 📄 File: `src/browserNotification.js`
+### File: `src/browserNotification.js`
 ```javascript
-export async function browserNotificationCreate(content, title = null) {
+export async function browserNotificationCreate(content, title = null) {  }
+
 ```
 
-### 📄 File: `src/browserRuntime.js`
+### File: `src/browserRuntime.js`
 ```javascript
-export function browserRuntimeReload() {
+export function browserRuntimeReload() {  }
+
 export async function browserRuntimeSetUninstallURL(
-export function browserRuntimeOnUpdateAvailable(doWhat = async () => {
-export function browserRuntimeGeckoId() {
-export async function browserRuntimePlatformInfo() {
-export function browserRuntimeManifestVersion() {
+    url = 'https://addons.mozilla.org/en-US/firefox/user/17783213/',
+) {  }
+
+export function browserRuntimeOnUpdateAvailable(doWhat = null) {  }
+
+export function browserRuntimeGeckoId() {  }
+
+export async function browserRuntimePlatformInfo() {  }
+
+export function browserRuntimeManifestVersion() {  }
+
 ```
 
-### 📄 File: `src/generate.js`
+### File: `src/generate.js`
 ```javascript
 export function generateHtmlByUserSettings(
+    userSettings,
+    radioItemClickFn,
+) {  }
+
 ```
 
-### 📄 File: `src/opStorage.js`
+### File: `src/opStorage.js`
 ```javascript
-export async function stoOpCheck(k) {
-export async function stoOpGet(k) {
-export async function stoOpGetAll() {
-export async function stoOpQueryStartWith(k) {
-export async function stoOpSet(k, v) {
-export async function stoOpRem(k) {
-export async function stoOpSetNull(k) {
+export async function stoOpCheck(k) {  }
+
+export async function stoOpGet(k) {  }
+
+export async function stoOpGetAll() {  }
+
+export async function stoOpQueryStartWith(k) {  }
+
+export async function stoOpSet(k, v) {  }
+
+export async function stoOpRem(k) {  }
+
+export async function stoOpSetNull(k) {  }
+
 ```
 
-### 📄 File: `src/opTab.js`
+### File: `src/opTab.js`
 ```javascript
-export async function tabOpGet(tabId) {
-export async function tabOpQueryAll() {
-export async function tabOpQueryUrl(urlQuery) {
-export async function tabOpQueryUrlThenRemove(urlQuery) {
-export async function tabOpReload(tabId) {
-export async function tabOpCreate(urlOrArgs) {
-export async function tabOpCreateNormal(urlOrArgs) {
-export async function tabOpRemove(tabId) {
-export async function tabOpHide(tabId) {
-export async function tabOpUpdate(tabId, updateProperties) {
-export async function tabOpUpdateActiveFalse(tabId) {
-export async function tabOpFocus(tabId) {
-export async function tabOpInsertCssCode(tabId, code) {
-export async function tabOpRemoveCssCode(tabId, code) {
+export async function tabOpGet(tabId) {  }
+
+export async function tabOpQueryAll() {  }
+
+export async function tabOpQueryUrl(urlQuery) {  }
+
+export async function tabOpQueryUrlThenRemove(urlQuery) {  }
+
+export async function tabOpReload(tabId) {  }
+
+export async function tabOpCreate(urlOrArgs) {  }
+
+export async function tabOpCreateNormal(urlOrArgs) {  }
+
+export async function tabOpRemove(tabId) {  }
+
+export async function tabOpHide(tabId) {  }
+
+export async function tabOpUpdate(tabId, updateProperties) {  }
+
+export async function tabOpUpdateActiveFalse(tabId) {  }
+
+export async function tabOpFocus(tabId) {  }
+
+export async function tabOpInsertCssCode(tabId, code) {  }
+
+export async function tabOpRemoveCssCode(tabId, code) {  }
+
 ```
 
-### 📄 File: `src/serviceFetch.js`
+### File: `src/serviceFetch.js`
 ```javascript
 export async function servicePostJson(
+    serverUrl,
+    message,
+    handleError,
+) {  }
+
 ```
 
-### 📄 File: `src/serviceGet.js`
+### File: `src/serviceGet.js`
 ```javascript
-export function serviceGetDomainByUrl(url) {
-export function serviceGetCurrentDateYYYYMMDDHHMMSS() {
+export function serviceGetDomainByUrl(url) {  }
+
+export function serviceGetCurrentDateYYYYMMDDHHMMSS() {  }
+
 ```
 
-### 📄 File: `src/serviceOpContent.js`
+### File: `src/serviceOpContent.js`
 ```javascript
-export function serviceCopyContentToClipboard(content) {
-export function serviceSaveContentToLocal(content, filename, ext = 'txt') {
-export function serviceRemoveIllegalWord(value) {
+export function serviceCopyContentToClipboard(content) {  }
+
+export function serviceSaveContentToLocal(content, filename, ext = 'txt') {  }
+
+export function serviceRemoveIllegalWord(value) {  }
+
 ```
 
-### 📄 File: `src/servicePureVideolink.js`
+### File: `src/servicePureVideolink.js`
 ```javascript
-export function servicePureVideolinkYTB(videolinkOrigin) {
+export function servicePureVideolinkYTB(videolinkOrigin) {  }
+
 ```
 
-### 📄 File: `src/serviceUpdateALLStyle.js`
+### File: `src/serviceUpdateALLStyle.js`
 ```javascript
-export async function serviceUpdataALLTextNodeColor(message) {
-export async function serviceUpdataALLNodeBackgroundColor(message) {
+export async function serviceUpdataALLTextNodeColor(message) {  }
+
+export async function serviceUpdataALLNodeBackgroundColor(message) {  }
+
 ```
 
-### 📄 File: `src/serviceUserSettings.js`
+### File: `src/serviceUserSettings.js`
 ```javascript
-export async function serviceInitUserSettings(userSettings) {
-export async function serviceGetUserSettings(userSettings) {
+export async function serviceInitUserSettings(userSettings) {  }
+
+export async function serviceGetUserSettings(userSettings) {  }
+
 ```
 
