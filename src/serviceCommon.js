@@ -6,7 +6,7 @@
  * }}
  * @returns {Promise<void>}
  */
-async function serviceElementPicker(message) {
+export async function serviceElementPicker(message) {
   let {tabId} = message;
   await browser.scripting.executeScript({
     target: {tabId},
@@ -151,7 +151,7 @@ async function serviceElementPicker(message) {
  * }}
  * @returns {Promise<void>}
  */
-async function serviceGetFullPageRectData(message) {
+export async function serviceGetFullPageRectData(message) {
   let {tabId} = message;
 
   let assign = Object.assign({}, {tabId});

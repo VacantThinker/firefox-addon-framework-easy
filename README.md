@@ -108,6 +108,10 @@ export async function tabOpRemoveCssCode(tabId, code) {  }
 
 ### 📄 File: `src/serviceCommon.js`
 ```javascript
+export async function serviceElementPicker(message) {  }
+
+export async function serviceGetFullPageRectData(message) {  }
+
 ```
 
 ### 📄 File: `src/serviceFetch.js`
