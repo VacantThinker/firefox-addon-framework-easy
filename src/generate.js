@@ -8,10 +8,6 @@ import {stoOpGet, stoOpSet} from './opStorage.js';
  *     optionType: 'checkbox',
  *     options: ['Searcher1', 'Searcher2'],
  *     selected: ['Searcher1', 'Searcher2'],
- *     queryTitle: {
- *       'Searcher1': 'https://y2down.cc/',
- *       'Searcher2': 'https://ssyou.online',
- *     },
  *   },
  *   videoQuality: {
  *     options: ['360', '480', '720', '1080', '1440', '2160'],

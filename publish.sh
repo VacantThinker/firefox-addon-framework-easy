@@ -47,7 +47,7 @@ EOF
 # 2. Iterate through all js files, capture multi-line signatures, and append them to README
 for file in src/*.js; do
     if [ -f "$file" ]; then
-        echo "### File: \`$file\`" >> README.md
+        echo "### 📄 File: \`$file\`" >> README.md
         echo "\`\`\`javascript" >> README.md
 
         # Reads multi-line signatures up to the opening brace or semicolon
