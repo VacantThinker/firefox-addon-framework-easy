@@ -154,10 +154,9 @@ export async function serviceElementPicker(message) {
 export async function serviceGetFullPageRectData(message) {
   let {tabId} = message;
 
-  let assign = Object.assign({}, {tabId});
   await browser.scripting.executeScript({
     target: {tabId},
-    args: [assign],
+    args: [message],
     func: async (message) => {
 
       let x = 0, y = 0;
