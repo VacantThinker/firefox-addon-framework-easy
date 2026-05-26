@@ -7,7 +7,7 @@ import {
 import {browserNotificationCreate} from './browserNotification.js';
 
 /**
- * will get => {{x, y, width, height, uniqueSelector}}
+ * will get => {rectData, uniqueSelector,}
  * @param message{{
  *      tabId:number,
  *      act:string
@@ -117,7 +117,7 @@ export async function serviceElementPicker(message) {
         let messageTakeScreenshot = Object.assign(
             {}, // Start with a fresh, empty object
             message, // Put the original message first so it doesn't overwrite your new data
-            rectData,
+            {rectData},
             {
               // The guaranteed unique CSS path (e.g., "div#wrap > ul > li:nth-of-type(2)")
               uniqueSelector: getUniqueSelector(target),
