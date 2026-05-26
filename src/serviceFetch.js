@@ -61,15 +61,20 @@ export async function serviceSendDataToLocalAria2(message) {
     params,
   };
 
-  const response = await fetch(`http://localhost:${port}/jsonrpc`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json;charset=UTF-8',
-    },
-    body: JSON.stringify(data),
-  });
-  console.info(`response=\n`, response);
+  try {
+    const response = await fetch(`http://localhost:${port}/jsonrpc`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      body: JSON.stringify(data),
+    });
+    console.info(`response=\n`, response);
 
-  return response;
+    return response;
+  } catch (e) {
+    console.error(e);
+  }
+
 }
