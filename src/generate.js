@@ -11,7 +11,10 @@ export function generateHtmlByUserSettings(
     userSettings,
     radioItemClickCallback,
 ) {
-  return Object.keys(userSettings).map((storageKey) => {
+  // Keeps track of all generated fieldsets by their storageKey
+  const elementsMap = {};
+
+  const fieldsets = Object.keys(userSettings).map((storageKey) => {
     const storageValue = userSettings[storageKey];
     const type = storageValue.type || 'text'; // Default to text if type is not specified
 
@@ -20,6 +23,9 @@ export function generateHtmlByUserSettings(
     const eleTitle = document.createElement('legend');
     eleTitle.textContent = storageKey;
     eleWrap.append(eleTitle);
+
+    // Save a reference to the wrapper element for visibility switching
+    elementsMap[storageKey] = eleWrap;
 
     // --- CONDITION 1: CHECKBOX & RADIO ---
     if (type === 'checkbox' || type === 'radio') {
@@ -39,6 +45,9 @@ export function generateHtmlByUserSettings(
             const initialArray = Array.from(v || storageValue.selected || []);
             const set = new Set(initialArray);
             eleInput.checked = set.has(option);
+
+            // Initial visibility evaluation
+            triggerVisibility(storageKey, initialArray);
           });
 
           eleInput.addEventListener('change', async () => {
@@ -54,6 +63,9 @@ export function generateHtmlByUserSettings(
             const valueNew = Array.from(set);
             console.info(`k=${storageKey} option=${option} eleInput.checked=${eleInput.checked} valueNew=${valueNew}`);
             await stoOpSet(storageKey, valueNew);
+
+            // Dynamic visibility update
+            triggerVisibility(storageKey, valueNew);
           });
         }
         else if (type === 'radio') {
@@ -62,6 +74,9 @@ export function generateHtmlByUserSettings(
             if (option === currentSelected) {
               eleInput.checked = true;
             }
+
+            // Initial visibility evaluation
+            triggerVisibility(storageKey, currentSelected);
           });
 
           eleLabel.onclick = function () {
@@ -70,6 +85,9 @@ export function generateHtmlByUserSettings(
               if (typeof radioItemClickCallback === 'function') {
                 radioItemClickCallback(storageKey, option);
               }
+
+              // Dynamic visibility update
+              triggerVisibility(storageKey, option);
             });
           };
         }
@@ -89,11 +107,17 @@ export function generateHtmlByUserSettings(
         let currentStatus = (v !== undefined && v !== null) ? (v === true || v === 'true') : storageValue.selected;
         eleButton.textContent = String(currentStatus);
 
+        // Initial visibility evaluation
+        triggerVisibility(storageKey, currentStatus);
+
         eleButton.addEventListener('click', async () => {
           currentStatus = !currentStatus; // Toggle state
           eleButton.textContent = String(currentStatus);
           console.info(`k=${storageKey} toggled to=${currentStatus}`);
           await stoOpSet(storageKey, currentStatus);
+
+          // Dynamic visibility update
+          triggerVisibility(storageKey, currentStatus);
         });
       });
 
@@ -109,6 +133,9 @@ export function generateHtmlByUserSettings(
       stoOpGet(storageKey).then((v) => {
         const currentVal = (v !== undefined && v !== null) ? v : storageValue.selected;
         eleInput.value = currentVal;
+
+        // Initial visibility evaluation
+        triggerVisibility(storageKey, currentVal);
       });
 
       // Updates storage on every keystroke/change execution
@@ -118,6 +145,9 @@ export function generateHtmlByUserSettings(
 
         console.info(`k=${storageKey} value changed to=${finalizedValue}`);
         await stoOpSet(storageKey, finalizedValue);
+
+        // Dynamic visibility update
+        triggerVisibility(storageKey, finalizedValue);
       });
 
       eleWrap.append(eleInput);
@@ -125,4 +155,23 @@ export function generateHtmlByUserSettings(
 
     return eleWrap;
   });
+
+  /**
+   * Evaluates the visibility rules for a given source key based on its current value.
+   */
+  function triggerVisibility(sourceKey, currentValue) {
+    const config = userSettings[sourceKey];
+    if (config && config.visibilityControl) {
+      const { targetField, expectedValue } = config.visibilityControl;
+      const targetElement = elementsMap[targetField];
+
+      if (targetElement) {
+        // String conversion guarantees type safety (e.g., matching boolean true against string "true")
+        const shouldBeVisible = String(currentValue) === String(expectedValue);
+        targetElement.style.display = shouldBeVisible ? '' : 'none';
+      }
+    }
+  }
+
+  return fieldsets;
 }
