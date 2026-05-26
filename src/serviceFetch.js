@@ -1,3 +1,5 @@
+import {browserNotificationCreate} from './browserNotification.js';
+
 /**
  *
  * @param serverUrl{string}
@@ -75,6 +77,7 @@ export async function serviceSendDataToLocalAria2(message) {
     return response;
   } catch (e) {
     console.error(e);
+    await browserNotificationCreate(`error! ${e}`)
   }
 
 }
