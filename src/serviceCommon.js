@@ -272,7 +272,7 @@ export async function serviceDealWithMagnetLink(message) {
   console.info('content.length', data.length);
 
   if (Array.isArray(data) && data.length >= 1) {
-    let content = data.join('\n');
+    let content = `${data.join('\n')}\n`;
     let filename = [
       'magnet-link',
       titleCleaned,
