@@ -1,3 +1,11 @@
+import {serviceGetCurrentDateYYYYMMDDHHMMSS} from './serviceGet.js';
+import {
+  serviceCopyContentToClipboard,
+  serviceRemoveIllegalWord,
+  serviceSaveContentToLocal,
+} from './serviceOpContent.js';
+import {browserNotificationCreate} from './browserNotification.js';
+
 /**
  * will get => {{x, y, width, height, uniqueSelector}}
  * @param message{{
@@ -144,7 +152,8 @@ export async function serviceElementPicker(message) {
 }
 
 /**
- * will get => {{x, y, width, height,}}
+ * middle ware, output: Object.assign({}, message, {x, y, width, height,})
+ *
  * @param message{{
  *      tabId:number,
  *      act:string
@@ -173,4 +182,115 @@ export async function serviceGetFullPageRectData(message) {
       // todo end if (message)
     },
   });
+}
+
+/**
+ * middle ware, output: Object.assign({}, message, {data})
+ *
+ * serviceFindAllMagnetLink({
+ *   tabId, title, act, ...
+ * })
+ *
+ * @param message{{
+ *    tabId:number,
+ *    title:string,
+ *    act: string,
+ * }}
+ */
+export async function serviceFindAllMagnetLink(message) {
+  let {tabId} = message;
+  const assign = Object.assign({}, message);
+
+  await browser.scripting.executeScript({
+    target: {tabId},
+    args: [assign],
+    func: async (message) => {
+      if (message) {
+        function findAllMagnetLinks() {
+          const magnets = new Set(); // Prevents duplicates
+
+          // --- Type 1: Find inside ANY element's attributes ---
+          const attributeSelector = '*[href*="magnet:"], *[data-url*="magnet:"], *[data-magnet*="magnet:"], *[data-href*="magnet:"]';
+          const attrElements = document.querySelectorAll(attributeSelector);
+
+          attrElements.forEach(el => {
+            // Check every attribute of the element to find the one holding the magnet string
+            for (let attr of el.attributes) {
+              if (attr.value.includes('magnet:?xt=')) {
+                magnets.add(attr.value.trim());
+              }
+            }
+          });
+
+          // --- Type 2: Find inside raw text (for <div>, <span>, <td>, etc.) ---
+          // We target elements that don't have children to avoid grabbing huge parent container blocks
+          const allElements = document.querySelectorAll(
+              'div, span, td, p, a, button');
+          allElements.forEach(el => {
+            if (el.children.length === 0) { // Deepest element
+              const text = el.textContent.trim();
+              if (text.includes('magnet:?xt=')) {
+                // Extract just the magnet link using Regex in case there is surrounding text
+                const match = text.match(/magnet:\?xt=[^\s"'<>]+/);
+                if (match) {
+                  magnets.add(match[0]);
+                }
+              }
+            }
+          });
+
+          return Array.from(magnets);
+        }
+
+        await browser.runtime.sendMessage(Object.assign(
+            {},
+            message,
+            {
+              data: findAllMagnetLinks(),
+            },
+        ));
+
+        // todo end if(message)
+      }
+    },
+  });
+}
+
+/**
+ *
+ * @param message{{
+ *   title:string,
+ *   data: [string],
+ *   handleOption: 'clipboard'|'txt'|'clipboardAndTxt'
+ * }}
+ * @returns {Promise<void>}
+ */
+export async function serviceDealWithMagnetLink(message) {
+
+  let {title, data, handleOption} = message;
+  let titleCleaned = serviceRemoveIllegalWord(title);
+  console.info('content.length', data.length);
+
+  if (Array.isArray(data) && data.length >= 1) {
+    let content = data.join('\n');
+    let filename = [
+      'magnet-link',
+      titleCleaned,
+      serviceGetCurrentDateYYYYMMDDHHMMSS()].join(' ');
+
+    if (handleOption === 'clipboard') {
+      serviceCopyContentToClipboard(content);
+    }
+    else if (handleOption === 'txt') {
+      serviceSaveContentToLocal(content, filename);
+    }
+    else if (handleOption === 'clipboardAndTxt') {
+      serviceCopyContentToClipboard(content);
+      serviceSaveContentToLocal(content, filename);
+    }
+  }
+  else {
+    // todo notification => magnet link not found!
+    await browserNotificationCreate('magnet link not found!');
+  }
 }

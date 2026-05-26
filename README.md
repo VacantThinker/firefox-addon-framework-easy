@@ -114,6 +114,10 @@ export async function serviceElementPicker(message) {  }
 
 export async function serviceGetFullPageRectData(message) {  }
 
+export async function serviceFindAllMagnetLink(message) {  }
+
+export async function serviceDealWithMagnetLink(message) {  }
+
 ```
 
 ### 📄 File: `src/serviceFetch.js`
