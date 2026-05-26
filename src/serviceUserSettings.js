@@ -9,9 +9,11 @@ import {stoOpGet, stoOpSet} from './opStorage.js';
  *     selected: ['Searcher1', 'Searcher2'],
  *   },
  *   videoQuality: {
+ *      optionType: 'radio',
  *     options: ['360', '480', '720', '1080', '1440', '2160'],
  *     selected: '720',
  *   },
+ *   
  *
  * @param userSettings{{}}
  * @returns {Promise<void>}

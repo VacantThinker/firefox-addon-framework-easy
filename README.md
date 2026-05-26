@@ -45,6 +45,8 @@ export async function browserRuntimePlatformInfo() {  }
 
 export function browserRuntimeManifestVersion() {  }
 
+export function browserRuntimeManifestName() {  }
+
 ```
 
 ### 📄 File: `src/generate.js`

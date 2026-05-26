@@ -56,6 +56,18 @@ export async function browserRuntimePlatformInfo() {
   return await browser.runtime.getPlatformInfo();
 }
 
+/**
+ * browser.runtime.getManifest().version;
+ * @returns {string}
+ */
 export function browserRuntimeManifestVersion() {
   return browser.runtime.getManifest().version;
+}
+
+/**
+ * browser.runtime.getManifest().name;
+ * @returns {string}
+ */
+export function browserRuntimeManifestName() {
+  return browser.runtime.getManifest().name;
 }
