@@ -11,7 +11,7 @@ export async function serviceCopyContentToClipboard(data) {
  * eg: fnName('this is content', 'this is a filename without ext', 'txt')
  * @param {string} content
  * @param {string} filename eg: abc
- * @param {string} ext txt json cmd js ...
+ * @param {string} ext txt json
  */
 export function serviceSaveContentToLocal(content, filename, ext = 'txt') {
   const eleBtn = document.createElement('button');
@@ -19,8 +19,12 @@ export function serviceSaveContentToLocal(content, filename, ext = 'txt') {
       'click',
       function() {
         const eleA = document.createElement('a');
-        let type = 'text/plain';
-        // let type = 'application/json';
+
+        const extObj = {
+          txt: 'text/plain',
+          json: 'application/json'
+        }
+        const type = extObj[ext];
 
         const file = new Blob([content], {type});
         eleA.href = URL.createObjectURL(file);
