@@ -29,3 +29,47 @@ export async function servicePostJson(
   }
 
 }
+
+/**
+ *
+ * @param message{ {
+ *        downlink:string,
+ *        filename:string|null,
+ *        rpcsecret:string,
+ *        rpcport:string
+ *        }}
+ * @returns {Promise<Response>}
+ */
+async function serviceSendDataToLocalAria2(message) {
+  let {downlink, filename, rpcsecret, rpcport} = message;
+
+  const secret = rpcsecret;
+  const port = rpcport;
+
+  const params = [`token:${secret}`, [downlink]];
+  if (filename) {
+    const options = {
+      out: filename,
+    };
+    params.push(options);
+  }
+
+  const data = {
+    jsonrpc: '2.0',
+    id: 'qwer',
+    method: 'aria2.addUri',
+    params,
+  };
+
+  const response = await fetch(`http://localhost:${port}/jsonrpc`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+    body: JSON.stringify(data),
+  });
+  console.info(`response=\n`, response);
+
+  return response;
+}
