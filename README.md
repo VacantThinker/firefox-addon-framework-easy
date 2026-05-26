@@ -56,7 +56,7 @@ export function browserRuntimeManifestName() {  }
 ```javascript
 export function generateHtmlByUserSettings(
     userSettings,
-    radioItemClickFn,
+    radioItemClickCallback,
 ) {  }
 
 ```

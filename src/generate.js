@@ -1,142 +1,128 @@
-import {stoOpGet, stoOpSet} from './opStorage.js';
+import { stoOpGet, stoOpSet } from './opStorage.js';
 
 /**
- * this function can use when you use serviceUserSettings.js
+ * Generates HTML elements based on a user settings schema object.
  *
- *
- * searchEngine: {
- *     optionType: 'checkbox',
- *     options: ['Searcher1', 'Searcher2'],
- *     selected: ['Searcher1', 'Searcher2'],
- *   },
- *   videoQuality: {
- *     options: ['360', '480', '720', '1080', '1440', '2160'],
- *     selected: '720',
- *   },
- * @param userSettings{{}}
- * @param radioItemClickFn{function}
+ * @param {Object} userSettings
+ * @param {Function} radioItemClickCallback
  * @returns {HTMLFieldSetElement[]}
  */
 export function generateHtmlByUserSettings(
     userSettings,
-    radioItemClickFn,
+    radioItemClickCallback,
 ) {
+  return Object.keys(userSettings).map((storageKey) => {
+    const storageValue = userSettings[storageKey];
+    const type = storageValue.type || 'text'; // Default to text if type is not specified
 
-  // todo generate html by data
-  return Object.keys(userSettings).map(
-      /**
-       *
-       * @param k{string}
-       * @returns {HTMLFieldSetElement}
-       */
-      (k) => {
-        /**
-         * @type{{optionType:'checkbox'|'radio',options:[string], selected: string, }}
-         */
-        let v = userSettings[k];
+    // Common container wrapper for every configuration item
+    const eleWrap = document.createElement('fieldset');
+    const eleTitle = document.createElement('legend');
+    eleTitle.textContent = storageKey;
+    eleWrap.append(eleTitle);
 
-        let optionType = v.optionType;
-        if (optionType === undefined) {
-          optionType = 'radio';
+    // --- CONDITION 1: CHECKBOX & RADIO ---
+    if (type === 'checkbox' || type === 'radio') {
+      const options = storageValue.options || [];
+
+      options.map((option) => {
+        const eleLabel = document.createElement('label');
+        eleLabel.textContent = option;
+
+        const eleInput = document.createElement('input');
+        eleInput.name = storageKey;
+        eleInput.type = type;
+        eleInput.value = option;
+
+        if (type === 'checkbox') {
+          stoOpGet(storageKey).then((v) => {
+            const initialArray = Array.from(v || storageValue.selected || []);
+            const set = new Set(initialArray);
+            eleInput.checked = set.has(option);
+          });
+
+          eleInput.addEventListener('change', async () => {
+            const optionsCurrent = await stoOpGet(storageKey) || storageValue.selected || [];
+            const set = new Set(Array.from(optionsCurrent));
+
+            if (eleInput.checked) {
+              set.add(option);
+            } else {
+              set.delete(option);
+            }
+
+            const valueNew = Array.from(set);
+            console.info(`k=${storageKey} option=${option} eleInput.checked=${eleInput.checked} valueNew=${valueNew}`);
+            await stoOpSet(storageKey, valueNew);
+          });
+        }
+        else if (type === 'radio') {
+          stoOpGet(storageKey).then((v) => {
+            const currentSelected = (v !== undefined && v !== null) ? v : storageValue.selected;
+            if (option === currentSelected) {
+              eleInput.checked = true;
+            }
+          });
+
+          eleLabel.onclick = function () {
+            stoOpSet(storageKey, option).then(() => {
+              console.info(`k=${storageKey} option=${option}`);
+              if (typeof radioItemClickCallback === 'function') {
+                radioItemClickCallback(storageKey, option);
+              }
+            });
+          };
         }
 
-        /**
-         *
-         * @type {string[]}
-         */
-        let options = v.options;
-        // /**
-        //  *
-        //  * @type {string}
-        //  */
-        // let selected = v.selected;
+        eleLabel.append(eleInput);
+        return eleLabel;
+      }).forEach((ele) => eleWrap.append(ele));
+    }
 
-        let eleWrap = document.createElement('fieldset');
+    // --- CONDITION 2: TOGGLE BUTTON ---
+    else if (type === 'button') {
+      const eleButton = document.createElement('button');
+      eleButton.type = 'button'; // Prevent accidental form submissions
 
-        let eleTitle = document.createElement('legend');
-        eleTitle.textContent = k;
-        eleWrap.append(eleTitle);
+      stoOpGet(storageKey).then((v) => {
+        // Fallback to default schema configuration if no value is stored yet
+        let currentStatus = (v !== undefined && v !== null) ? (v === true || v === 'true') : storageValue.selected;
+        eleButton.textContent = String(currentStatus);
 
-        // console.info(`optionType=${optionType} options=${options}`)
-        options.map(
-            /**
-             *
-             * @param option{string}
-             */
-            option => {
-
-              let eleLabel = document.createElement('label');
-              eleLabel.textContent = option;
-
-              let eleInput = document.createElement('input');
-              eleInput.name = k;
-              eleInput.type = optionType;
-              eleInput.value = option;
-
-              if (optionType === 'checkbox') {
-                stoOpGet(k).then(
-                    /**
-                     *
-                     * @param v{string}
-                     */
-                    v => {
-                      let strings = Array.from(v);
-                      console.info(`strings=${strings} option=${option}`);
-                      const set = new Set(strings);
-                      eleInput.checked = set.has(option);
-
-                    });
-              }
-              else if (optionType === 'radio') {
-                stoOpGet(k).then(
-                    /**
-                     *
-                     * @param v{string}
-                     */
-                    v => {
-                      if (option === v) {
-                        eleInput.checked = true;
-                      }
-                    });
-              }
-
-              eleLabel.append(eleInput);
-
-              if (optionType === 'checkbox') {
-                eleInput.addEventListener('change', async () => {
-                  let textCurrent = eleLabel.textContent;
-
-                  let optionsCurrent = await stoOpGet(k);
-                  console.info('optionsCurrent=', optionsCurrent);
-
-                  let optionsArr = Array.from(optionsCurrent);
-                  let set = new Set(optionsArr);
-                  if (eleInput.checked) {
-                    set.add(textCurrent);
-                  }
-                  else {
-                    set.delete(textCurrent);
-                  }
-
-                  let valueNew = Array.from(set);
-                  console.info(
-                      `k=${k} text=${textCurrent} eleInput.checked=${eleInput.checked} valueNew=${valueNew}`);
-                  await stoOpSet(k, valueNew);
-
-                });
-              }
-              else if (optionType === 'radio') {
-                eleLabel.onclick = function() {
-                  stoOpSet(k, option).then(() => {
-                    console.info(`k=${k} option=${option}`);
-                    radioItemClickFn(k, option);
-                  });
-                };
-              }
-              return eleLabel;
-
-            }).forEach(ele => eleWrap.append(ele));
-
-        return eleWrap;
+        eleButton.addEventListener('click', async () => {
+          currentStatus = !currentStatus; // Toggle state
+          eleButton.textContent = String(currentStatus);
+          console.info(`k=${storageKey} toggled to=${currentStatus}`);
+          await stoOpSet(storageKey, currentStatus);
+        });
       });
+
+      eleWrap.append(eleButton);
+    }
+
+    // --- CONDITION 3: NUMBER & TEXT INPUTS ---
+    else if (type === 'number' || type === 'text') {
+      const eleInput = document.createElement('input');
+      eleInput.type = type;
+      eleInput.name = storageKey;
+
+      stoOpGet(storageKey).then((v) => {
+        const currentVal = (v !== undefined && v !== null) ? v : storageValue.selected;
+        eleInput.value = currentVal;
+      });
+
+      // Updates storage on every keystroke/change execution
+      eleInput.addEventListener('input', async () => {
+        const rawValue = eleInput.value;
+        const finalizedValue = type === 'number' ? Number(rawValue) : rawValue;
+
+        console.info(`k=${storageKey} value changed to=${finalizedValue}`);
+        await stoOpSet(storageKey, finalizedValue);
+      });
+
+      eleWrap.append(eleInput);
+    }
+
+    return eleWrap;
+  });
 }

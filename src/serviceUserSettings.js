@@ -2,18 +2,6 @@ import {stoOpGet, stoOpSet} from './opStorage.js';
 
 /**
  * this function connect with generateHtmlByUserSettings()
- * example
- * searchEngine: {
- *     optionType: 'checkbox',
- *     options: ['Searcher1', 'Searcher2'],
- *     selected: ['Searcher1', 'Searcher2'],
- *   },
- *   videoQuality: {
- *      optionType: 'radio',
- *     options: ['360', '480', '720', '1080', '1440', '2160'],
- *     selected: '720',
- *   },
- *   
  *
  * @param userSettings{{}}
  * @returns {Promise<void>}
@@ -38,7 +26,7 @@ export async function serviceInitUserSettings(userSettings) {
 /**
  * // todo
  * @param userSettings{{}}
- * @returns {Promise<{}>}
+ * @returns {Promise<{Object}>}
  */
 export async function serviceGetUserSettings(userSettings) {
   const red = {};
