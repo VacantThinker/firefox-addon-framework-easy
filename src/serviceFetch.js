@@ -40,7 +40,7 @@ export async function servicePostJson(
  *        }}
  * @returns {Promise<Response>}
  */
-async function serviceSendDataToLocalAria2(message) {
+export async function serviceSendDataToLocalAria2(message) {
   let {downlink, filename, rpcsecret, rpcport} = message;
 
   const secret = rpcsecret;

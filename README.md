@@ -131,6 +131,8 @@ export async function servicePostJson(
     handleError,
 ) {  }
 
+export async function serviceSendDataToLocalAria2(message) {  }
+
 ```
 
 ### 📄 File: `src/serviceGet.js`
