@@ -269,23 +269,25 @@ export async function serviceDealWithMagnetLink(message) {
 
   let {title, data, handleOption} = message;
   let titleCleaned = serviceRemoveIllegalWord(title);
-  console.info('content.length', data.length);
+  console.info(`data.length=\n`, data.length);
 
   if (Array.isArray(data) && data.length >= 1) {
     let content = `${data.join('\n')}\n`;
+    console.info(`content=\n`, content);
+
     let filename = [
       'magnet-link',
       titleCleaned,
       serviceGetCurrentDateYYYYMMDDHHMMSS()].join(' ');
 
     if (handleOption === 'clipboard') {
-      serviceCopyContentToClipboard(content);
+      await serviceCopyContentToClipboard(content);
     }
     else if (handleOption === 'txt') {
       serviceSaveContentToLocal(content, filename);
     }
     else if (handleOption === 'clipboardAndTxt') {
-      serviceCopyContentToClipboard(content);
+      await serviceCopyContentToClipboard(content);
       serviceSaveContentToLocal(content, filename);
     }
   }

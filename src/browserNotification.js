@@ -1,19 +1,24 @@
+import {browserRuntimeManifestName} from './browserRuntime.js';
+
 /**
  *
- * @param { string}content
- * @param {string|null}title
+ * @param content{ string}
+ * @param title{string}
  * @returns {Promise<string>}
  */
-export async function browserNotificationCreate(content, title = null) {
+export async function browserNotificationCreate(
+    content,
+    title = browserRuntimeManifestName()
+) {
+
   const tag = 'browserNotificationCreate';
   try {
     let notificationId = `${tag}cake-noti`;
-    title = title ? title : browser.runtime.getManifest().name;
     console.info(tag, `content=${content}`, `title=${title}`);
     await browser.notifications.create(notificationId, {
       type: 'basic',
       title,
-      message: content,
+      message: `${content}`,
     });
     return notificationId;
   } catch (e) {

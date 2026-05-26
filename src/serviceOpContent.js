@@ -1,10 +1,10 @@
-
 /**
  *
- * @param{string} content
+ * @param data
+ * @returns {Promise<void>}
  */
-export function serviceCopyContentToClipboard(content) {
-  window.navigator.clipboard.writeText(content).then(r => null);
+export async function serviceCopyContentToClipboard(data) {
+  return await window.navigator.clipboard.writeText(data);
 }
 
 /**

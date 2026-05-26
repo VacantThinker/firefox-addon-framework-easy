@@ -25,7 +25,10 @@ export class BaseORM {  }
 
 ### 📄 File: `src/browserNotification.js`
 ```javascript
-export async function browserNotificationCreate(content, title = null) {  }
+export async function browserNotificationCreate(
+    content,
+    title = browserRuntimeManifestName()
+) {  }
 
 ```
 
@@ -140,7 +143,7 @@ export function serviceGetCurrentDateYYYYMMDDHHMMSS() {  }
 
 ### 📄 File: `src/serviceOpContent.js`
 ```javascript
-export function serviceCopyContentToClipboard(content) {  }
+export async function serviceCopyContentToClipboard(data) {  }
 
 export function serviceSaveContentToLocal(content, filename, ext = 'txt') {  }
 
