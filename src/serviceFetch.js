@@ -40,7 +40,7 @@ export async function servicePostJson(
  *        rpcsecret:string,
  *        rpcport:string
  *        }}
- * @returns {Promise<Response>}
+ * @returns {Promise<Response|null>}
  */
 export async function serviceSendDataToLocalAria2(message) {
   let {downlink, filename, rpcsecret, rpcport} = message;
@@ -76,8 +76,9 @@ export async function serviceSendDataToLocalAria2(message) {
 
     return response;
   } catch (e) {
+    await browserNotificationCreate(e)
     console.error(e);
-    await browserNotificationCreate(`error! ${e}`)
+    return null;
   }
 
 }
