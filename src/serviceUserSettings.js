@@ -1,26 +1,23 @@
 import {stoOpGet, stoOpSet} from './opStorage.js';
 
 /**
- * this function connect with generateHtmlByUserSettings()
  *
- * @param userSettings{{}}
+ * @param userSettings{Object}
  * @returns {Promise<void>}
  */
 export async function serviceInitUserSettings(userSettings) {
-  for (const k of Object.keys(userSettings)) {
-    let v = userSettings[k];
-    let options = v.options;
-    let selected = v.selected;
+  const initPromises = Object.entries(userSettings).
+      map(async ([key, setting]) => {
+        const oldValue = await stoOpGet(key);
 
-    // todo check if has oldvalue donothing, else set k and v
-    let oldValue = await stoOpGet(k);
-    if (oldValue) {
-    }
-    else {
-      await stoOpSet(k, selected);
-    }
+        // FIX: Check strictly for null or undefined.
+        // This allows `false` and `0` to be recognized as valid saved values.
+        if (oldValue === null || oldValue === undefined) {
+          await stoOpSet(key, setting.selected);
+        }
+      });
 
-  }
+  await Promise.all(initPromises);
 }
 
 /**
