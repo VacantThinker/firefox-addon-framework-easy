@@ -51,7 +51,6 @@ export async function tabOpReload(tabId) {
  * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
  */
 export async function tabOpCreate(urlOrArgs) {
-  try {
     /**
      * @type {browser.tabs._CreateCreateProperties}
      */
@@ -66,8 +65,6 @@ export async function tabOpCreate(urlOrArgs) {
     Object.assign(urlOrArgs, source);
     let tab = await browser.tabs.create(urlOrArgs);
     return tabOpEnhance(tab)
-  } catch (e) {
-  }
 }
 
 /**
@@ -87,6 +84,25 @@ export async function tabOpCreateNormal(urlOrArgs) {
   let tab = await browser.tabs.create(urlOrArgs);
   return tabOpEnhance(tab)
 }
+
+/**
+ * Creates a normal tab using either a URL string or a properties object.
+ *
+ * @param {string} url
+ * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ */
+export async function tabOpCreateByWindow(url) {
+  // If it's a string, wrap it in an object
+  if (typeof url === 'string') {
+    let window = await browser.windows.create({
+      url
+    });
+    let tab = window.tabs.shift();
+    return tabOpEnhance(tab)
+  }
+}
+
+
 
 /**
  *

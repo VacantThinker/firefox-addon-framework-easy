@@ -105,6 +105,8 @@ export async function tabOpCreate(urlOrArgs) {  }
 
 export async function tabOpCreateNormal(urlOrArgs) {  }
 
+export async function tabOpCreateByWindow(url) {  }
+
 export async function tabOpRemove(tabId) {  }
 
 export async function tabOpHide(tabId) {  }
