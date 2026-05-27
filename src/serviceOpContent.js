@@ -22,8 +22,8 @@ export function serviceSaveContentToLocal(content, filename, ext = 'txt') {
 
         const extObj = {
           txt: 'text/plain',
-          json: 'application/json'
-        }
+          json: 'application/json',
+        };
         const type = extObj[ext];
 
         const file = new Blob([content], {type});
@@ -36,6 +36,26 @@ export function serviceSaveContentToLocal(content, filename, ext = 'txt') {
   );
   eleBtn.click();
   // eleBtn.previousElementSibling
+}
+
+/**
+ * need install nodejs mkvtoolnix
+ * @param message{{
+ *      vid, title,
+ * }}
+ * @returns {Promise<void>}
+ */
+export async function serviceGenerateMkvToolNixScript({vid, title}) {
+  let message = {vid, title};
+  const platformInfo = await browserRuntimePlatformInfo();
+  if (platformInfo.os === 'win') {
+    let content = generateMkvScriptForSystemWindows(message);
+    serviceSaveContentToLocal(content, title, 'js');
+  }
+  else if (platformInfo.os === 'linux') {
+    let content = generateMkvScriptForSystemFedora(message);
+    serviceSaveContentToLocal(content, title, 'sh');
+  }
 }
 
 /**

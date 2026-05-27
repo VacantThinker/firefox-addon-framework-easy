@@ -23,6 +23,12 @@ export class BaseORM {  }
 
 ```
 
+### 📄 File: `src/browserDownload.js`
+```javascript
+export async function browserDownloadByDownlink({  }
+
+```
+
 ### 📄 File: `src/browserNotification.js`
 ```javascript
 export async function browserNotificationCreate(
@@ -58,6 +64,10 @@ export function generateHtmlByUserSettings(
     userSettings,
     radioItemClickCallback,
 ) {  }
+
+export function generateMkvScriptForSystemWindows({  }
+
+export function generateMkvScriptForSystemFedora({  }
 
 ```
 
@@ -148,6 +158,8 @@ export function serviceGetCurrentDateYYYYMMDDHHMMSS() {  }
 export async function serviceCopyContentToClipboard(data) {  }
 
 export function serviceSaveContentToLocal(content, filename, ext = 'txt') {  }
+
+export async function serviceGenerateMkvToolNixScript({  }
 
 export function serviceRemoveIllegalWord(value) {  }
 

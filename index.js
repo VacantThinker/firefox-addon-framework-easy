@@ -1,4 +1,5 @@
 export * from './src/baseORM.js'
+export * from './src/browserDownload.js'
 export * from './src/browserNotification.js'
 export * from './src/browserRuntime.js'
 export * from './src/generate.js'
