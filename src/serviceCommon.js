@@ -108,7 +108,6 @@ export async function serviceElementPicker(message) {
           width: rect.width,
           x: rect.left + window.scrollX,
           y: rect.top + window.scrollY,
-          selector: getUniqueSelector(target),
         };
 
         console.log('Target Selected:', {rectData});
