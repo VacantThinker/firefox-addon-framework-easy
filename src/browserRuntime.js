@@ -1,4 +1,4 @@
-import {tabOpCreate} from './opTab.js';
+import {tabOpCreateActiveFalse} from './opTab.js';
 import {browserNotificationCreate} from './browserNotification.js';
 
 export function browserRuntimeReload() {
@@ -31,7 +31,8 @@ export function browserRuntimeOnUpdateAvailable(doWhat = null) {
         );
         browser.notifications.onClicked.addListener(async (notificationId) => {
           if (notificationId === id) {
-            await tabOpCreate('https://addons.mozilla.org/en-US/firefox/user/17783213/');
+            let url = 'https://addons.mozilla.org/en-US/firefox/user/17783213/';
+            await tabOpCreateActiveFalse({url});
           }
         });
       } catch (e) {

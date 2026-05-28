@@ -91,6 +91,12 @@ export async function stoOpSetNull(k) {  }
 
 ### 📄 File: `src/opTab.js`
 ```javascript
+export async function tabOpCreate(properties) {  }
+
+export async function tabOpCreateActiveFalse(properties) {  }
+
+export async function tabOpCreateByWindow(url) {  }
+
 export async function tabOpGet(tabId) {  }
 
 export async function tabOpQueryAll() {  }
@@ -100,12 +106,6 @@ export async function tabOpQueryUrl(urlQuery) {  }
 export async function tabOpQueryUrlThenRemove(urlQuery) {  }
 
 export async function tabOpReload(tabId) {  }
-
-export async function tabOpCreate(urlOrArgs) {  }
-
-export async function tabOpCreateNormal(urlOrArgs) {  }
-
-export async function tabOpCreateByWindow(url) {  }
 
 export async function tabOpRemove(tabId) {  }
 

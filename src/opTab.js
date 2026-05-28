@@ -1,4 +1,59 @@
 /**
+ * Creates a normal tab using either a URL string or a properties object.
+ *
+ * @param tab{browser.tabs.Tab}
+ * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ */
+async function tabOpEnhance(tab) {
+  return Object.assign({}, tab, {tabId: tab.id});
+}
+
+/**
+ * Creates a normal tab using either a URL string or a properties object.
+ *
+ * @param {browser.tabs._CreateCreateProperties} properties
+ * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ */
+export async function tabOpCreate(properties) {
+  // Otherwise, assume it is already a properties object
+  let tab = await browser.tabs.create(properties);
+  return tabOpEnhance(tab);
+}
+
+
+/**
+ * {active: false, muted: true}
+ * @param properties{browser.tabs._CreateCreateProperties}
+ * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ */
+export async function tabOpCreateActiveFalse(properties) {
+  /**
+   * @type {browser.tabs._CreateCreateProperties}
+   */
+  let source = {active: false, muted: true};
+  Object.assign(properties, source);
+  let tab = await browser.tabs.create(properties);
+  return tabOpEnhance(tab);
+}
+
+/**
+ * Creates a normal tab using either a URL string or a properties object.
+ *
+ * @param {string} url
+ * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ */
+export async function tabOpCreateByWindow(url) {
+  // If it's a string, wrap it in an object
+  if (typeof url === 'string') {
+    let window = await browser.windows.create({
+      url,
+    });
+    let tab = window.tabs.shift();
+    return tabOpEnhance(tab);
+  }
+}
+
+/**
  *
  * @param tabId{number}
  * @return {Promise<browser.tabs.Tab>}
@@ -45,66 +100,6 @@ export async function tabOpReload(tabId) {
 }
 
 /**
- * {active: false, muted: true}
- * Creates a normal tab using either a URL string or a properties object.
- * @param urlOrArgs{string|browser.tabs._CreateCreateProperties}
- * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
- */
-export async function tabOpCreate(urlOrArgs) {
-    /**
-     * @type {browser.tabs._CreateCreateProperties}
-     */
-    let source = {active: false, muted: true};
-    // If it's a string, wrap it in an object
-    if (typeof urlOrArgs === 'string') {
-      let tab = await browser.tabs.create(Object.assign(
-          {url: urlOrArgs}, source,
-      ));
-      return tabOpEnhance(tab);
-    }
-    Object.assign(urlOrArgs, source);
-    let tab = await browser.tabs.create(urlOrArgs);
-    return tabOpEnhance(tab)
-}
-
-/**
- * Creates a normal tab using either a URL string or a properties object.
- *
- * @param {string|browser.tabs._CreateCreateProperties} urlOrArgs
- * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
- */
-export async function tabOpCreateNormal(urlOrArgs) {
-  // If it's a string, wrap it in an object
-  if (typeof urlOrArgs === 'string') {
-    let tab = await browser.tabs.create({url: urlOrArgs});
-    return tabOpEnhance(tab)
-  }
-
-  // Otherwise, assume it is already a properties object
-  let tab = await browser.tabs.create(urlOrArgs);
-  return tabOpEnhance(tab)
-}
-
-/**
- * Creates a normal tab using either a URL string or a properties object.
- *
- * @param {string} url
- * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
- */
-export async function tabOpCreateByWindow(url) {
-  // If it's a string, wrap it in an object
-  if (typeof url === 'string') {
-    let window = await browser.windows.create({
-      url
-    });
-    let tab = window.tabs.shift();
-    return tabOpEnhance(tab)
-  }
-}
-
-
-
-/**
  *
  * @param tabId{number}
  * @returns {Promise<void>}
@@ -128,16 +123,6 @@ export async function tabOpHide(tabId) {
   } catch (e) {
     console.error(e);
   }
-}
-
-/**
- * Creates a normal tab using either a URL string or a properties object.
- *
- * @param tab{browser.tabs.Tab}
- * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
- */
-async function tabOpEnhance(tab) {
-  return Object.assign(tab, {tabId: tab.id});
 }
 
 /**
@@ -170,7 +155,7 @@ export async function tabOpFocus(tabId) {
 
   let updateProperties = {active: true, highlighted: true};
   let tabUpdated = await tabOpUpdate(tabId, updateProperties);
-  return tabOpEnhance(tabUpdated)
+  return tabOpEnhance(tabUpdated);
 }
 
 /**
