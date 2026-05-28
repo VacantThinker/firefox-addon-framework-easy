@@ -151,7 +151,7 @@ export async function serviceElementPicker(message) {
 }
 
 /**
- * middle ware, output: Object.assign({}, message, {x, y, width, height,})
+ * middle ware, output: {rectdata}
  *
  * @param message{{
  *      tabId:number,
@@ -170,13 +170,13 @@ export async function serviceGetFullPageRectData(message) {
       let x = 0, y = 0;
       let width = document.documentElement.scrollWidth;
       let height = document.documentElement.scrollHeight;
-
+      let rectData = {
+        x, y, width, height,
+      };
       await browser.runtime.sendMessage(Object.assign(
           {},
           message,
-          {
-            x, y, width, height,
-          },
+          rectData,
       ));
       // todo end if (message)
     },
