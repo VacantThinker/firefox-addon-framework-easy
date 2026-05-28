@@ -165,7 +165,7 @@ export async function serviceGetFullPageRectData(message) {
   await browser.scripting.executeScript({
     target: {tabId},
     args: [message],
-    func: async (message) => {
+    func: (message) => {
 
       let x = 0, y = 0;
       let width = document.documentElement.scrollWidth;
@@ -173,10 +173,10 @@ export async function serviceGetFullPageRectData(message) {
       let rectData = {
         x, y, width, height,
       };
-      await browser.runtime.sendMessage(Object.assign(
+      browser.runtime.sendMessage(Object.assign(
           {},
           message,
-          rectData,
+          {rectData},
       ));
       // todo end if (message)
     },
