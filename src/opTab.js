@@ -4,7 +4,7 @@
  * @param tab{browser.tabs.Tab}
  * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
  */
-async function tabOpEnhance(tab) {
+export async function tabOpEnhance(tab) {
   return Object.assign({}, tab, {tabId: tab.id});
 }
 
@@ -17,6 +17,21 @@ async function tabOpEnhance(tab) {
 export async function tabOpCreate(properties) {
   // Otherwise, assume it is already a properties object
   let tab = await browser.tabs.create(properties);
+  return tabOpEnhance(tab);
+}
+
+/**
+ *
+ * @param {browser.tabs._CreateCreateProperties & {tabId: number} } properties
+ * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ */
+export async function tabOpCreateNear(properties) {
+  let tabPrev = await tabOpGet(properties.tabId);
+  Object.assign(properties, {
+    index: tabPrev.index + 1, openerTabId: tabPrev.id,
+  })
+
+  let tab = await tabOpCreate(properties);
   return tabOpEnhance(tab);
 }
 

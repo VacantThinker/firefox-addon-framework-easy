@@ -91,7 +91,11 @@ export async function stoOpSetNull(k) {  }
 
 ### 📄 File: `src/opTab.js`
 ```javascript
+export async function tabOpEnhance(tab) {  }
+
 export async function tabOpCreate(properties) {  }
+
+export async function tabOpCreateNear(properties) {  }
 
 export async function tabOpCreateActiveFalse(properties) {  }
 
