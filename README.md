@@ -129,6 +129,9 @@ export async function tabOpRemoveCssCode(tabId, code) {  }
 
 ### 📄 File: `src/serviceCommon.js`
 ```javascript
+export async function serviceTakeScreenshot(
+    {  }
+
 export async function serviceElementPicker(message) {  }
 
 export async function serviceGetFullPageRectData(message) {  }

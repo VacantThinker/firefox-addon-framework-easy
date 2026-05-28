@@ -19,7 +19,7 @@ import {browserNotificationCreate} from './browserNotification.js';
  * }}
  * @returns {Promise<void>}
  */
-async function serviceTakeScreenshot(
+export async function serviceTakeScreenshot(
     {
       tabId,
       filename,
