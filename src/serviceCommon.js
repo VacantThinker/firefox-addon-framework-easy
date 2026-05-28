@@ -7,7 +7,59 @@ import {
 import {browserNotificationCreate} from './browserNotification.js';
 
 /**
- * will get => {rectData, uniqueSelector,}
+ *
+ * @param param0
+ * @param param0.tabId {number}
+ * @param param0.filename {string}
+ * @param param0.rect {{
+ *                x,
+ *                y,
+ *                width,
+ *                height,
+ * }}
+ * @returns {Promise<void>}
+ */
+async function serviceTakeScreenshot(
+    {
+      tabId,
+      filename,
+      rect,
+    }) {
+
+  const tag = 'actTakeScreenshot()';
+  console.info(tag, `rect=\n`, rect);
+  let dataURI = await browser.tabs.captureTab(tabId, {
+    rect: rect,
+  });
+  let assign = Object.assign(
+      {},
+      {dataURI, filename},
+  );
+  await browser.scripting.executeScript({
+    target: {tabId},
+    args: [assign],
+    func: function(message) {
+      if (message) {
+        let {dataURI, filename} = message;
+
+        imageDataToLocalFile({dataURI, filename});
+
+        function imageDataToLocalFile({dataURI, filename}) {
+          let a = document.createElement('a');
+          a.href = dataURI;
+          a.download = filename;
+          a.click();
+        }
+
+        // todo end if(message)
+      }
+    },
+  });
+
+}
+
+/**
+ * middle ware, output => {rect, uniqueSelector,}
  * @param message{{
  *      tabId:number,
  *      act:string
@@ -79,14 +131,16 @@ export async function serviceElementPicker(message) {
         if (target.id === overlayId) return;
 
         // Get exact coordinates of the hovered element
-        const rect = target.getBoundingClientRect();
+        const clientRect = target.getBoundingClientRect();
 
         // Move the floating overlay exactly over the target
         overlay.style.setProperty('display', 'block', 'important');
-        overlay.style.setProperty('top', `${rect.top}px`, 'important');
-        overlay.style.setProperty('left', `${rect.left}px`, 'important');
-        overlay.style.setProperty('width', `${rect.width}px`, 'important');
-        overlay.style.setProperty('height', `${rect.height}px`, 'important');
+        overlay.style.setProperty('top', `${clientRect.top}px`, 'important');
+        overlay.style.setProperty('left', `${clientRect.left}px`, 'important');
+        overlay.style.setProperty('width', `${clientRect.width}px`,
+            'important');
+        overlay.style.setProperty('height', `${clientRect.height}px`,
+            'important');
 
         // Change mouse cursor to indicate picking mode
         document.body.style.setProperty('cursor', 'crosshair', 'important');
@@ -102,21 +156,19 @@ export async function serviceElementPicker(message) {
         stopPickingMode();
 
         // Calculate screenshot coordinates
-        let rect = target.getBoundingClientRect();
-        let rectData = {
-          height: rect.height,
-          width: rect.width,
-          x: rect.left + window.scrollX,
-          y: rect.top + window.scrollY,
+        let clientRect = target.getBoundingClientRect();
+        let rect = {
+          height: clientRect.height,
+          width: clientRect.width,
+          x: clientRect.left + window.scrollX,
+          y: clientRect.top + window.scrollY,
         };
-
-        console.log('Target Selected:', {rectData});
 
         // Assuming 'target' is your clicked element (e.g., from e.target)
         let messageTakeScreenshot = Object.assign(
             {}, // Start with a fresh, empty object
             message, // Put the original message first so it doesn't overwrite your new data
-            {rectData},
+            {rect},
             {
               // The guaranteed unique CSS path (e.g., "div#wrap > ul > li:nth-of-type(2)")
               uniqueSelector: getUniqueSelector(target),
@@ -151,7 +203,7 @@ export async function serviceElementPicker(message) {
 }
 
 /**
- * middle ware, output: {rectdata}
+ * middle ware, output: {rect}
  *
  * @param message{{
  *      tabId:number,
@@ -170,13 +222,13 @@ export async function serviceGetFullPageRectData(message) {
       let x = 0, y = 0;
       let width = document.documentElement.scrollWidth;
       let height = document.documentElement.scrollHeight;
-      let rectData = {
+      let rect = {
         x, y, width, height,
       };
       browser.runtime.sendMessage(Object.assign(
           {},
           message,
-          {rectData},
+          {rect},
       ));
       // todo end if (message)
     },
