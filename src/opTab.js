@@ -27,6 +27,7 @@ export async function tabOpCreate(properties) {
  */
 export async function tabOpCreateNear(properties) {
   let tabPrev = await tabOpGet(properties.tabId);
+  delete properties.tabId;
   Object.assign(properties, {
     index: tabPrev.index + 1, openerTabId: tabPrev.id,
   })
