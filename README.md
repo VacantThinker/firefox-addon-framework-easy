@@ -25,7 +25,8 @@ export class BaseORM {  }
 
 ### 📄 File: `src/browserDownload.js`
 ```javascript
-export async function browserDownloadByDownlink({  }
+export async function browserDownloadByDownlink(
+    {  }
 
 ```
 

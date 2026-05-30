@@ -5,7 +5,12 @@
  * @param param0.filename{string}
  * @returns {Promise<void>}
  */
-export async function browserDownloadByDownlink({ downlink, filename }) {
+export async function browserDownloadByDownlink(
+    {
+      downlink,
+      filename,
+    }) {
+
   let url = downlink;
   await browser.downloads.download({url, filename});
 }

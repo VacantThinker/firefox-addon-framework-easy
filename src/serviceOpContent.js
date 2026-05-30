@@ -65,28 +65,31 @@ export async function serviceGenerateMkvToolNixScript({vid, title}) {
 }
 
 /**
- * Ultimate sanitization function: Filters all Chinese/English punctuation, full-width symbols, and illegal characters.
- * (100% prevents download errors and copy-paste character corruption)
- * @param {string} value - The original video title
- * @returns {string} - A clean, safe plaintext/alphanumeric filename
+ * 终极清理函数：过滤所有中英文标点、全角符号、以及非法/不可见字符。
+ * （100% 预防下载报错和复制粘贴导致的乱码）
+ * @param {string} value - 原始视频标题
+ * @returns {string} - 干净、安全的纯文本/字母数字文件名
  */
 export function serviceRemoveIllegalWord(value) {
   if (!value) return '';
 
-  // 1. Get the first line and trim whitespace from both ends
+  // 1. 获取第一行并去除两端空格
   let name = value.trim().split(/\r?\n/).shift();
 
-  // 2. Use Unicode properties to remove all punctuation (\p{P}) and all symbols/geometry (\p{S})
-  // This natively crushes Chinese full-width punctuation, em dashes (—), Emojis, math symbols, and special brackets.
-  // Note: The 'u' flag is mandatory to enable Unicode mode in the regex.
+  // 2. 使用 Unicode 属性移除所有危险字符：
+  // \p{P} = 所有标点符号
+  // \p{S} = 所有符号（Emoji、数学符号、货币符号）
+  // \p{C} = 所有控制/格式化/代理字符（完美修复不可见的 U+202A/U+202C 导致崩溃的 Bug！）
   name = name.replace(/[\p{P}\p{S}\p{C}]/gu, ' ');
 
-  // 3. Additional defense: Filter out hidden control characters that Firefox/OS are extremely sensitive to (0-31 and 127-159)
-  name = name.replace(/[\x00-\x1F\x7F-\x9F]/g, ' ');
+  // 3. Firefox WebExtension 严格拦截的特殊字符。
+  // （大部分已经被 \p{P} 和 \p{S} 处理，但显式移除可以确保彻底杜绝边缘报错）
+  name = name.replace(/[~"#%&*:<>?/\\{|}]/g, ' ');
 
-  // 4. Clean up Emojis and any remaining surrogate pairs
-  name = name.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, ' ');
+  // 4. 将连续的空格（包括全角/Unicode空格）合并为一个标准空格
+  name = name.replace(/[\s\u3000]+/g, ' ').trim();
 
-  // 5. Merge consecutive spaces (including Chinese full-width spaces) into a single standard space
-  return name.replace(/[\s\u3000]+/g, ' ').trim();
+  // 5. Firefox 下载 API 会因为文件名以点（.）或连字符（-）开头/结尾而报错
+  // 再次修剪以确保绝对安全
+  return name.replace(/^[-.]+|[-.]+$/g, '');
 }
