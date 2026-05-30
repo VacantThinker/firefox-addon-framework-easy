@@ -79,7 +79,7 @@ export function serviceRemoveIllegalWord(value) {
   // 2. Use Unicode properties to remove all punctuation (\p{P}) and all symbols/geometry (\p{S})
   // This natively crushes Chinese full-width punctuation, em dashes (—), Emojis, math symbols, and special brackets.
   // Note: The 'u' flag is mandatory to enable Unicode mode in the regex.
-  name = name.replace(/[\p{P}\p{S}]/gu, ' ');
+  name = name.replace(/[\p{P}\p{S}\p{C}]/gu, ' ');
 
   // 3. Additional defense: Filter out hidden control characters that Firefox/OS are extremely sensitive to (0-31 and 127-159)
   name = name.replace(/[\x00-\x1F\x7F-\x9F]/g, ' ');
