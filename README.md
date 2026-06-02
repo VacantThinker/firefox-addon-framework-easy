@@ -61,6 +61,8 @@ export function browserRuntimeManifestName() {  }
 
 ### 📄 File: `src/browserTab.js`
 ```javascript
+export async function browserTabCreateToDownload(message) {  }
+
 export async function browserTabCreateNearSendMessageToContentJs(message) {  }
 
 export function browserTabWaitReloadThenRemoveIt({  }
