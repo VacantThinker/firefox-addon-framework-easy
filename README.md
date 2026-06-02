@@ -59,6 +59,14 @@ export function browserRuntimeManifestName() {  }
 
 ```
 
+### 📄 File: `src/browserTab.js`
+```javascript
+export async function browserTabCreateNearSendMessageToContentJs(message) {  }
+
+export function browserTabWaitReloadThenRemoveIt({  }
+
+```
+
 ### 📄 File: `src/generate.js`
 ```javascript
 export function generateHtmlByUserSettings(
@@ -130,17 +138,6 @@ export async function tabOpRemoveCssCode(tabId, code) {  }
 
 ### 📄 File: `src/serviceCommon.js`
 ```javascript
-export async function serviceTakeScreenshot(
-    {  }
-
-export async function serviceElementPicker(message) {  }
-
-export async function serviceGetFullPageRectData(message) {  }
-
-export async function serviceFindAllMagnetLink(message) {  }
-
-export async function serviceDealWithMagnetLink(message) {  }
-
 ```
 
 ### 📄 File: `src/serviceFetch.js`
@@ -172,6 +169,21 @@ export function serviceSaveContentToLocal(content, filename, ext = 'txt') {  }
 export async function serviceGenerateMkvToolNixScript({  }
 
 export function serviceRemoveIllegalWord(value) {  }
+
+```
+
+### 📄 File: `src/serviceOpJavascript.js`
+```javascript
+export async function serviceTakeScreenshot(
+    {  }
+
+export async function serviceElementPicker(message) {  }
+
+export async function serviceGetFullPageRectData(message) {  }
+
+export async function serviceFindAllMagnetLink(message) {  }
+
+export async function serviceDealWithMagnetLink(message) {  }
 
 ```
 
