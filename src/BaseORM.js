@@ -1,9 +1,4 @@
-import {
-  stoOpCheck,
-  stoOpGet,
-  stoOpRem,
-  stoOpSet,
-} from './opStorage.js';
+import {stoOpCheck, stoOpGet, stoOpRem, stoOpSet} from './opStorage.js';
 
 /**
  * Abstract base class BaseORM (similar to Java's Abstract Class).
@@ -23,10 +18,11 @@ export class BaseORM {
   constructor(prefix, id, defaultValue = {}) {
     // Simulating Java's abstract class behavior: prevent direct instantiation of the base class
     if (new.target === BaseORM) {
-      throw new TypeError("Cannot construct BaseORM instances directly (Abstract Class).");
+      throw new TypeError(
+          'Cannot construct BaseORM instances directly (Abstract Class).');
     }
     if (!prefix || !id) {
-      throw new Error("Both prefix and id must be specified.");
+      throw new Error('Both prefix and id must be specified.');
     }
 
     // Automatically normalize the prefix format to ensure a clean trailing space
@@ -37,6 +33,16 @@ export class BaseORM {
 
     // Deep clone the default value to protect against object reference shared-state bugs
     this.#defaultValue = JSON.parse(JSON.stringify(defaultValue));
+  }
+
+  /**
+   * Protected Getter for subclasses to safely access the complete key.
+   * Can be used in subclasses as `this.storageKey`.
+   * @protected
+   * @return {string} The full storage key
+   */
+  get storageKey() {
+    return this.#fullStorageKey;
   }
 
   // Private helper method: checks if the bound key exists in the storage layer
