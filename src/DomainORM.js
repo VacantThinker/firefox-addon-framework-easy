@@ -1,8 +1,8 @@
 import {BaseORM} from './BaseORM.js';
 
-export class DomainORM extends BaseORM{
-  constructor(  ) {
-    super(`domain`,{
+export class DomainORM extends BaseORM {
+  constructor(domain) {
+    super(`domain`, domain, {
 
     });
   }

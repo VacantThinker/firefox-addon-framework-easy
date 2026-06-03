@@ -1,123 +1,95 @@
 import {
   stoOpCheck,
   stoOpGet,
-  stoOpQueryStartWith,
   stoOpRem,
   stoOpSet,
 } from './opStorage.js';
 
 /**
  * Abstract base class BaseORM (similar to Java's Abstract Class).
- * Provides general CRUD operations for Key-Value pairs, where the Value defaults to an Object.
+ * Provides encapsulated CRUD operations for specific Key-Value pairs bound at instantiation.
  */
 export class BaseORM {
-  // Private fields for encapsulation
-  #prefix;
+  // Private fields for data encapsulation
+  #fullStorageKey;
   #defaultValue;
 
   /**
    * Constructor
    * @param {string} prefix The prefix for the keys (e.g., 'magnetKey')
-   * @param {object} [defaultValue={}] Custom initial value for the subclass, defaults to an empty object if omitted
+   * @param {string} id The unique identifier for this instance (e.g., a specific hash or filename)
+   * @param {object} [defaultValue={}] Custom initial value for the instance, defaults to an empty object
    */
-  constructor(prefix, defaultValue = {}) {
-    // Simulate Java's abstract class: prevent direct instantiation of the base class
+  constructor(prefix, id, defaultValue = {}) {
+    // Simulating Java's abstract class behavior: prevent direct instantiation of the base class
     if (new.target === BaseORM) {
       throw new TypeError("Cannot construct BaseORM instances directly (Abstract Class).");
     }
-    if (!prefix) {
-      throw new Error("A key prefix must be specified for the subclass.");
+    if (!prefix || !id) {
+      throw new Error("Both prefix and id must be specified.");
     }
 
-    // Automatically handle trailing spaces to ensure proper formatting like "magnetKey keyname123"
-    this.#prefix = prefix.endsWith(' ') ? prefix : `${prefix} `;
+    // Automatically normalize the prefix format to ensure a clean trailing space
+    const formattedPrefix = prefix.endsWith(' ') ? prefix : `${prefix} `;
 
-    // Deep clone the initial value to prevent data pollution from multiple keys sharing the same object reference
+    // Lock down the final storage key during instance construction
+    this.#fullStorageKey = `${formattedPrefix}${id}`;
+
+    // Deep clone the default value to protect against object reference shared-state bugs
     this.#defaultValue = JSON.parse(JSON.stringify(defaultValue));
   }
 
-  // Private helper method: generates the final full storage key
-  #buildStorageKey(key) {
-    return `${this.#prefix}${key}`;
+  // Private helper method: checks if the bound key exists in the storage layer
+  async #exists() {
+    return await stoOpCheck(this.#fullStorageKey);
   }
 
-  // Private helper method: checks if the key exists
-  async #exists(key) {
-    return await stoOpCheck(this.#buildStorageKey(key));
-  }
-
-  // Private helper method: initializes the key with the custom default value
-  async #initDefaultObject(key) {
-    await stoOpSet(this.#buildStorageKey(key), this.#defaultValue);
+  // Private helper method: populates the storage key with the designated initial layout
+  async #initDefaultObject() {
+    await stoOpSet(this.#fullStorageKey, this.#defaultValue);
   }
 
   /**
-   * [Read] Get the value of the specified key.
-   * If it does not exist, initialize it with the custom default value and return it.
-   * @param {string} key Custom key name
+   * [Read] Retrieve the value associated with the bound key.
+   * If it does not exist yet, it automatically initializes it with the default value first.
    * @return {Promise<object>}
    */
-  async get(key) {
-    if (!(await this.#exists(key))) {
-      await this.#initDefaultObject(key);
+  async get() {
+    if (!(await this.#exists())) {
+      await this.#initDefaultObject();
     }
-    return await stoOpGet(this.#buildStorageKey(key));
+    return await stoOpGet(this.#fullStorageKey);
   }
 
   /**
-   * [Create/Update] Overwrite and set the value for the specified key.
-   * @param {string} key Custom key name
-   * @param {object} value The new Object
+   * [Create/Update] Overwrite the value of the bound key completely.
+   * @param {object} value The new Object data to store
    * @return {Promise<void>}
    */
-  async set(key, value) {
-    await stoOpSet(this.#buildStorageKey(key), value || this.#defaultValue);
+  async set(value) {
+    await stoOpSet(this.#fullStorageKey, value || this.#defaultValue);
   }
 
   /**
-   * [Delete] Delete the specified key and return its previous value.
-   * @param {string} key Custom key name
+   * [Delete] Wipe the bound key from storage and return its final state prior to deletion.
    * @return {Promise<object>}
    */
-  async delete(key) {
-    const previousValue = await this.get(key);
-    await stoOpRem(this.#buildStorageKey(key));
+  async delete() {
+    const previousValue = await this.get();
+    await stoOpRem(this.#fullStorageKey);
     return previousValue;
   }
 
   /**
-   * [Partial Update] Modify a specific key-value pair inside the Value object.
-   * @param {string} key Custom key name
-   * @param {string} objectKey The key inside the target Value object
-   * @param {*} objectValue The value to set for the objectKey
-   * @return {Promise<object>} Returns the updated full Object
+   * [Partial Update] Modify a single targeted key-value pair nested deep within the stored object.
+   * @param {string} objectKey The internal key path inside the main value object
+   * @param {*} objectValue The new value to map to that key
+   * @return {Promise<object>} Returns the fully updated object structure
    */
-  async updateValueKeyValue(key, objectKey, objectValue) {
-    const currentData = await this.get(key);
+  async updateValueKeyValue(objectKey, objectValue) {
+    const currentData = await this.get();
     currentData[objectKey] = objectValue;
-    await this.set(key, currentData);
+    await this.set(currentData);
     return currentData;
-  }
-
-  /**
-   * [Batch Read] Get a list of all pure keys under the current prefix (with the prefix removed).
-   * @returns {Promise<string[]>} e.g., ['keyname123', 'keyname456']
-   */
-  async getAllKeys() {
-    const fullKeys = await stoOpQueryStartWith(this.#prefix);
-    return fullKeys.map(k => k.replace(this.#prefix, ''));
-  }
-
-  /**
-   * [Batch Read] Get a mapping of all keys and their corresponding values.
-   * @returns {Promise<{keyList: string[], keyValueMap: {}}>}
-   */
-  async getAllMap() {
-    const keyList = await this.getAllKeys();
-    const keyValueMap = {};
-    for (const key of keyList) {
-      keyValueMap[key] = await this.get(key);
-    }
-    return { keyList, keyValueMap };
   }
 }

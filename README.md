@@ -71,7 +71,7 @@ export function browserTabWaitReloadThenRemoveIt({  }
 
 ### 📄 File: `src/DomainORM.js`
 ```javascript
-export class DomainORM extends BaseORM{  }
+export class DomainORM extends BaseORM {  }
 
 ```
 
