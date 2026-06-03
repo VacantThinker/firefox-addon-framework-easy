@@ -25,11 +25,8 @@ export class BaseORM {
       throw new Error('Both prefix and id must be specified.');
     }
 
-    // Automatically normalize the prefix format to ensure a clean trailing space
-    const formattedPrefix = prefix.endsWith(' ') ? prefix : `${prefix} `;
-
     // Lock down the final storage key during instance construction
-    this.#fullStorageKey = `${formattedPrefix}${id}`;
+    this.#fullStorageKey = `${prefix}${id}`;
 
     // Deep clone the default value to protect against object reference shared-state bugs
     this.#defaultValue = JSON.parse(JSON.stringify(defaultValue));
