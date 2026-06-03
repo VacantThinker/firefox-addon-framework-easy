@@ -12,5 +12,9 @@ export async function browserDownloadByDownlink(
     }) {
 
   let url = downlink;
-  await browser.downloads.download({url, filename});
+  let options = {url};
+  if (filename) {
+    Object.assign(options, {filename});
+  }
+  await browser.downloads.download(options);
 }
