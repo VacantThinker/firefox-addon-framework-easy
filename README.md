@@ -17,7 +17,7 @@ You can download, clone, or view the complete source code for this application h
 
 Below is a list of all public functions found inside the `src` directory:
 
-### 📄 File: `src/baseORM.js`
+### 📄 File: `src/BaseORM.js`
 ```javascript
 export class BaseORM {  }
 
@@ -66,6 +66,12 @@ export async function browserTabCreateToDownload(message) {  }
 export async function browserTabCreateNearSendMessageToContentJs(message) {  }
 
 export function browserTabWaitReloadThenRemoveIt({  }
+
+```
+
+### 📄 File: `src/DomainORM.js`
+```javascript
+export class DomainORM extends BaseORM{  }
 
 ```
 
