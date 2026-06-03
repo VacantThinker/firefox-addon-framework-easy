@@ -1,4 +1,10 @@
-import {stoOpCheck, stoOpGet, stoOpRem, stoOpSet} from './opStorage.js';
+import {
+  stoOpCheck,
+  stoOpGet,
+  stoOpQueryStartWith,
+  stoOpRem,
+  stoOpSet,
+} from './opStorage.js';
 
 /**
  * Abstract base class BaseORM (similar to Java's Abstract Class).
@@ -6,30 +12,39 @@ import {stoOpCheck, stoOpGet, stoOpRem, stoOpSet} from './opStorage.js';
  */
 export class BaseORM {
   // Private fields for data encapsulation
+  #id; // Added to store the raw unique identifier
   #fullStorageKey;
   #defaultValue;
 
   /**
    * Constructor
    * @param {string} prefix The prefix for the keys (e.g., 'magnetKey')
-   * @param {string} id The unique identifier for this instance (e.g., a specific hash or filename)
-   * @param {object} [defaultValue={}] Custom initial value for the instance, defaults to an empty object
+   * @param {string} id The unique identifier for this instance
+   * @param {object} [defaultValue={}] Custom initial value
    */
   constructor(prefix, id, defaultValue = {}) {
-    // Simulating Java's abstract class behavior: prevent direct instantiation of the base class
     if (new.target === BaseORM) {
-      throw new TypeError(
-          'Cannot construct BaseORM instances directly (Abstract Class).');
+      throw new TypeError("Cannot construct BaseORM instances directly (Abstract Class).");
     }
     if (!prefix || !id) {
-      throw new Error('Both prefix and id must be specified.');
+      throw new Error("Both prefix and id must be specified.");
     }
 
-    // Lock down the final storage key during instance construction
-    this.#fullStorageKey = `${prefix}${id}`;
+    // Save the raw id to the private field
+    this.#id = id;
 
-    // Deep clone the default value to protect against object reference shared-state bugs
+    const formattedPrefix = prefix.endsWith(' ') ? prefix : `${prefix} `;
+    this.#fullStorageKey = `${formattedPrefix}${id}`;
     this.#defaultValue = JSON.parse(JSON.stringify(defaultValue));
+  }
+
+  /**
+   * Public Getter to retrieve the bound unique identifier (id).
+   * Can be accessed as `this.id` inside subclasses or `instance.id` externally.
+   * @return {string} The raw id
+   */
+  get id() {
+    return this.#id;
   }
 
   /**
@@ -42,19 +57,18 @@ export class BaseORM {
     return this.#fullStorageKey;
   }
 
-  // Private helper method: checks if the bound key exists in the storage layer
+  // Private helper method
   async #exists() {
     return await stoOpCheck(this.#fullStorageKey);
   }
 
-  // Private helper method: populates the storage key with the designated initial layout
+  // Private helper method
   async #initDefaultObject() {
     await stoOpSet(this.#fullStorageKey, this.#defaultValue);
   }
 
   /**
    * [Read] Retrieve the value associated with the bound key.
-   * If it does not exist yet, it automatically initializes it with the default value first.
    * @return {Promise<object>}
    */
   async get() {
@@ -74,7 +88,7 @@ export class BaseORM {
   }
 
   /**
-   * [Delete] Wipe the bound key from storage and return its final state prior to deletion.
+   * [Delete] Wipe the bound key from storage.
    * @return {Promise<object>}
    */
   async delete() {
