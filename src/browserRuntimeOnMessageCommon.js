@@ -1,6 +1,7 @@
 import {tabOpRemove} from './opTab.js';
 import {serviceDownloadByDownlink} from './serviceCommon.js';
 import {browserTabSendMessage} from './browserTab.js';
+import {browserNotificationCreate} from './browserNotification.js';
 
 /**
  * offer common act <=> function, eg: actRemoveTab, actLog
@@ -9,6 +10,7 @@ import {browserTabSendMessage} from './browserTab.js';
  *
  * @param act{
  *          'actLog'
+ *          |'actNotification'
  *          |'actRemoveTab'
  *          |'actDownloadFile'
  *          |'actSendMessageToTab'
@@ -20,6 +22,9 @@ export function browserRuntimeOnMessageCommon(act, message) {
     case 'actLog':
       console.log('act', act, 'message', message);
       break;
+    case 'actNotification':
+      browserNotificationCreate(message.content)
+      break
     case 'actRemoveTab':
       tabOpRemove(message.tabId);
       break;
