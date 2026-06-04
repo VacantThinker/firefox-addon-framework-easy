@@ -5,34 +5,30 @@ import {browserTabSendMessage} from './browserTab.js';
 /**
  * offer common act <=> function, eg: actRemoveTab, actLog
  */
-export function browserRuntimeOnMessageCommon() {
-  browser.runtime.onMessage.addListener(
-      (message, sender) => {
-        let keyAct = 'act';
-        /**
-         * @type{
-         *   |'actLog'
-         *   |'actRemoveTab'
-         *   |'actDownloadFile'
-         *   |'actSendMessageToTab'
-         * }
-         */
-        let act = message[keyAct];
-        delete message[keyAct];
-        message['tabId'] = sender.tab?.id;
-
-        if (act === 'actLog') {
-          console.log('act', act, 'message', message);
-        }
-        else if (act === 'actRemoveTab') {
-          tabOpRemove(message.tabId);
-        }
-        else if (act === 'actDownloadFile') {
-          serviceDownloadByDownlink(message);
-        }
-        else if (act === 'actSendMessageToTab') {
-          browserTabSendMessage(message.tabId, message);
-        }
-      });
+/**
+ *
+ * @param act{
+ *          'actLog'
+ *          |'actRemoveTab'
+ *          |'actDownloadFile'
+ *          |'actSendMessageToTab'
+ * }
+ * @param message
+ */
+export function browserRuntimeOnMessageCommon(act, message) {
+  switch (act) {
+    case 'actLog':
+      console.log('act', act, 'message', message);
+      break;
+    case 'actRemoveTab':
+      tabOpRemove(message.tabId);
+      break;
+    case 'actDownloadFile':
+      serviceDownloadByDownlink(message);
+      break;
+    case 'actSendMessageToTab':
+      browserTabSendMessage(message.tabId, message);
+      break;
+  }
 
 }

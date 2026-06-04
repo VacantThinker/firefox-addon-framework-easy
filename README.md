@@ -61,7 +61,7 @@ export function browserRuntimeManifestName() {  }
 
 ### 📄 File: `src/browserRuntimeOnMessageCommon.js`
 ```javascript
-export function browserRuntimeOnMessageCommon() {  }
+export function browserRuntimeOnMessageCommon(act, message) {  }
 
 ```
 
