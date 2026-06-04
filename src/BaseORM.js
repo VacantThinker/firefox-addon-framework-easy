@@ -1,7 +1,6 @@
 import {
   stoOpCheck,
   stoOpGet,
-  stoOpQueryStartWith,
   stoOpRem,
   stoOpSet,
 } from './opStorage.js';

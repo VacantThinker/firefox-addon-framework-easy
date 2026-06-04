@@ -146,6 +146,8 @@ export async function tabOpRemoveCssCode(tabId, code) {  }
 
 ### 📄 File: `src/serviceCommon.js`
 ```javascript
+export async function serviceDownloadByDownlink(message) {  }
+
 ```
 
 ### 📄 File: `src/serviceFetch.js`
