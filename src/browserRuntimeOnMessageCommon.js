@@ -5,8 +5,8 @@ import {browserNotificationCreate} from './browserNotification.js';
 
 /**
  * offer common act <=> function, eg: actRemoveTab, actLog
- */
-/**
+ *
+ * 
  *
  * @param act{
  *          'actLog'

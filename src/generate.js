@@ -161,6 +161,28 @@ export function generateHtmlByUserSettings(
       eleWrap.append(eleInput);
     }
 
+    // --- CONDITION 4: SPAN / READ-ONLY TEXT ---
+    else if (type === 'span' ) {
+      const eleSpan = document.createElement('span');
+      // Optional: Add a class for styling read-only text differently
+      // eleSpan.className = 'read-only-text';
+
+      stoOpGet(storageKey).then((v) => {
+        // Fallback to default schema configuration if no value is stored yet
+        const currentVal = (v !== undefined && v !== null) ?
+            v :
+            storageValue.selected;
+
+        // Render as plain text
+        eleSpan.textContent = String(currentVal);
+
+        // Initial visibility evaluation
+        triggerVisibility(storageKey, currentVal);
+      });
+
+      eleWrap.append(eleSpan);
+    }
+
     return eleWrap;
   });
 
