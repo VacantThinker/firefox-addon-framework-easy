@@ -6,9 +6,6 @@
 export function serviceGetDomainByUrl(url) {
   let urlWrap = new URL(url);
   let domain = urlWrap.hostname;
-  console.info('serviceGetDomainByUrl()', `domain=\n`,
-      domain);
-
   return domain;
 }
 

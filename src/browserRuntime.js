@@ -1,6 +1,3 @@
-import {tabOpCreateActiveFalse} from './opTab.js';
-import {browserNotificationCreate} from './browserNotification.js';
-
 export function browserRuntimeReload() {
   browser.runtime.reload();
 }
@@ -10,7 +7,7 @@ export function browserRuntimeReload() {
  * @param url{string}
  */
 export async function browserRuntimeSetUninstallURL(
-    url = 'https://addons.mozilla.org/en-US/firefox/user/17783213/',
+    url = '',
 ) {
   await browser.runtime.setUninstallURL(url);
 }
@@ -23,21 +20,6 @@ export function browserRuntimeOnUpdateAvailable(doWhat = null) {
   browser.runtime.onUpdateAvailable.addListener(async (details) => {
     if (doWhat) {
       await doWhat(details);
-    }
-    else {
-      try {
-        let id = await browserNotificationCreate(
-            'There is a new version!',
-        );
-        browser.notifications.onClicked.addListener(async (notificationId) => {
-          if (notificationId === id) {
-            let url = 'https://addons.mozilla.org/en-US/firefox/user/17783213/';
-            await tabOpCreateActiveFalse({url});
-          }
-        });
-      } catch (e) {
-        console.error(e);
-      }
     }
   });
 }

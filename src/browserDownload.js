@@ -8,7 +8,7 @@
 export async function browserDownloadByDownlink(
     {
       downlink,
-      filename= null,
+      filename = null,
     }) {
 
   let url = downlink;

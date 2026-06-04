@@ -15,7 +15,7 @@ export async function serviceDownloadByDownlink(message) {
     await browserDownloadByDownlink(message);
     await browserNotificationCreate(`downloading! ${filename}`);
   } catch (e) {
-    await browserNotificationCreate(`reason=${e}`)
+    await browserNotificationCreate(`reason=${e}`);
     await browserDownloadByDownlink({downlink});
   }
 

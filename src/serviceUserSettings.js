@@ -6,8 +6,8 @@ import {stoOpGet, stoOpSet} from './opStorage.js';
  * @returns {Promise<void>}
  */
 export async function serviceInitUserSettings(userSettings) {
-  const initPromises = Object.entries(userSettings).
-      map(async ([key, setting]) => {
+  const initPromises = Object.entries(userSettings)
+      .map(async ([key, setting]) => {
         const oldValue = await stoOpGet(key);
 
         // FIX: Check strictly for null or undefined.

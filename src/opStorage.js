@@ -4,16 +4,11 @@
  * @returns {Promise<boolean>}
  */
 export async function stoOpCheck(k) {
-  try {
-    let key = k.toString();
+  let key = k.toString();
 
-    let objGet = await browser.storage.local.get(key);
-    let b = objGet.hasOwnProperty(key);
-    console.info(`key=${key} exists ${b}`);
-    return b;
-  } catch (e) {
-    return false;
-  }
+  let objGet = await browser.storage.local.get(key);
+  let b = objGet.hasOwnProperty(key);
+  return b;
 }
 
 /**
@@ -22,15 +17,10 @@ export async function stoOpCheck(k) {
  * @returns {Promise<any|null>}
  */
 export async function stoOpGet(k) {
-  try {
-    let key = k.toString();
-    let objGet = await browser.storage.local.get(key);
-    let v = objGet[key];
-    console.info(`key=${k} value=\n`, v);
-    return v;
-  } catch (e) {
-    return null;
-  }
+  let key = k.toString();
+  let objGet = await browser.storage.local.get(key);
+  let v = objGet[key];
+  return v;
 }
 
 /**
@@ -38,12 +28,7 @@ export async function stoOpGet(k) {
  * @returns {Promise<{[p: string]: any}|null>}
  */
 export async function stoOpGetAll() {
-  try {
-    return await browser.storage.local.get();
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
+  return await browser.storage.local.get();
 }
 
 /**
@@ -52,14 +37,9 @@ export async function stoOpGetAll() {
  * @returns {Promise<string[]|null>}
  */
 export async function stoOpQueryStartWith(k) {
-  try {
-    let objAll = await browser.storage.local.get();
-    let keys = Object.keys(objAll);
-    return keys.filter(value => value.startsWith(k.toString()));
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
+  let objAll = await browser.storage.local.get();
+  let keys = Object.keys(objAll);
+  return keys.filter(value => value.startsWith(k.toString()));
 }
 
 /**
@@ -82,11 +62,8 @@ export async function stoOpSet(k, v) {
  * @returns {Promise<void>}
  */
 export async function stoOpRem(k) {
-  try {
-    let key = k.toString();
-    await browser.storage.local.remove(key);
-  } catch (e) {
-  }
+  let key = k.toString();
+  await browser.storage.local.remove(key);
 }
 
 /**

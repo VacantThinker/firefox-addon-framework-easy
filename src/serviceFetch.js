@@ -1,35 +1,24 @@
-import {browserNotificationCreate} from './browserNotification.js';
-
 /**
  *
  * @param serverUrl{string}
  * @param message{{}}
- * @param handleError{function}
  * @returns {Promise<Response>}
  */
 export async function servicePostJson(
     serverUrl,
     message,
-    handleError,
 ) {
 
-  try {
-    let body = JSON.stringify(message);
-    const fetchResponse = await fetch(serverUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: body,
-    });
+  let body = JSON.stringify(message);
+  const fetchResponse = await fetch(serverUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: body,
+  });
 
-    console.info('fetchResponse');
-    console.info(fetchResponse);
-    return fetchResponse;
-  } catch (e) {
-    handleError(e);
-  }
-
+  return fetchResponse;
 }
 
 /**
@@ -63,22 +52,14 @@ export async function serviceSendDataToLocalAria2(message) {
     params,
   };
 
-  try {
-    const response = await fetch(`http://localhost:${port}/jsonrpc`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      body: JSON.stringify(data),
-    });
-    console.info(`response=\n`, response);
+  const response = await fetch(`http://localhost:${port}/jsonrpc`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json;charset=UTF-8',
+    },
+    body: JSON.stringify(data),
+  });
 
-    return response;
-  } catch (e) {
-    await browserNotificationCreate(e)
-    console.error(e);
-    return null;
-  }
-
+  return response;
 }

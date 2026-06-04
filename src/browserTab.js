@@ -7,6 +7,18 @@ export async function browserTabSendMessage(tabId, message) {
   await browser.tabs.sendMessage(tabId, message);
 }
 
+export function browserTabWaitReloadThenSendMessageToContentJs(message) {
+  let tabId = message.tabId;
+  browser.tabs.onUpdated.addListener(
+      async function lis(tabId, changeInfo) {
+        if (changeInfo.status === 'complete') {
+          browser.tabs.onUpdated.removeListener(lis);
+          await browserTabSendMessage(tabId, message);
+        }
+      }
+      , {tabId, properties: ['status']});
+}
+
 /**
  * must has,  url
  * @param message{{
@@ -33,12 +45,11 @@ export async function browserTabCreateToDownload(message) {
         if (changeInfo.status === 'complete') {
           browser.tabs.onUpdated.removeListener(lis);
           // todo code here
-          await tabOpRemove(tabId)
+          await tabOpRemove(tabId);
         }
       }
       , {tabId, properties: ['status']});
 }
-
 
 /**
  * must has, tabId, url

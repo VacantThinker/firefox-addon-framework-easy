@@ -1,9 +1,4 @@
-import {
-  stoOpCheck,
-  stoOpGet,
-  stoOpRem,
-  stoOpSet,
-} from './opStorage.js';
+import {stoOpCheck, stoOpGet, stoOpRem, stoOpSet} from './opStorage.js';
 
 /**
  * Abstract base class BaseORM (similar to Java's Abstract Class).
@@ -23,10 +18,11 @@ export class BaseORM {
    */
   constructor(prefix, id, defaultValue = {}) {
     if (new.target === BaseORM) {
-      throw new TypeError("Cannot construct BaseORM instances directly (Abstract Class).");
+      throw new TypeError(
+          'Cannot construct BaseORM instances directly (Abstract Class).');
     }
     if (!prefix || !id) {
-      throw new Error("Both prefix and id must be specified.");
+      throw new Error('Both prefix and id must be specified.');
     }
 
     // Save the raw id to the private field

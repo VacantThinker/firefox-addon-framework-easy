@@ -27,7 +27,6 @@ export async function serviceTakeScreenshot(
     }) {
 
   const tag = 'actTakeScreenshot()';
-  console.info(tag, `rect=\n`, rect);
   let dataURI = await browser.tabs.captureTab(tabId, {
     rect: rect,
   });
@@ -320,11 +319,9 @@ export async function serviceDealWithMagnetLink(message) {
 
   let {title, data, handleOption} = message;
   let titleCleaned = serviceRemoveIllegalWord(title);
-  console.info(`data.length=\n`, data.length);
 
   if (Array.isArray(data) && data.length >= 1) {
     let content = `${data.join('\n')}\n`;
-    console.info(`content=\n`, content);
 
     let filename = [
       'magnet-link',

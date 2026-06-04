@@ -34,7 +34,7 @@ export async function browserDownloadByDownlink(
 ```javascript
 export async function browserNotificationCreate(
     content,
-    title = browserRuntimeManifestName()
+    title = browserRuntimeManifestName(),
 ) {  }
 
 ```
@@ -44,7 +44,7 @@ export async function browserNotificationCreate(
 export function browserRuntimeReload() {  }
 
 export async function browserRuntimeSetUninstallURL(
-    url = 'https://addons.mozilla.org/en-US/firefox/user/17783213/',
+    url = '',
 ) {  }
 
 export function browserRuntimeOnUpdateAvailable(doWhat = null) {  }
@@ -68,6 +68,8 @@ export function browserRuntimeOnMessageCommon() {  }
 ### 📄 File: `src/browserTab.js`
 ```javascript
 export async function browserTabSendMessage(tabId, message) {  }
+
+export function browserTabWaitReloadThenSendMessageToContentJs(message) {  }
 
 export async function browserTabCreateToDownload(message) {  }
 
@@ -163,7 +165,6 @@ export async function serviceDownloadByDownlink(message) {  }
 export async function servicePostJson(
     serverUrl,
     message,
-    handleError,
 ) {  }
 
 export async function serviceSendDataToLocalAria2(message) {  }

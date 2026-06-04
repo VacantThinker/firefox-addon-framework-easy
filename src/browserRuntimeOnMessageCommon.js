@@ -25,7 +25,7 @@ export function browserRuntimeOnMessageCommon() {
           console.log('act', act, 'message', message);
         }
         else if (act === 'actRemoveTab') {
-          tabOpRemove(message.tabId)
+          tabOpRemove(message.tabId);
         }
         else if (act === 'actDownloadFile') {
           serviceDownloadByDownlink(message);

@@ -21,7 +21,6 @@ export async function serviceUpdataALLTextNodeColor(message) {
      * @returns {Promise<void>}
      */
     func: async (message) => {
-      // console.log('serviceShowPanelChangeTextStyle func(message)');
       let {color} = message;
       updateStyleColor(color);
 
@@ -51,11 +50,10 @@ export async function serviceUpdataALLTextNodeColor(message) {
         }
 
         const arr = nativeTreeWalkerFindALLElementHasNodeText();
-        // console.info(arr);
 
         if (arr.length) {
           arr.forEach(value => {
-            value.style.color = color;
+            value['style'].color = color;
           });
         }
       }
@@ -88,7 +86,6 @@ export async function serviceUpdataALLNodeBackgroundColor(message) {
      * @returns {Promise<void>}
      */
     func: async (message) => {
-      // console.log('serviceShowPanelChangeTextStyle func(message)');
       let {backgroundColor} = message;
       updateStyleBackgroundColor(backgroundColor);
 
@@ -119,11 +116,10 @@ export async function serviceUpdataALLNodeBackgroundColor(message) {
          * @type {Node[]}
          */
         const arr = nativeTreeWalker();
-        // console.info(arr);
 
         if (arr.length) {
           arr.forEach(value => {
-            value.style.backgroundColor = backgroundColor;
+            value['style'].backgroundColor = backgroundColor;
           });
         }
       }

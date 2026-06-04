@@ -30,12 +30,11 @@ export async function tabOpCreateNear(properties) {
   delete properties.tabId;
   Object.assign(properties, {
     index: tabPrev.index + 1, openerTabId: tabPrev.id,
-  })
+  });
 
   let tab = await tabOpCreate(properties);
   return tabOpEnhance(tab);
 }
-
 
 /**
  * {active: false, muted: true}
@@ -121,11 +120,7 @@ export async function tabOpReload(tabId) {
  * @returns {Promise<void>}
  */
 export async function tabOpRemove(tabId) {
-  try {
     await browser.tabs.remove(tabId);
-  } catch (e) {
-    console.error(e);
-  }
 }
 
 /**
@@ -134,11 +129,7 @@ export async function tabOpRemove(tabId) {
  * @returns {Promise<void>}
  */
 export async function tabOpHide(tabId) {
-  try {
-    await browser.tabs.hide(tabId);
-  } catch (e) {
-    console.error(e);
-  }
+  await browser.tabs.hide(tabId);
 }
 
 /**

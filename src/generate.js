@@ -29,6 +29,10 @@ export function generateHtmlByUserSettings(
 
     // --- CONDITION 1: CHECKBOX & RADIO ---
     if (type === 'checkbox' || type === 'radio') {
+      /**
+       *
+       * @type {string[]}
+       */
       const options = storageValue.options || [];
 
       options.map((option) => {
@@ -63,8 +67,6 @@ export function generateHtmlByUserSettings(
             }
 
             const valueNew = Array.from(set);
-            console.info(
-                `k=${storageKey} option=${option} eleInput.checked=${eleInput.checked} valueNew=${valueNew}`);
             await stoOpSet(storageKey, valueNew);
 
             // Dynamic visibility update
@@ -86,7 +88,6 @@ export function generateHtmlByUserSettings(
 
           eleLabel.onclick = function() {
             stoOpSet(storageKey, option).then(() => {
-              console.info(`k=${storageKey} option=${option}`);
               if (typeof radioItemClickCallback === 'function') {
                 radioItemClickCallback(storageKey, option);
               }
@@ -120,7 +121,6 @@ export function generateHtmlByUserSettings(
         eleButton.addEventListener('click', async () => {
           currentStatus = !currentStatus; // Toggle state
           eleButton.textContent = String(currentStatus);
-          console.info(`k=${storageKey} toggled to=${currentStatus}`);
           await stoOpSet(storageKey, currentStatus);
 
           // Dynamic visibility update
@@ -152,7 +152,6 @@ export function generateHtmlByUserSettings(
         const rawValue = eleInput.value;
         const finalizedValue = type === 'number' ? Number(rawValue) : rawValue;
 
-        console.info(`k=${storageKey} value changed to=${finalizedValue}`);
         await stoOpSet(storageKey, finalizedValue);
 
         // Dynamic visibility update
