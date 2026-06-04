@@ -8,7 +8,6 @@ import {browserTabSendMessage} from './browserTab.js';
 export function browserRuntimeOnMessageCommon() {
   browser.runtime.onMessage.addListener(
       (message, sender) => {
-        message['tab'] = sender.tab;
         message['tabId'] = sender.tab?.id;
 
         let keyAct = 'act';
