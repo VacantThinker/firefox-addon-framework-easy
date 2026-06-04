@@ -3,7 +3,7 @@
 import {browserNotificationCreate} from './browserNotification.js';
 import {tabOpCreateNear, tabOpRemove} from './opTab.js';
 
-async function browserTabSendMessage(tabId, message) {
+export async function browserTabSendMessage(tabId, message) {
   await browser.tabs.sendMessage(tabId, message);
 }
 

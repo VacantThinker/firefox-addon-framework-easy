@@ -11,11 +11,12 @@ import {browserNotificationCreate} from './browserNotification.js';
 export async function serviceDownloadByDownlink(message) {
   let {filename, downlink} = message;
 
-  browserDownloadByDownlink(message).then(async () => {
+  try {
+    await browserDownloadByDownlink(message);
     await browserNotificationCreate(`downloading! ${filename}`);
-  }, async (reason) => {
-    await browserNotificationCreate(`reason=${reason}`)
+  } catch (e) {
+    await browserNotificationCreate(`reason=${e}`)
     await browserDownloadByDownlink({downlink});
-  });
+  }
 
 }

@@ -59,8 +59,16 @@ export function browserRuntimeManifestName() {  }
 
 ```
 
+### 📄 File: `src/browserRuntimeOnMessageCommon.js`
+```javascript
+export function browserRuntimeOnMessageCommon() {  }
+
+```
+
 ### 📄 File: `src/browserTab.js`
 ```javascript
+export async function browserTabSendMessage(tabId, message) {  }
+
 export async function browserTabCreateToDownload(message) {  }
 
 export async function browserTabCreateNearSendMessageToContentJs(message) {  }
