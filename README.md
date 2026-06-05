@@ -67,10 +67,6 @@ export function browserRuntimeOnMessageCommon(
   sendResponse
 ) {  }
 
-export function browserRuntimeOnMessageMerge(
-  message, sender
-) {  }
-
 ```
 
 ### 📄 File: `src/browserTab.js`

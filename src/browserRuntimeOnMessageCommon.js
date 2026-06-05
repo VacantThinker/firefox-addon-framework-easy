@@ -44,28 +44,3 @@ export function browserRuntimeOnMessageCommon(
   }
 
 }
-
-/**
- *
- * @param message
- * @param sender
- * @returns {
- *          |'actLog'
- *          |'actRequestTabIdTabUrl'
- *          |'actNotification'
- *          |'actRemoveTab'
- *          |'actDownloadFile'
- *          |'actSendMessageToTab'
- * }
- */
-export function browserRuntimeOnMessageMerge(
-  message, sender
-) {
-  let keyAct = 'act';
-  let act = message[keyAct];
-  delete message[keyAct];
-  message['tabId'] = sender.tab?.id;
-  message['tabUrl'] = sender.tab?.url;
-
-  return act;
-}
