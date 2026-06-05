@@ -7,7 +7,7 @@ import {browserNotificationCreate} from './browserNotification.js';
  * offer common act <=> function, eg: actRemoveTab, actLog
  *
  * @param act{
- *          'actLog'
+ *          |'actLog'
  *          |'actRequestTabIdTabUrl'
  *          |'actNotification'
  *          |'actRemoveTab'
@@ -18,9 +18,9 @@ import {browserNotificationCreate} from './browserNotification.js';
  * @param sendResponse
  */
 export function browserRuntimeOnMessageCommon(
-    act,
-    message,
-    sendResponse
+  act,
+  message,
+  sendResponse
 ) {
   switch (act) {
     case 'actLog':
@@ -50,7 +50,7 @@ export function browserRuntimeOnMessageCommon(
  * @param message
  * @param sender
  * @returns {
- *          'actLog'
+ *          |'actLog'
  *          |'actRequestTabIdTabUrl'
  *          |'actNotification'
  *          |'actRemoveTab'
@@ -59,7 +59,7 @@ export function browserRuntimeOnMessageCommon(
  * }
  */
 export function browserRuntimeOnMessageMerge(
-    message, sender
+  message, sender
 ) {
   let keyAct = 'act';
   let act = message[keyAct];

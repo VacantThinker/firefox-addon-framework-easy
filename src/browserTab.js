@@ -10,13 +10,13 @@ export async function browserTabSendMessage(tabId, message) {
 export function browserTabWaitReloadThenSendMessageToContentJs(message) {
   let tabId = message.tabId;
   browser.tabs.onUpdated.addListener(
-      async function lis(tabId, changeInfo) {
-        if (changeInfo.status === 'complete') {
-          browser.tabs.onUpdated.removeListener(lis);
-          await browserTabSendMessage(tabId, message);
-        }
+    async function lis(tabId, changeInfo) {
+      if (changeInfo.status === 'complete') {
+        browser.tabs.onUpdated.removeListener(lis);
+        await browserTabSendMessage(tabId, message);
       }
-      , {tabId, properties: ['status']});
+    }
+    , {tabId, properties: ['status']});
 }
 
 /**
@@ -41,14 +41,14 @@ export async function browserTabCreateToDownload(message) {
 
   let {tabId} = await tabOpCreateNear(properties);
   browser.tabs.onUpdated.addListener(
-      async function lis(tabId, changeInfo) {
-        if (changeInfo.status === 'complete') {
-          browser.tabs.onUpdated.removeListener(lis);
-          // todo code here
-          await tabOpRemove(tabId);
-        }
+    async function lis(tabId, changeInfo) {
+      if (changeInfo.status === 'complete') {
+        browser.tabs.onUpdated.removeListener(lis);
+        // todo code here
+        await tabOpRemove(tabId);
       }
-      , {tabId, properties: ['status']});
+    }
+    , {tabId, properties: ['status']});
 }
 
 /**
@@ -73,15 +73,15 @@ export async function browserTabCreateNearSendMessageToContentJs(message) {
 
   let {tabId} = await tabOpCreateNear(properties);
   browser.tabs.onUpdated.addListener(
-      async function lis(tabId, changeInfo) {
-        if (changeInfo.status === 'complete') {
-          browser.tabs.onUpdated.removeListener(lis);
-          // todo code here
-          await browserTabSendMessage(
-              tabId, Object.assign({}, message, {tabId}));
-        }
+    async function lis(tabId, changeInfo) {
+      if (changeInfo.status === 'complete') {
+        browser.tabs.onUpdated.removeListener(lis);
+        // todo code here
+        await browserTabSendMessage(
+          tabId, Object.assign({}, message, {tabId}));
       }
-      , {tabId, properties: ['status']});
+    }
+    , {tabId, properties: ['status']});
 }
 
 /**
@@ -91,13 +91,13 @@ export async function browserTabCreateNearSendMessageToContentJs(message) {
  */
 export function browserTabWaitReloadThenRemoveIt({tabId}) {
   browser.tabs.onUpdated.addListener(
-      async function lis(tabId, changeInfo) {
-        if (changeInfo.status === 'complete') {
-          browser.tabs.onUpdated.removeListener(lis);
-          // todo code here
-          await tabOpRemove(tabId);
-        }
+    async function lis(tabId, changeInfo) {
+      if (changeInfo.status === 'complete') {
+        browser.tabs.onUpdated.removeListener(lis);
+        // todo code here
+        await tabOpRemove(tabId);
       }
-      , {tabId, properties: ['status']});
+    }
+    , {tabId, properties: ['status']});
 
 }

@@ -6,10 +6,10 @@
  * @returns {Promise<void>}
  */
 export async function browserDownloadByDownlink(
-    {
-      downlink,
-      filename = null,
-    }) {
+  {
+    downlink,
+    filename = null,
+  }) {
 
   let url = downlink;
   let options = {url};

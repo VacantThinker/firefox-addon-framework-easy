@@ -1,13 +1,15 @@
 {
   "name": "@vacantthinker/firefox-addon-framework-easy",
-  "version": "2026.0605.0843",
+  "version": "2026.0605.0958",
   "description": "",
   "main": "index.js",
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
-  "scripts": {},
+  "scripts": {
+    "install_package": "npm install"
+  },
   "author": "VacantThinker",
   "license": "AGPL-3.0-only",
   "repository": {
@@ -20,5 +22,23 @@
   },
   "dependencies": {
     "@types/firefox-webext-browser": "^143.0.0"
+  },
+  "devDependencies": {
+    "prettier": "3.8.3",
+    "prettier-plugin-jsdoc": "1.8.1"
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "useTabs": false,
+    "printWidth": 80,
+    "plugins": [
+      "prettier-plugin-jsdoc"
+    ],
+    "jsdocVerticalizeParams": true,
+    "jsdocLineWrappingStyle": "balance",
+    "jsdocPreferToKeepShortOnOneLine": false,
+    "jsdocKeepUnpublished": false
   }
 }

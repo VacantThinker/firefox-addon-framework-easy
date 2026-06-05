@@ -26,15 +26,15 @@ export class BaseORM {  }
 ### 📄 File: `src/browserDownload.js`
 ```javascript
 export async function browserDownloadByDownlink(
-    {  }
+  {  }
 
 ```
 
 ### 📄 File: `src/browserNotification.js`
 ```javascript
 export async function browserNotificationCreate(
-    content,
-    title = browserRuntimeManifestName(),
+  content,
+  title = browserRuntimeManifestName(),
 ) {  }
 
 ```
@@ -44,7 +44,7 @@ export async function browserNotificationCreate(
 export function browserRuntimeReload() {  }
 
 export async function browserRuntimeSetUninstallURL(
-    url = '',
+  url = '',
 ) {  }
 
 export function browserRuntimeOnUpdateAvailable(doWhat = null) {  }
@@ -62,13 +62,13 @@ export function browserRuntimeManifestName() {  }
 ### 📄 File: `src/browserRuntimeOnMessageCommon.js`
 ```javascript
 export function browserRuntimeOnMessageCommon(
-    act,
-    message,
-    sendResponse
+  act,
+  message,
+  sendResponse
 ) {  }
 
 export function browserRuntimeOnMessageMerge(
-    message, sender
+  message, sender
 ) {  }
 
 ```
@@ -96,8 +96,8 @@ export class DomainORM extends BaseORM {  }
 ### 📄 File: `src/generate.js`
 ```javascript
 export function generateHtmlByUserSettings(
-    userSettings,
-    radioItemClickCallback,
+  userSettings,
+  radioItemClickCallback,
 ) {  }
 
 export function generateMkvScriptForSystemWindows({  }
@@ -171,8 +171,8 @@ export async function serviceDownloadByDownlink(message) {  }
 ### 📄 File: `src/serviceFetch.js`
 ```javascript
 export async function servicePostJson(
-    serverUrl,
-    message,
+  serverUrl,
+  message,
 ) {  }
 
 export async function serviceSendDataToLocalAria2(message) {  }
@@ -202,7 +202,7 @@ export function serviceRemoveIllegalWord(value) {  }
 ### 📄 File: `src/serviceOpJavascript.js`
 ```javascript
 export async function serviceTakeScreenshot(
-    {  }
+  {  }
 
 export async function serviceElementPicker(message) {  }
 

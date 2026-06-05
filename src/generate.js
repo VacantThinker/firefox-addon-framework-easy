@@ -8,8 +8,8 @@ import {stoOpGet, stoOpSet} from './opStorage.js';
  * @returns {HTMLFieldSetElement[]}
  */
 export function generateHtmlByUserSettings(
-    userSettings,
-    radioItemClickCallback,
+  userSettings,
+  radioItemClickCallback,
 ) {
   // Keeps track of all generated fieldsets by their storageKey
   const elementsMap = {};
@@ -56,7 +56,7 @@ export function generateHtmlByUserSettings(
 
           eleInput.addEventListener('change', async () => {
             const optionsCurrent = await stoOpGet(storageKey) ||
-                storageValue.selected || [];
+              storageValue.selected || [];
             const set = new Set(Array.from(optionsCurrent));
 
             if (eleInput.checked) {
@@ -76,8 +76,8 @@ export function generateHtmlByUserSettings(
         else if (type === 'radio') {
           stoOpGet(storageKey).then((v) => {
             const currentSelected = (v !== undefined && v !== null) ?
-                v :
-                storageValue.selected;
+              v :
+              storageValue.selected;
             if (option === currentSelected) {
               eleInput.checked = true;
             }
@@ -86,7 +86,7 @@ export function generateHtmlByUserSettings(
             triggerVisibility(storageKey, currentSelected);
           });
 
-          eleLabel.onclick = function() {
+          eleLabel.onclick = function () {
             stoOpSet(storageKey, option).then(() => {
               if (typeof radioItemClickCallback === 'function') {
                 radioItemClickCallback(storageKey, option);
@@ -111,8 +111,8 @@ export function generateHtmlByUserSettings(
       stoOpGet(storageKey).then((v) => {
         // Fallback to default schema configuration if no value is stored yet
         let currentStatus = (v !== undefined && v !== null) ?
-            (v === true || v === 'true') :
-            storageValue.selected;
+          (v === true || v === 'true') :
+          storageValue.selected;
         eleButton.textContent = String(currentStatus);
 
         // Initial visibility evaluation
@@ -139,8 +139,8 @@ export function generateHtmlByUserSettings(
 
       stoOpGet(storageKey).then((v) => {
         const currentVal = (v !== undefined && v !== null) ?
-            v :
-            storageValue.selected;
+          v :
+          storageValue.selected;
         eleInput.value = currentVal;
 
         // Initial visibility evaluation
@@ -162,7 +162,7 @@ export function generateHtmlByUserSettings(
     }
 
     // --- CONDITION 4: SPAN / READ-ONLY TEXT ---
-    else if (type === 'span' ) {
+    else if (type === 'span') {
       const eleSpan = document.createElement('span');
       // Optional: Add a class for styling read-only text differently
       // eleSpan.className = 'read-only-text';
@@ -170,8 +170,8 @@ export function generateHtmlByUserSettings(
       stoOpGet(storageKey).then((v) => {
         // Fallback to default schema configuration if no value is stored yet
         const currentVal = (v !== undefined && v !== null) ?
-            v :
-            storageValue.selected;
+          v :
+          storageValue.selected;
 
         // Render as plain text
         eleSpan.textContent = String(currentVal);

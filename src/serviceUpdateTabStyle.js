@@ -31,9 +31,9 @@ export async function serviceUpdataALLTextNodeColor(message) {
          */
         function nativeTreeWalkerFindALLElementHasNodeText() {
           const walker = document.createTreeWalker(
-              document.body,
-              NodeFilter.SHOW_TEXT,
-              null,
+            document.body,
+            NodeFilter.SHOW_TEXT,
+            null,
           );
 
           let node;
@@ -96,9 +96,9 @@ export async function serviceUpdataALLNodeBackgroundColor(message) {
          */
         function nativeTreeWalker() {
           const walker = document.createTreeWalker(
-              document.body,
-              NodeFilter.SHOW_ELEMENT,
-              null,
+            document.body,
+            NodeFilter.SHOW_ELEMENT,
+            null,
           );
 
           let node;

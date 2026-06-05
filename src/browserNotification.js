@@ -7,8 +7,8 @@ import {browserRuntimeManifestName} from './browserRuntime.js';
  * @returns {Promise<string>}
  */
 export async function browserNotificationCreate(
-    content,
-    title = browserRuntimeManifestName(),
+  content,
+  title = browserRuntimeManifestName(),
 ) {
 
   const tag = 'browserNotificationCreate';

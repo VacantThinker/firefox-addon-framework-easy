@@ -120,7 +120,7 @@ export async function tabOpReload(tabId) {
  * @returns {Promise<void>}
  */
 export async function tabOpRemove(tabId) {
-    await browser.tabs.remove(tabId);
+  await browser.tabs.remove(tabId);
 }
 
 /**
