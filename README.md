@@ -91,7 +91,7 @@ export class DomainORM extends BaseORM {  }
 
 ### 📄 File: `src/generate.js`
 ```javascript
-export function generateHtmlByUserSettings(
+export async function generateHtmlByUserSettings(
 	userSettings,
 	radioItemClickCallback
 ) {  }

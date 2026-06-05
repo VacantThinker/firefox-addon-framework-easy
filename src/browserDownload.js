@@ -10,11 +10,14 @@ export async function browserDownloadByDownlink(
     downlink,
     filename = null,
   }) {
-
-  let url = downlink;
-  let options = {url};
-  if (filename) {
-    Object.assign(options, {filename});
-  }
-  await browser.downloads.download(options);
-}
+		let url = downlink;
+		/** @type {browser.downloads._DownloadOptions} */
+		let options = {
+			url,
+			saveAs: false
+		};
+		if (filename) {
+			Object.assign(options, { filename });
+		}
+		await browser.downloads.download(options);
+	}
