@@ -1,215 +1,211 @@
-import {stoOpGet, stoOpSet} from './opStorage.js';
+import { stoOpGet, stoOpSet } from "./opStorage.js";
 
 /**
  * Generates HTML elements based on a user settings schema object.
  *
- * @param {Object} userSettings
- * @param {Function} radioItemClickCallback
+ * @param   {Object}                userSettings
+ * @param   {Function}              radioItemClickCallback
  * @returns {HTMLFieldSetElement[]}
  */
 export function generateHtmlByUserSettings(
-  userSettings,
-  radioItemClickCallback,
+	userSettings,
+	radioItemClickCallback
 ) {
-  // Keeps track of all generated fieldsets by their storageKey
-  const elementsMap = {};
+	// Keeps track of all generated fieldsets by their storageKey
+	const elementsMap = {};
 
-  const fieldsets = Object.keys(userSettings).map((storageKey) => {
-    const storageValue = userSettings[storageKey];
-    const type = storageValue.type || 'text'; // Default to text if type is not specified
+	const fieldsets = Object.keys(userSettings).map((storageKey) => {
+		const storageValue = userSettings[storageKey];
+		const type = storageValue.type || "text"; // Default to text if type is not specified
 
-    // Common container wrapper for every configuration item
-    const eleWrap = document.createElement('fieldset');
-    const eleTitle = document.createElement('legend');
-    eleTitle.textContent = storageKey;
-    eleWrap.append(eleTitle);
+		// Common container wrapper for every configuration item
+		const eleWrap = document.createElement("fieldset");
+		const eleTitle = document.createElement("legend");
+		eleTitle.textContent = storageKey;
+		eleWrap.append(eleTitle);
 
-    // Save a reference to the wrapper element for visibility switching
-    elementsMap[storageKey] = eleWrap;
+		// Save a reference to the wrapper element for visibility switching
+		elementsMap[storageKey] = eleWrap;
 
-    // --- CONDITION 1: CHECKBOX & RADIO ---
-    if (type === 'checkbox' || type === 'radio') {
-      /**
-       *
-       * @type {string[]}
-       */
-      const options = storageValue.options || [];
+		// --- CONDITION 1: CHECKBOX & RADIO ---
+		if (type === "checkbox" || type === "radio") {
+			/** @type {string[]} */
+			const options = storageValue.options || [];
 
-      options.map((option) => {
-        const eleLabel = document.createElement('label');
-        eleLabel.textContent = option;
+			options
+				.map((option) => {
+					const eleLabel = document.createElement("label");
+					eleLabel.textContent = option;
 
-        const eleInput = document.createElement('input');
-        eleInput.name = storageKey;
-        eleInput.type = type;
-        eleInput.value = option;
+					const eleInput = document.createElement("input");
+					eleInput.name = storageKey;
+					eleInput.type = type;
+					eleInput.value = option;
 
-        if (type === 'checkbox') {
-          stoOpGet(storageKey).then((v) => {
-            const initialArray = Array.from(v || storageValue.selected || []);
-            const set = new Set(initialArray);
-            eleInput.checked = set.has(option);
+					if (type === "checkbox") {
+						stoOpGet(storageKey).then((v) => {
+							const initialArray = Array.from(v || storageValue.selected || []);
+							const set = new Set(initialArray);
+							eleInput.checked = set.has(option);
 
-            // Initial visibility evaluation
-            triggerVisibility(storageKey, initialArray);
-          });
+							// Initial visibility evaluation
+							triggerVisibility(storageKey, initialArray);
+						});
 
-          eleInput.addEventListener('change', async () => {
-            const optionsCurrent = await stoOpGet(storageKey) ||
-              storageValue.selected || [];
-            const set = new Set(Array.from(optionsCurrent));
+						eleInput.addEventListener("change", async () => {
+							const optionsCurrent =
+								(await stoOpGet(storageKey)) || storageValue.selected || [];
+							const set = new Set(Array.from(optionsCurrent));
 
-            if (eleInput.checked) {
-              set.add(option);
-            }
-            else {
-              set.delete(option);
-            }
+							if (eleInput.checked) {
+								set.add(option);
+							} else {
+								set.delete(option);
+							}
 
-            const valueNew = Array.from(set);
-            await stoOpSet(storageKey, valueNew);
+							const valueNew = Array.from(set);
+							await stoOpSet(storageKey, valueNew);
 
-            // Dynamic visibility update
-            triggerVisibility(storageKey, valueNew);
-          });
-        }
-        else if (type === 'radio') {
-          stoOpGet(storageKey).then((v) => {
-            const currentSelected = (v !== undefined && v !== null) ?
-              v :
-              storageValue.selected;
-            if (option === currentSelected) {
-              eleInput.checked = true;
-            }
+							// Dynamic visibility update
+							triggerVisibility(storageKey, valueNew);
+						});
+					} else if (type === "radio") {
+						stoOpGet(storageKey).then((v) => {
+							const currentSelected =
+								v !== undefined && v !== null ? v : storageValue.selected;
+							if (option === currentSelected) {
+								eleInput.checked = true;
+							}
 
-            // Initial visibility evaluation
-            triggerVisibility(storageKey, currentSelected);
-          });
+							// Initial visibility evaluation
+							triggerVisibility(storageKey, currentSelected);
+						});
 
-          eleLabel.onclick = function () {
-            stoOpSet(storageKey, option).then(() => {
-              if (typeof radioItemClickCallback === 'function') {
-                radioItemClickCallback(storageKey, option);
-              }
+						eleLabel.onclick = function () {
+							stoOpSet(storageKey, option).then(() => {
+								if (typeof radioItemClickCallback === "function") {
+									radioItemClickCallback(storageKey, option);
+								}
 
-              // Dynamic visibility update
-              triggerVisibility(storageKey, option);
-            });
-          };
-        }
+								// Dynamic visibility update
+								triggerVisibility(storageKey, option);
+							});
+						};
+					}
 
-        eleLabel.append(eleInput);
-        return eleLabel;
-      }).forEach((ele) => eleWrap.append(ele));
-    }
+					eleLabel.append(eleInput);
+					return eleLabel;
+				})
+				.forEach((ele) => eleWrap.append(ele));
+		}
 
-    // --- CONDITION 2: TOGGLE BUTTON ---
-    else if (type === 'button') {
-      const eleButton = document.createElement('button');
-      eleButton.type = 'button'; // Prevent accidental form submissions
+		// --- CONDITION 2: TOGGLE BUTTON ---
+		else if (type === "button") {
+			const eleButton = document.createElement("button");
+			eleButton.type = "button"; // Prevent accidental form submissions
 
-      stoOpGet(storageKey).then((v) => {
-        // Fallback to default schema configuration if no value is stored yet
-        let currentStatus = (v !== undefined && v !== null) ?
-          (v === true || v === 'true') :
-          storageValue.selected;
-        eleButton.textContent = String(currentStatus);
+			stoOpGet(storageKey).then((v) => {
+				// Fallback to default schema configuration if no value is stored yet
+				let currentStatus =
+					v !== undefined && v !== null
+						? v === true || v === "true"
+						: storageValue.selected;
+				eleButton.textContent = String(currentStatus);
 
-        // Initial visibility evaluation
-        triggerVisibility(storageKey, currentStatus);
+				// Initial visibility evaluation
+				triggerVisibility(storageKey, currentStatus);
 
-        eleButton.addEventListener('click', async () => {
-          currentStatus = !currentStatus; // Toggle state
-          eleButton.textContent = String(currentStatus);
-          await stoOpSet(storageKey, currentStatus);
+				eleButton.addEventListener("click", async () => {
+					currentStatus = !currentStatus; // Toggle state
+					eleButton.textContent = String(currentStatus);
+					await stoOpSet(storageKey, currentStatus);
 
-          // Dynamic visibility update
-          triggerVisibility(storageKey, currentStatus);
-        });
-      });
+					// Dynamic visibility update
+					triggerVisibility(storageKey, currentStatus);
+				});
+			});
 
-      eleWrap.append(eleButton);
-    }
+			eleWrap.append(eleButton);
+		}
 
-    // --- CONDITION 3: NUMBER & TEXT INPUTS ---
-    else if (type === 'number' || type === 'text') {
-      const eleInput = document.createElement('input');
-      eleInput.type = type;
-      eleInput.name = storageKey;
+		// --- CONDITION 3: NUMBER & TEXT INPUTS ---
+		else if (type === "number" || type === "text") {
+			const eleInput = document.createElement("input");
+			eleInput.type = type;
+			eleInput.name = storageKey;
 
-      stoOpGet(storageKey).then((v) => {
-        const currentVal = (v !== undefined && v !== null) ?
-          v :
-          storageValue.selected;
-        eleInput.value = currentVal;
+			stoOpGet(storageKey).then((v) => {
+				const currentVal =
+					v !== undefined && v !== null ? v : storageValue.selected;
+				eleInput.value = currentVal;
 
-        // Initial visibility evaluation
-        triggerVisibility(storageKey, currentVal);
-      });
+				// Initial visibility evaluation
+				triggerVisibility(storageKey, currentVal);
+			});
 
-      // Updates storage on every keystroke/change execution
-      eleInput.addEventListener('input', async () => {
-        const rawValue = eleInput.value;
-        const finalizedValue = type === 'number' ? Number(rawValue) : rawValue;
+			// Updates storage on every keystroke/change execution
+			eleInput.addEventListener("input", async () => {
+				const rawValue = eleInput.value;
+				const finalizedValue = type === "number" ? Number(rawValue) : rawValue;
 
-        await stoOpSet(storageKey, finalizedValue);
+				await stoOpSet(storageKey, finalizedValue);
 
-        // Dynamic visibility update
-        triggerVisibility(storageKey, finalizedValue);
-      });
+				// Dynamic visibility update
+				triggerVisibility(storageKey, finalizedValue);
+			});
 
-      eleWrap.append(eleInput);
-    }
+			eleWrap.append(eleInput);
+		}
 
-    // --- CONDITION 4: SPAN / READ-ONLY TEXT ---
-    else if (type === 'span') {
-      const eleSpan = document.createElement('span');
-      // Optional: Add a class for styling read-only text differently
-      // eleSpan.className = 'read-only-text';
+		// --- CONDITION 4: SPAN / READ-ONLY TEXT ---
+		else if (type === "span") {
+			const eleSpan = document.createElement("span");
+			// Optional: Add a class for styling read-only text differently
+			// eleSpan.className = 'read-only-text';
 
-      stoOpGet(storageKey).then((v) => {
-        // Fallback to default schema configuration if no value is stored yet
-        const currentVal = (v !== undefined && v !== null) ?
-          v :
-          storageValue.selected;
+			stoOpGet(storageKey).then((v) => {
+				// Fallback to default schema configuration if no value is stored yet
+				const currentVal =
+					v !== undefined && v !== null ? v : storageValue.selected;
 
-        // Render as plain text
-        eleSpan.textContent = String(currentVal);
+				// Render as plain text
+				eleSpan.textContent = String(currentVal);
 
-        // Initial visibility evaluation
-        triggerVisibility(storageKey, currentVal);
-      });
+				// Initial visibility evaluation
+				triggerVisibility(storageKey, currentVal);
+			});
 
-      eleWrap.append(eleSpan);
-    }
+			eleWrap.append(eleSpan);
+		}
 
-    return eleWrap;
-  });
+		return eleWrap;
+	});
 
-  /**
-   * Evaluates the visibility rules for a given source key based on its current value.
-   */
-  function triggerVisibility(sourceKey, currentValue) {
-    const config = userSettings[sourceKey];
-    if (config && config.visibilityControl) {
-      const {targetField, expectedValue} = config.visibilityControl;
-      const targetElement = elementsMap[targetField];
+	/**
+	 * Evaluates the visibility rules for a given source key based on its current
+	 * value.
+	 */
+	function triggerVisibility(sourceKey, currentValue) {
+		const config = userSettings[sourceKey];
+		if (config && config.visibilityControl) {
+			const { targetField, expectedValue } = config.visibilityControl;
+			const targetElement = elementsMap[targetField];
 
-      if (targetElement) {
-        // String conversion guarantees type safety (e.g., matching boolean true against string "true")
-        const shouldBeVisible = String(currentValue) === String(expectedValue);
-        targetElement.style.display = shouldBeVisible ? '' : 'none';
-      }
-    }
-  }
+			if (targetElement) {
+				// String conversion guarantees type safety (e.g., matching boolean true against string "true")
+				const shouldBeVisible = String(currentValue) === String(expectedValue);
+				targetElement.style.display = shouldBeVisible ? "" : "none";
+			}
+		}
+	}
 
-  return fieldsets;
+	return fieldsets;
 }
 
-export function generateMkvScriptForSystemWindows({vid, title}) {
-  let args = {vid, title};
+export function generateMkvScriptForSystemWindows({ vid, title }) {
+	let args = { vid, title };
 
-  return `if (true) {
+	return `if (true) {
   const path = require('path');
   const fs = require('fs');
   const {execSync, exec} = require('node:child_process');
@@ -294,11 +290,11 @@ export function generateMkvScriptForSystemWindows({vid, title}) {
   `;
 }
 
-export function generateMkvScriptForSystemFedora({vid, title}) {
-  let args = {vid, title};
+export function generateMkvScriptForSystemFedora({ vid, title }) {
+	let args = { vid, title };
 
-  // We wrap the Node.js script inside a Linux Shell script block
-  return `#!/usr/bin/env bash
+	// We wrap the Node.js script inside a Linux Shell script block
+	return `#!/usr/bin/env bash
 # This header tells Fedora to treat this file as a runnable bash script
 
 # Open a terminal window if not already running inside one
@@ -373,4 +369,3 @@ read unused_input
 rm -- "$0"
 `;
 }
-

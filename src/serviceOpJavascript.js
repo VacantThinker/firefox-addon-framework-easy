@@ -109,8 +109,7 @@ export async function serviceElementPicker(message) {
             selector += '#' + el.id;
             path.unshift(selector);
             break;
-          }
-          else {
+          } else {
             let sib = el, nth = 1;
             while (sib = sib.previousElementSibling) {
               if (sib.nodeName.toLowerCase() === selector) nth++;
@@ -330,16 +329,13 @@ export async function serviceDealWithMagnetLink(message) {
 
     if (handleOption === 'clipboard') {
       await serviceCopyContentToClipboard(content);
-    }
-    else if (handleOption === 'txt') {
+    } else if (handleOption === 'txt') {
       serviceSaveContentToLocal(content, filename);
-    }
-    else if (handleOption === 'clipboardAndTxt') {
+    } else if (handleOption === 'clipboardAndTxt') {
       await serviceCopyContentToClipboard(content);
       serviceSaveContentToLocal(content, filename);
     }
-  }
-  else {
+  } else {
     // todo notification => magnet link not found!
     await browserNotificationCreate('magnet link not found!');
   }

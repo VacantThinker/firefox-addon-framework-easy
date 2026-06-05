@@ -92,8 +92,8 @@ export class DomainORM extends BaseORM {  }
 ### 📄 File: `src/generate.js`
 ```javascript
 export function generateHtmlByUserSettings(
-  userSettings,
-  radioItemClickCallback,
+	userSettings,
+	radioItemClickCallback
 ) {  }
 
 export function generateMkvScriptForSystemWindows({  }
@@ -187,7 +187,7 @@ export function serviceGetCurrentDateYYYYMMDDHHMMSS() {  }
 ```javascript
 export async function serviceCopyContentToClipboard(data) {  }
 
-export function serviceSaveContentToLocal(content, filename, ext = 'txt') {  }
+export function serviceSaveContentToLocal(content, filename, ext = "txt") {  }
 
 export async function serviceGenerateMkvToolNixScript({  }
 
