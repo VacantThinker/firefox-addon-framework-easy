@@ -20,24 +20,24 @@ import {browserNotificationCreate} from './browserNotification.js';
  * @returns {Promise<void>}
  */
 export async function serviceTakeScreenshot(
-  {
-    tabId,
-    filename,
-    rect,
-  }) {
+    {
+      tabId,
+      filename,
+      rect,
+    }) {
 
   const tag = 'actTakeScreenshot()';
   let dataURI = await browser.tabs.captureTab(tabId, {
     rect: rect,
   });
   let assign = Object.assign(
-    {},
-    {dataURI, filename},
+      {},
+      {dataURI, filename},
   );
   await browser.scripting.executeScript({
     target: {tabId},
     args: [assign],
-    func: function (message) {
+    func: function(message) {
       if (message) {
         let {dataURI, filename} = message;
 
@@ -70,9 +70,25 @@ export async function serviceElementPicker(message) {
   await browser.scripting.executeScript({
     target: {tabId},
     args: [message],
-    func: async function (message) {
+    func: async function(message) {
       if (!message) return;
       console.log('picker.js initialized', message);
+
+      setInterval(() => {
+        browser.runtime.sendMessage({
+          act: 'actMarco',
+        }).then(async (response) => {
+          console.info(tag, `response=\n`, response);
+          let info = response.status;
+          await browser.runtime.sendMessage({
+            act: 'actLog',
+            info,
+            date: serviceGetCurrentDateYYYYMMDDHHMMSS(),
+          });
+        }, (reason) => {
+          console.info(tag, `reason=\n`, reason);
+        });
+      }, 1000);
 
       // 1. Create a dedicated "Always On Top" highlighter overlay
       const overlayId = 'extension-element-highlighter-overlay';
@@ -109,7 +125,8 @@ export async function serviceElementPicker(message) {
             selector += '#' + el.id;
             path.unshift(selector);
             break;
-          } else {
+          }
+          else {
             let sib = el, nth = 1;
             while (sib = sib.previousElementSibling) {
               if (sib.nodeName.toLowerCase() === selector) nth++;
@@ -136,9 +153,9 @@ export async function serviceElementPicker(message) {
         overlay.style.setProperty('top', `${clientRect.top}px`, 'important');
         overlay.style.setProperty('left', `${clientRect.left}px`, 'important');
         overlay.style.setProperty('width', `${clientRect.width}px`,
-          'important');
+            'important');
         overlay.style.setProperty('height', `${clientRect.height}px`,
-          'important');
+            'important');
 
         // Change mouse cursor to indicate picking mode
         document.body.style.setProperty('cursor', 'crosshair', 'important');
@@ -164,13 +181,13 @@ export async function serviceElementPicker(message) {
 
         // Assuming 'target' is your clicked element (e.g., from e.target)
         let messageTakeScreenshot = Object.assign(
-          {}, // Start with a fresh, empty object
-          message, // Put the original message first so it doesn't overwrite your new data
-          {rect},
-          {
-            // The guaranteed unique CSS path (e.g., "div#wrap > ul > li:nth-of-type(2)")
-            uniqueSelector: getUniqueSelector(target),
-          },
+            {}, // Start with a fresh, empty object
+            message, // Put the original message first so it doesn't overwrite your new data
+            {rect},
+            {
+              // The guaranteed unique CSS path (e.g., "div#wrap > ul > li:nth-of-type(2)")
+              uniqueSelector: getUniqueSelector(target),
+            },
         );
 
         await browser.runtime.sendMessage(messageTakeScreenshot);
@@ -224,9 +241,9 @@ export async function serviceGetFullPageRectData(message) {
         x, y, width, height,
       };
       browser.runtime.sendMessage(Object.assign(
-        {},
-        message,
-        {rect},
+          {},
+          message,
+          {rect},
       ));
       // todo end if (message)
     },
@@ -274,7 +291,7 @@ export async function serviceFindAllMagnetLink(message) {
           // --- Type 2: Find inside raw text (for <div>, <span>, <td>, etc.) ---
           // We target elements that don't have children to avoid grabbing huge parent container blocks
           const allElements = document.querySelectorAll(
-            'div, span, td, p, a, button');
+              'div, span, td, p, a, button');
           allElements.forEach(el => {
             if (el.children.length === 0) { // Deepest element
               const text = el.textContent.trim();
@@ -292,11 +309,11 @@ export async function serviceFindAllMagnetLink(message) {
         }
 
         await browser.runtime.sendMessage(Object.assign(
-          {},
-          message,
-          {
-            data: findAllMagnetLinks(),
-          },
+            {},
+            message,
+            {
+              data: findAllMagnetLinks(),
+            },
         ));
 
         // todo end if(message)
@@ -329,13 +346,16 @@ export async function serviceDealWithMagnetLink(message) {
 
     if (handleOption === 'clipboard') {
       await serviceCopyContentToClipboard(content);
-    } else if (handleOption === 'txt') {
+    }
+    else if (handleOption === 'txt') {
       serviceSaveContentToLocal(content, filename);
-    } else if (handleOption === 'clipboardAndTxt') {
+    }
+    else if (handleOption === 'clipboardAndTxt') {
       await serviceCopyContentToClipboard(content);
       serviceSaveContentToLocal(content, filename);
     }
-  } else {
+  }
+  else {
     // todo notification => magnet link not found!
     await browserNotificationCreate('magnet link not found!');
   }

@@ -194,7 +194,7 @@ export function serviceRemoveIllegalWord(value) {  }
 ### 📄 File: `src/serviceOpJavascript.js`
 ```javascript
 export async function serviceTakeScreenshot(
-  {  }
+    {  }
 
 export async function serviceElementPicker(message) {  }
 
