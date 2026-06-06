@@ -1,6 +1,6 @@
 {
   "name": "@vacantthinker/firefox-addon-framework-easy",
-  "version": "2026.0606.1234",
+  "version": "2026.0606.1235",
   "description": "",
   "main": "index.js",
   "publishConfig": {
@@ -22,9 +22,5 @@
   },
   "dependencies": {
     "@types/firefox-webext-browser": "^143.0.0"
-  },
-  "devDependencies": {
-    "prettier": "^3.8.3",
-    "prettier-plugin-jsdoc": "^1.8.1"
   }
 }
