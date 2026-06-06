@@ -19,7 +19,7 @@ export class BaseORM {
   constructor(prefix, id, defaultValue = {}) {
     if (new.target === BaseORM) {
       throw new TypeError(
-        'Cannot construct BaseORM instances directly (Abstract Class).');
+          'Cannot construct BaseORM instances directly (Abstract Class).');
     }
     if (!prefix || !id) {
       throw new Error('Both prefix and id must be specified.');

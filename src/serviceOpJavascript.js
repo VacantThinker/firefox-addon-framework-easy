@@ -73,23 +73,7 @@ export async function serviceElementPicker(message) {
     func: async function(message) {
       if (!message) return;
       console.log('picker.js initialized', message);
-
-      setInterval(() => {
-        browser.runtime.sendMessage({
-          act: 'actMarco',
-        }).then(async (response) => {
-          console.info(tag, `response=\n`, response);
-          let info = response.status;
-          await browser.runtime.sendMessage({
-            act: 'actLog',
-            info,
-            date: serviceGetCurrentDateYYYYMMDDHHMMSS(),
-          });
-        }, (reason) => {
-          console.info(tag, `reason=\n`, reason);
-        });
-      }, 1000);
-
+      
       // 1. Create a dedicated "Always On Top" highlighter overlay
       const overlayId = 'extension-element-highlighter-overlay';
       let overlay = document.getElementById(overlayId);

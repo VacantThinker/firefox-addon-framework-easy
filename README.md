@@ -26,15 +26,15 @@ export class BaseORM {  }
 ### 📄 File: `src/browserDownload.js`
 ```javascript
 export async function browserDownloadByDownlink(
-  {  }
+    {  }
 
 ```
 
 ### 📄 File: `src/browserNotification.js`
 ```javascript
 export async function browserNotificationCreate(
-  content,
-  title = browserRuntimeManifestName(),
+    content,
+    title = browserRuntimeManifestName(),
 ) {  }
 
 ```
@@ -44,7 +44,7 @@ export async function browserNotificationCreate(
 export function browserRuntimeReload() {  }
 
 export async function browserRuntimeSetUninstallURL(
-  url = '',
+    url = '',
 ) {  }
 
 export function browserRuntimeOnUpdateAvailable(doWhat = null) {  }
@@ -88,8 +88,8 @@ export class DomainORM extends BaseORM {  }
 ### 📄 File: `src/generate.js`
 ```javascript
 export async function generateHtmlByUserSettings(
-	userSettings,
-	radioItemClickCallback
+    userSettings,
+    radioItemClickCallback,
 ) {  }
 
 export function generateMkvScriptForSystemWindows({  }
@@ -163,8 +163,8 @@ export async function serviceDownloadByDownlink(message) {  }
 ### 📄 File: `src/serviceFetch.js`
 ```javascript
 export async function servicePostJson(
-  serverUrl,
-  message,
+    serverUrl,
+    message,
 ) {  }
 
 export async function serviceSendDataToLocalAria2(message) {  }
@@ -183,7 +183,7 @@ export function serviceGetCurrentDateYYYYMMDDHHMMSS() {  }
 ```javascript
 export async function serviceCopyContentToClipboard(data) {  }
 
-export function serviceSaveContentToLocal(content, filename, ext = "txt") {  }
+export function serviceSaveContentToLocal(content, filename, ext = 'txt') {  }
 
 export async function serviceGenerateMkvToolNixScript({  }
 

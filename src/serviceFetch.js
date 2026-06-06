@@ -5,8 +5,8 @@
  * @returns {Promise<Response>}
  */
 export async function servicePostJson(
-  serverUrl,
-  message,
+    serverUrl,
+    message,
 ) {
 
   let body = JSON.stringify(message);

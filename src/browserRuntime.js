@@ -7,7 +7,7 @@ export function browserRuntimeReload() {
  * @param url{string}
  */
 export async function browserRuntimeSetUninstallURL(
-  url = '',
+    url = '',
 ) {
   await browser.runtime.setUninstallURL(url);
 }
