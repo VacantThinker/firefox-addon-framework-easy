@@ -90,6 +90,7 @@ export class DomainORM extends BaseORM {  }
 export async function generateHtmlByUserSettings(
     userSettings,
     radioItemClickCallback,
+    checkboxItemClickCallback,
 ) {  }
 
 export function generateMkvScriptForSystemWindows({  }

@@ -19,6 +19,7 @@ function debounce(func, wait) {
 export async function generateHtmlByUserSettings(
     userSettings,
     radioItemClickCallback,
+    checkboxItemClickCallback,
 ) {
   const elementsMap = {};
 
@@ -83,11 +84,14 @@ export async function generateHtmlByUserSettings(
             const allCheckboxes = eleWrap.querySelectorAll(
                 'input[type="checkbox"]',
             );
-            const valueNew = Array.from(allCheckboxes).
-                filter((cb) => cb.checked).
-                map((cb) => cb.value);
+            const valueNew = Array.from(allCheckboxes)
+                .filter((cb) => cb.checked)
+                .map((cb) => cb.value);
 
             await stoOpSet(storageKey, valueNew);
+            if (typeof checkboxItemClickCallback === 'function') {
+              checkboxItemClickCallback(storageKey, option);
+            }
             triggerVisibility(storageKey, valueNew);
           });
         }
