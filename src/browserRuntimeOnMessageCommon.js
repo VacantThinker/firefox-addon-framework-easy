@@ -25,7 +25,6 @@ export function browserRuntimeOnMessageCommon(act, message, sendResponse) {
       break;
     case 'actMarco': //Marco Polo pool game
       sendResponse({status: 'Polo'});
-      return true;
       break;
     case 'actRequestTabIdTabUrl':
       sendResponse(message);

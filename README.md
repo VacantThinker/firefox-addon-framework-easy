@@ -138,6 +138,8 @@ export async function tabOpQueryUrlThenRemove(urlQuery) {  }
 
 export async function tabOpReload(tabId) {  }
 
+export async function tabOpReloadByPassCacheTrue(tabId) {  }
+
 export async function tabOpRemove(tabId) {  }
 
 export async function tabOpHide(tabId) {  }
