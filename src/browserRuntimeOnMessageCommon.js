@@ -1,4 +1,4 @@
-import {tabOpRemove} from './opTab.js';
+import {tabOpFocus, tabOpRemove} from './opTab.js';
 import {serviceDownloadByDownlink} from './serviceCommon.js';
 import {browserTabSendMessage} from './browserTab.js';
 import {browserNotificationCreate} from './browserNotification.js';
@@ -12,10 +12,12 @@ import {browserNotificationCreate} from './browserNotification.js';
  *   |'actRequestTabIdTabUrl'
  *   |'actNotification'
  *   |'actRemoveTab'
+ *   |'actFocusTab'
  *   |'actDownloadFile'
  *   |'actSendMessageToTab'
  *   }
  * @param message
+ * @param message.tabId{number}
  * @param sendResponse
  */
 export function browserRuntimeOnMessageCommon(act, message, sendResponse) {
@@ -34,6 +36,9 @@ export function browserRuntimeOnMessageCommon(act, message, sendResponse) {
       break;
     case 'actRemoveTab':
       tabOpRemove(message.tabId);
+      break;
+    case 'actFocusTab':
+      tabOpFocus(message.tabId);
       break;
     case 'actDownloadFile':
       serviceDownloadByDownlink(message);
