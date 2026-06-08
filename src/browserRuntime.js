@@ -25,6 +25,15 @@ export function browserRuntimeOnUpdateAvailable(doWhat = null) {
 }
 
 /**
+ *
+ * @param path{string}
+ * @returns {string}
+ */
+export function browserRuntimeGetURL(path) {
+  return browser.runtime.getURL(path)
+}
+
+/**
  * @returns {browser._manifest.ExtensionID}
  */
 export function browserRuntimeGeckoId() {

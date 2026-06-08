@@ -49,6 +49,8 @@ export async function browserRuntimeSetUninstallURL(
 
 export function browserRuntimeOnUpdateAvailable(doWhat = null) {  }
 
+export function browserRuntimeGetURL(path) {  }
+
 export function browserRuntimeGeckoId() {  }
 
 export async function browserRuntimePlatformInfo() {  }
