@@ -209,9 +209,11 @@ export async function serviceDealWithMagnetLink(message) {  }
 
 ```
 
-### 📄 File: `src/servicePureVideolink.js`
+### 📄 File: `src/servicePure.js`
 ```javascript
 export function servicePureVideolinkYTB(videolinkOrigin) {  }
+
+export function servicePurePlaylistVideolinkYTB(videolinkOrigin) {  }
 
 ```
 
