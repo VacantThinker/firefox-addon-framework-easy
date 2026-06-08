@@ -21,23 +21,29 @@ export function browserTabWaitReloadThenSendMessageToContentJs(message) {
 
 /**
  * must has,  url
- * @param message{{
- *      tabId:number,
- *      title:string,
- *      url:string,
- *      focusNewTab:boolean,
- * }}
+ * @param message
+ * @param message.tabId{number}
+ * @param message.url{string}
+ * @param message.options.focusNewTab{boolean}
  * @returns {Promise<void>}
  */
 export async function browserTabCreateToDownload(message) {
-  let {title, url} = message;
-  await browserNotificationCreate(`new tab! ${title || url}`);
-
-  let {focusNewTab} = message;
   let properties = {
-    url, tabId: message.tabId,
-    active: focusNewTab || false,
+    url: message.url,
   };
+  if (message.tabId) {
+    let tabId = message.tabId;
+    try {
+      await tabOpGet(tabId);
+      Object.assign(properties, {tabId});
+    } catch (e) {
+      delete message.tabId;
+    }
+  }
+  if (message.options) {
+    let focusNewTab = message.options.focusNewTab;
+    Object.assign(properties, {active: focusNewTab});
+  }
 
   let {tabId} = await tabOpCreateNear(properties);
   browser.tabs.onUpdated.addListener(
@@ -53,12 +59,10 @@ export async function browserTabCreateToDownload(message) {
 
 /**
  * must has, tabId, url
- * @param message{{
- *      tabId:number,
- *      title:string,
- *      url:string,
- *      focusNewTab:boolean,
- * }}
+ * @param message
+ * @param message.tabId{number}
+ * @param message.url{string}
+ * @param message.options.focusNewTab{boolean}
  * @returns {Promise<void>}
  */
 export async function browserTabCreateNearSendMessageToContentJs(message) {
@@ -74,8 +78,9 @@ export async function browserTabCreateNearSendMessageToContentJs(message) {
       delete message.tabId;
     }
   }
-  if (message.focusNewTab) {
-    Object.assign(properties, {active: message.focusNewTab});
+  if (message.options) {
+    let focusNewTab = message.options.focusNewTab;
+    Object.assign(properties, {active: focusNewTab});
   }
 
   let {tabId} = await tabOpCreateNear(properties);

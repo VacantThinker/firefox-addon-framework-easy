@@ -1,10 +1,5 @@
 import {stoOpGet, stoOpSet} from './opStorage.js';
 
-/**
- *
- * @param userSettings{Object}
- * @returns {Promise<void>}
- */
 export async function serviceInitUserSettings(userSettings) {
   const initPromises = Object.entries(userSettings).
       map(async ([key, setting]) => {
