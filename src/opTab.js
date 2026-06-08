@@ -26,11 +26,14 @@ export async function tabOpCreate(properties) {
  * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
  */
 export async function tabOpCreateNear(properties) {
-  let tabPrev = await tabOpGet(properties.tabId);
-  delete properties.tabId;
-  Object.assign(properties, {
-    index: tabPrev.index + 1, openerTabId: tabPrev.id,
-  });
+  if (properties.tabId) {
+    let tabPrev = await tabOpGet(properties.tabId);
+    delete properties.tabId;
+    Object.assign(properties, {
+      index: tabPrev.index + 1,
+      openerTabId: tabPrev.id,
+    });
+  }
 
   let tab = await tabOpCreate(properties);
   return tabOpEnhance(tab);

@@ -35,7 +35,7 @@ export function servicePurePlaylistVideolinkYTB(videolinkOrigin) {
   const u = new URL(videolinkOrigin);
   let playlistId = u.searchParams.get('list');
 
-  let prefix = "https://www.youtube.com/playlist?list=";
+  let prefix = 'https://www.youtube.com/playlist?list=';
   let playlistVideolink = `${prefix}${playlistId}`;
   const ret = {playlistVideolink, playlistId};
   return ret;

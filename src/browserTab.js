@@ -62,14 +62,15 @@ export async function browserTabCreateToDownload(message) {
  * @returns {Promise<void>}
  */
 export async function browserTabCreateNearSendMessageToContentJs(message) {
-  let {title, url} = message;
-  await browserNotificationCreate(`new tab! ${title || url}`);
-
-  let {focusNewTab} = message;
   let properties = {
-    url, tabId: message.tabId,
-    active: focusNewTab || false,
+    url: message.url,
   };
+  if (message.tabId) {
+    Object.assign(properties,{tabId:message.tabId})
+  }
+  if (message.focusNewTab) {
+    Object.assign(properties, {active:message.focusNewTab})
+  }
 
   let {tabId} = await tabOpCreateNear(properties);
   browser.tabs.onUpdated.addListener(
