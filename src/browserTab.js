@@ -1,7 +1,7 @@
 // @ts-check
 
 import {browserNotificationCreate} from './browserNotification.js';
-import {tabOpCreateNear, tabOpRemove} from './opTab.js';
+import {tabOpCreateNear, tabOpGet, tabOpRemove} from './opTab.js';
 
 export async function browserTabSendMessage(tabId, message) {
   await browser.tabs.sendMessage(tabId, message);
@@ -66,10 +66,16 @@ export async function browserTabCreateNearSendMessageToContentJs(message) {
     url: message.url,
   };
   if (message.tabId) {
-    Object.assign(properties,{tabId:message.tabId})
+    let tabId = message.tabId;
+    try {
+      await tabOpGet(tabId);
+      Object.assign(properties, {tabId});
+    } catch (e) {
+      delete message.tabId;
+    }
   }
   if (message.focusNewTab) {
-    Object.assign(properties, {active:message.focusNewTab})
+    Object.assign(properties, {active: message.focusNewTab});
   }
 
   let {tabId} = await tabOpCreateNear(properties);
