@@ -114,7 +114,7 @@ export async function tabOpQueryUrlThenRemove(urlQuery) {
  * @returns {Promise<void>}
  */
 export async function tabOpReload(tabId) {
-  await browser.tabs.reload(tabId, {bypassCache: true});
+  await browser.tabs.reload(tabId);
 }
 
 /**

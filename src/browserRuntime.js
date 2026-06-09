@@ -30,7 +30,7 @@ export function browserRuntimeOnUpdateAvailable(doWhat = null) {
  * @returns {string}
  */
 export function browserRuntimeGetURL(path) {
-  return browser.runtime.getURL(path)
+  return browser.runtime.getURL(path);
 }
 
 /**
