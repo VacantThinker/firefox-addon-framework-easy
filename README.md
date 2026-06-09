@@ -69,13 +69,16 @@ export function browserRuntimeOnMessageCommon(act, message, sendResponse) {  }
 
 ### 📄 File: `src/browserTab.js`
 ```javascript
-export async function browserTabSendMessage(tabId, message) {  }
+export async function browserTabSendMessage(
+    tabId,
+    message,
+) {  }
 
 export function browserTabWaitReloadThenSendMessageToContentJs(message) {  }
 
 export async function browserTabCreateToDownload(message) {  }
 
-export async function browserTabCreateNearSendMessageToContentJs(message) {  }
+export async function browserTabCreateNearSendMessageToContentJs(message = {  }
 
 export function browserTabWaitReloadThenRemoveIt({  }
 
@@ -89,12 +92,6 @@ export class DomainORM extends BaseORM {  }
 
 ### 📄 File: `src/generate.js`
 ```javascript
-export async function generateHtmlByUserSettings(
-    userSettings,
-    radioItemClickCallback,
-    checkboxItemClickCallback,
-) {  }
-
 export function generateMkvScriptForSystemWindows({  }
 
 export function generateMkvScriptForSystemFedora({  }
@@ -121,7 +118,7 @@ export async function stoOpSetNull(k) {  }
 
 ### 📄 File: `src/opTab.js`
 ```javascript
-export async function tabOpEnhance(tab) {  }
+export function tabOpEnhance(tab) {  }
 
 export async function tabOpCreate(properties) {  }
 
@@ -131,31 +128,40 @@ export async function tabOpCreateActiveFalse(properties) {  }
 
 export async function tabOpCreateByWindow(url) {  }
 
-export async function tabOpGet(tabId) {  }
+export function tabOpGet(tabId) {  }
 
-export async function tabOpQueryAll() {  }
+export function tabOpQueryAll() {  }
 
 export async function tabOpQueryUrl(urlQuery) {  }
 
 export async function tabOpQueryUrlThenRemove(urlQuery) {  }
 
-export async function tabOpReload(tabId) {  }
+export function tabOpReload(tabId) {  }
 
-export async function tabOpReloadByPassCacheTrue(tabId) {  }
+export function tabOpReloadByPassCacheTrue(tabId) {  }
 
-export async function tabOpRemove(tabId) {  }
+export function tabOpRemove(tabId) {  }
 
-export async function tabOpHide(tabId) {  }
+export function tabOpHide(tabId) {  }
 
-export async function tabOpUpdate(tabId, updateProperties) {  }
+export async function tabOpUpdate(
+    tabId,
+    updateProperties,
+) {  }
 
-export async function tabOpUpdateActiveFalse(tabId) {  }
+export function tabOpUpdateActiveFalse(tabId) {  }
 
 export async function tabOpFocus(tabId) {  }
 
-export async function tabOpInsertCssCode(tabId, code) {  }
+export function tabOpInsertCssCode(
+    tabId,
+    code,
+) {  }
 
-export async function tabOpRemoveCssCode(tabId, code) {  }
+export function tabOpRemoveCssCode(
+    tabId,
+    code,
+) {  }
 
 ```
 
@@ -224,14 +230,6 @@ export function servicePurePlaylistVideolinkYTB(videolinkOrigin) {  }
 export async function serviceUpdataALLTextNodeColor(message) {  }
 
 export async function serviceUpdataALLNodeBackgroundColor(message) {  }
-
-```
-
-### 📄 File: `src/serviceUserSettings.js`
-```javascript
-export async function serviceInitUserSettings(userSettings) {  }
-
-export async function serviceGetUserSettings(userSettings) {  }
 
 ```
 

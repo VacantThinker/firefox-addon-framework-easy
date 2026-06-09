@@ -1,198 +1,237 @@
 /**
- * Creates a normal tab using either a URL string or a properties object.
+ * Enhances a tab object by explicitly attaching its ID to the 'tabId' property.
  *
- * @param tab{browser.tabs.Tab}
- * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ * @param {browser.tabs.Tab} tab
+ * @returns {browser.tabs.Tab & {tabId: number}|null}
  */
-export async function tabOpEnhance(tab) {
-  return Object.assign({}, tab, {tabId: tab.id});
+export function tabOpEnhance(tab) {
+  if (!tab || typeof tab.id !== 'number') return null;
+  return {...tab, tabId: tab.id};
 }
 
 /**
- * Creates a normal tab using either a URL string or a properties object.
+ * Creates a normal tab using a properties object.
  *
- * @param {browser.tabs._CreateCreateProperties} properties
- * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ * @param {Object} properties
+ * @returns {Promise<browser.tabs.Tab & {tabId: number}>}
  */
 export async function tabOpCreate(properties) {
-  // Otherwise, assume it is already a properties object
-  let tab = await browser.tabs.create(properties);
+  const tab = await browser.tabs.create(properties);
   return tabOpEnhance(tab);
 }
 
 /**
+ * Creates a new tab positioned immediately after a specified existing tab.
+ * Does not mutate the original properties object.
  *
- * @param {browser.tabs._CreateCreateProperties & {tabId: number} } properties
- * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ * @param {Object & {tabId?: number}} properties
+ * @returns {Promise<browser.tabs.Tab & {tabId: number}>}
  */
 export async function tabOpCreateNear(properties) {
-  if (properties.tabId) {
-    let tabPrev = await tabOpGet(properties.tabId);
-    delete properties.tabId;
-    Object.assign(properties, {
-      index: tabPrev.index + 1,
-      openerTabId: tabPrev.id,
-    });
+  // Destructure tabId out to avoid mutating the original properties object
+  const {tabId, ...restProperties} = properties;
+
+  if (tabId) {
+    const tabPrev = await tabOpGet(tabId);
+    if (tabPrev) {
+      Object.assign(restProperties, {
+        index: tabPrev.index + 1,
+        openerTabId: tabPrev.id,
+      });
+    }
   }
 
-  let tab = await tabOpCreate(properties);
+  const tab = await browser.tabs.create(restProperties);
   return tabOpEnhance(tab);
 }
 
 /**
- * {active: false, muted: true}
- * @param properties{browser.tabs._CreateCreateProperties}
- * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ * Creates a tab in the background (inactive and muted).
+ *
+ * @param {Object} properties
+ * @returns {Promise<browser.tabs.Tab & {tabId: number}>}
  */
 export async function tabOpCreateActiveFalse(properties) {
-  /**
-   * @type {browser.tabs._CreateCreateProperties}
-   */
-  let source = {active: false, muted: true};
-  Object.assign(properties, source);
-  let tab = await browser.tabs.create(properties);
+  const mergedProperties = {
+    ...properties,
+    active: false,
+    muted: true,
+  };
+  const tab = await browser.tabs.create(mergedProperties);
   return tabOpEnhance(tab);
 }
 
 /**
- * Creates a normal tab using either a URL string or a properties object.
+ * Creates a completely new window and returns its initial tab.
  *
  * @param {string} url
- * @returns {Promise<(browser.tabs.Tab & {tabId: number})>}
+ * @returns {Promise<(browser.tabs.Tab & {tabId: number})|undefined>}
  */
 export async function tabOpCreateByWindow(url) {
-  // If it's a string, wrap it in an object
-  if (typeof url === 'string') {
-    let window = await browser.windows.create({
-      url,
-    });
-    let tab = window.tabs.shift();
-    return tabOpEnhance(tab);
+  if (typeof url !== 'string') return undefined;
+
+  const window = await browser.windows.create({url});
+  if (window && window.tabs && window.tabs.length > 0) {
+    return tabOpEnhance(window.tabs[0]);
   }
+  return undefined;
 }
 
 /**
+ * Retrieves details about the specified tab.
  *
- * @param tabId{number}
- * @return {Promise<browser.tabs.Tab>}
+ * @param {number} tabId
+ * @returns {Promise<browser.tabs.Tab>}
  */
-export async function tabOpGet(tabId) {
-  return await browser.tabs.get(tabId);
+export function tabOpGet(tabId) {
+  return browser.tabs.get(tabId);
 }
 
 /**
+ * Retrieves all tabs across all windows.
  *
  * @returns {Promise<browser.tabs.Tab[]>}
  */
-export async function tabOpQueryAll() {
-  return await browser.tabs.query({});
+export function tabOpQueryAll() {
+  return browser.tabs.query({});
 }
 
 /**
+ * Retrieves an array of tab IDs that match the specified URL pattern.
  *
- * @param urlQuery{string}
+ * @param {string} urlQuery
  * @returns {Promise<number[]>}
  */
 export async function tabOpQueryUrl(urlQuery) {
-  let tabs = await browser.tabs.query({url: urlQuery});
-  return tabs.map(v => v.id);
+  const tabs = await browser.tabs.query({url: urlQuery});
+  return tabs.map(tab => tab.id);
 }
 
 /**
+ * Finds all tabs matching the URL pattern and removes them simultaneously.
+ * [Optimization]: browser.tabs.remove accepts an array of numbers, which is
+ * significantly faster than looping and awaiting individually.
  *
- * @param urlQuery{string}
+ * @param {string} urlQuery
  * @returns {Promise<void>}
  */
 export async function tabOpQueryUrlThenRemove(urlQuery) {
-  let ids = await tabOpQueryUrl(urlQuery);
-  ids.map(id => tabOpRemove(id));
+  const ids = await tabOpQueryUrl(urlQuery);
+  if (ids.length > 0) {
+    await browser.tabs.remove(ids);
+  }
 }
 
 /**
+ * Reloads the given tab.
  *
- * @param tabId{number}
+ * @param {number} tabId
  * @returns {Promise<void>}
  */
-export async function tabOpReload(tabId) {
-  await browser.tabs.reload(tabId);
+export function tabOpReload(tabId) {
+  return browser.tabs.reload(tabId);
 }
 
 /**
+ * Reloads the given tab, bypassing the local web cache.
  *
- * @param tabId{number}
+ * @param {number} tabId
  * @returns {Promise<void>}
  */
-export async function tabOpReloadByPassCacheTrue(tabId) {
-  await browser.tabs.reload(tabId, {bypassCache: true});
+export function tabOpReloadByPassCacheTrue(tabId) {
+  return browser.tabs.reload(tabId, {bypassCache: true});
 }
 
 /**
+ * Closes one or more tabs.
  *
- * @param tabId{number}
+ * @param {number|number[]} tabId
  * @returns {Promise<void>}
  */
-export async function tabOpRemove(tabId) {
-  await browser.tabs.remove(tabId);
+export function tabOpRemove(tabId) {
+  return browser.tabs.remove(tabId);
 }
 
 /**
+ * Hides one or more tabs (Firefox specific API).
  *
- * @param tabId{number}
- * @returns {Promise<void>}
+ * @param {number|number[]} tabId
+ * @returns {Promise<number[]>}
  */
-export async function tabOpHide(tabId) {
-  await browser.tabs.hide(tabId);
+export function tabOpHide(tabId) {
+  return browser.tabs.hide(tabId);
 }
 
 /**
+ * Modifies the properties of a tab.
  *
- * @param {number}tabId
- * @param {browser.tabs._UpdateUpdateProperties}updateProperties
- * @returns {Promise<browser.tabs.Tab&{tabId: number}>}
+ * @param {number} tabId
+ * @param {Object} updateProperties
+ * @returns {Promise<browser.tabs.Tab & {tabId: number}>}
  */
-export async function tabOpUpdate(tabId, updateProperties) {
-  let tab = await browser.tabs.update(tabId, updateProperties);
+export async function tabOpUpdate(
+    tabId,
+    updateProperties,
+) {
+  const tab = await browser.tabs.update(tabId, updateProperties);
   return tabOpEnhance(tab);
 }
 
 /**
- * active: false, muted: true
- * @param tabId{number}
- * @returns {Promise<browser.tabs.Tab&{tabId: number}>}
+ * Updates a tab to be inactive and muted.
+ *
+ * @param {number} tabId
+ * @returns {Promise<browser.tabs.Tab & {tabId: number}>}
  */
-export async function tabOpUpdateActiveFalse(tabId) {
-  return await tabOpUpdate(tabId, {active: false, muted: true});
+export function tabOpUpdateActiveFalse(tabId) {
+  return tabOpUpdate(tabId, {active: false, muted: true});
 }
 
 /**
- * @param tabId
+ * Focuses the window containing the tab, then highlights and activates the tab.
+ *
+ * @param {number} tabId
+ * @returns {Promise<browser.tabs.Tab & {tabId: number}>}
  */
 export async function tabOpFocus(tabId) {
-  let tab = await tabOpGet(tabId);
-  let windowId = tab.windowId;
-  await browser.windows.update(windowId, {focused: true});
+  const tab = await tabOpGet(tabId);
+  if (!tab || !tab.windowId) throw new Error(`Tab ${tabId} not found.`);
 
-  let updateProperties = {active: true, highlighted: true};
-  let tabUpdated = await tabOpUpdate(tabId, updateProperties);
+  await browser.windows.update(tab.windowId, {focused: true});
+
+  const tabUpdated = await browser.tabs.update(tabId, {
+    active: true,
+    highlighted: true,
+  });
+
   return tabOpEnhance(tabUpdated);
 }
 
 /**
+ * Injects CSS code into a page.
+ * Note: Check manifest version compatibility for 'insertCSS'.
  *
- * @param{number} tabId
- * @param {string}code
+ * @param {number} tabId
+ * @param {string} code
  * @returns {Promise<void>}
  */
-export async function tabOpInsertCssCode(tabId, code) {
-  await browser.tabs.insertCSS(tabId, {code});
+export function tabOpInsertCssCode(
+    tabId,
+    code,
+) {
+  return browser.tabs.insertCSS(tabId, {code});
 }
 
 /**
+ * Removes CSS code that was previously injected into a page.
  *
- * @param{number} tabId
- * @param {string}code
+ * @param {number} tabId
+ * @param {string} code
  * @returns {Promise<void>}
  */
-export async function tabOpRemoveCssCode(tabId, code) {
-  await browser.tabs.removeCSS(tabId, {code});
+export function tabOpRemoveCssCode(
+    tabId,
+    code,
+) {
+  return browser.tabs.removeCSS(tabId, {code});
 }
