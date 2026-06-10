@@ -1,5 +1,3 @@
-// 新主题。
-
 /**
  *
  * @param videoInfo
