@@ -1,6 +1,13 @@
-export function generateMkvScriptForSystemWindows({vid, title}) {
-  let args = {vid, title};
+// 新主题。
 
+/**
+ *
+ * @param videoInfo
+ * @param videoInfo.vid{string}
+ * @param videoInfo.videoTitle{string}
+ * @return {string}
+ */
+export function generateMkvScriptForSystemWindows(videoInfo) {
   return `if (true) {
   const path = require('path');
   const fs = require('fs');
@@ -9,11 +16,11 @@ export function generateMkvScriptForSystemWindows({vid, title}) {
   let dot = '.';
   let extMKV = 'mkv';
 
-  let {vid, title} = ${JSON.stringify(args)};
+  let {vid, videoTitle} = ${JSON.stringify(videoInfo)};
   let playVideoAfterMerged = true;
   let pathToMkvmerge = 'C:\\\\Program Files\\\\MKVToolNix\\\\mkvmerge.exe';
 
-  let pathMKVOutput = path.join(pathDownload, title.concat(dot, extMKV));
+  let pathMKVOutput = path.join(pathDownload, videoTitle.concat(dot, extMKV));
   let pathOutput = path.join(pathDownload, vid.concat(dot, extMKV));
   let pathInputAudio = path.join(pathDownload, vid.concat(dot, "mp3"));
   let pathInputVideo = path.join(pathDownload, vid.concat(dot, "mp4"));
@@ -24,7 +31,7 @@ export function generateMkvScriptForSystemWindows({vid, title}) {
   ) {
 
     console.log('');
-    console.log(['file check ok!', title].join(' '));
+    console.log(['file check ok!', videoTitle].join(' '));
 
     let cmd_merge = [
       [pathToMkvmerge].map(v => '"' + v + '"').join(''),
@@ -56,7 +63,7 @@ export function generateMkvScriptForSystemWindows({vid, title}) {
       console.log('error', data);
     });
     exec_merge.stdout.on('close', (data) => {
-      console.log(['merge finish!', title].join(' '));
+      console.log(['merge finish!', videoTitle].join(' '));
 
       if (true) {
         console.log('remove inputFile');
@@ -86,9 +93,14 @@ export function generateMkvScriptForSystemWindows({vid, title}) {
   `;
 }
 
-export function generateMkvScriptForSystemFedora({vid, title}) {
-  let args = {vid, title};
-
+/**
+ *
+ * @param videoInfo
+ * @param videoInfo.vid{string}
+ * @param videoInfo.videoTitle{string}
+ * @return {string}
+ */
+export function generateMkvScriptForSystemFedora(videoInfo) {
   // We wrap the Node.js script inside a Linux Shell script block
   return `#!/usr/bin/env bash
 # This header tells Fedora to treat this file as a runnable bash script
@@ -110,17 +122,17 @@ let pathDownload = path.join(__dirname);
 let dot = '.';
 let extMKV = 'mkv';
 
-let {vid, title} = ${JSON.stringify(args)};
+let {vid, videoTitle} = ${JSON.stringify(videoInfo)};
 let playVideoAfterMerged = true;
 let pathToMkvmerge = '/usr/bin/mkvmerge';
 
-let pathMKVOutput = path.join(pathDownload, title.concat(dot, extMKV));
+let pathMKVOutput = path.join(pathDownload, videoTitle.concat(dot, extMKV));
 let pathOutput = path.join(pathDownload, vid.concat(dot, extMKV));
 let pathInputAudio = path.join(pathDownload, vid.concat(dot, "mp3"));
 let pathInputVideo = path.join(pathDownload, vid.concat(dot, "mp4"));
 
 if (fs.existsSync(pathToMkvmerge)) {
-  console.log('\\nfile check ok! ' + title);
+  console.log('\\nfile check ok! ' + videoTitle);
 
   let cmd_merge = [
     '"' + pathToMkvmerge + '"',
@@ -134,7 +146,7 @@ if (fs.existsSync(pathToMkvmerge)) {
   try {
     // Run merge synchronously so stdout pipes directly to the terminal
     execSync(cmd_merge, { stdio: 'inherit' });
-    console.log('merge finish! ' + title);
+    console.log('merge finish! ' + videoTitle);
 
     console.log('remove inputFile');
     if (fs.existsSync(pathInputVideo)) fs.unlinkSync(pathInputVideo);

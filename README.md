@@ -92,9 +92,9 @@ export class DomainORM extends BaseORM {  }
 
 ### 📄 File: `src/generate.js`
 ```javascript
-export function generateMkvScriptForSystemWindows({  }
+export function generateMkvScriptForSystemWindows(videoInfo) {  }
 
-export function generateMkvScriptForSystemFedora({  }
+export function generateMkvScriptForSystemFedora(videoInfo) {  }
 
 ```
 
