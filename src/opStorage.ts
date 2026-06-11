@@ -34,7 +34,8 @@ export async function stoOpGetAll<T = Record<string, any>>(): Promise<T> {
  */
 export async function stoOpQueryStartWith(prefix: string): Promise<string[]> {
   const allItems = await browser.storage.local.get();
-  return Object.keys(allItems).filter((key) => key.startsWith(prefix));
+  return Object.keys(allItems)
+    .filter((key) => key.startsWith(prefix));
 }
 
 /**

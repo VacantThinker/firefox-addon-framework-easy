@@ -1,3 +1,5 @@
+import {serviceGetDomain} from "./serviceGet";
+
 /**
  * Interface representing a Tab with an explicitly defined tabId.
  */
@@ -96,6 +98,27 @@ export async function tabOpGet(tabId: number): Promise<browser.tabs.Tab> {
  */
 export async function tabOpQueryAll(): Promise<browser.tabs.Tab[]> {
   return await browser.tabs.query({});
+}
+
+/**
+ *
+ * @param {string} domain
+ */
+export async function tabOpQueryDomain(domain: string): Promise<{
+  id: number, url: string, title: string
+}[]> {
+  const tabs = await tabOpQueryAll();
+
+  if (tabs.length > 0) {
+    return tabs
+      .filter(t => t.url && t.id && serviceGetDomain(t.url) === domain)
+      .map(t => ({
+        id: t.id!,
+        url: t.url!,
+        title: t.title || ''
+      }));
+  }
+  return [];
 }
 
 /**
