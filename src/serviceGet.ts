@@ -3,7 +3,7 @@
  * @param url The full URL string.
  * @returns The domain/hostname.
  */
-export function serviceGetDomainByUrl(url: string): string {
+export function serviceGetDomain(url: string): string {
   return new URL(url).hostname;
 }
 
