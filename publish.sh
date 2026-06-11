@@ -33,14 +33,35 @@ Below is a list of all public functions found inside the `src` directory:
 
 EOF
 
-# 4. Stage source files and configuration changes only
-# Note: Ensure 'dist/' is added to your .gitignore so it isn't tracked.
-git add .
+# 4. Automatically generate src/index.ts
+echo "⚙️ Generating src/index.ts..."
+# Clear the file first if it exists, or create an empty one
+true > src/index.ts
 
-# 5. Automatically commit and log this release version
+# Loop through all .ts files in the src directory
+for file in src/*.ts; do
+  # Extract just the filename without the path
+  filename=$(basename -- "$file")
+
+  # Skip generating an export for index.ts itself to avoid circular dependency
+  if [ "$filename" != "index.ts" ]; then
+    # Remove the .ts extension
+    module_name="${filename%.ts}"
+    # Append the export statement to src/index.ts
+    echo "export * from './$module_name';" >> src/index.ts
+  fi
+done
+
+echo "✅ src/index.ts generated successfully."
+
+# 5. Stage source files and configuration changes only
+# Note: Ensure 'dist/' is added to your .gitignore so it isn't tracked.
+git add . # add all file
+
+# 6. Automatically commit and log this release version
 git commit -m "chore: bump version to $NEW_VERSION and push to CI"
 
-# 6. Push to GitHub to trigger the Actions workflow
+# 7. Push to GitHub to trigger the Actions workflow
 echo "☁️ Pushing to GitHub..."
 git push origin main
 
