@@ -29,7 +29,7 @@ export function browserTabWaitReloadThenSendMessageToContentJs(message) {
  * @param message
  * @param message.tabId{number}
  * @param message.url{string}
- * @param message.options.focusNewTab{boolean}
+ * @param message.focusNewTab{boolean}
  * @returns {Promise<void>}
  */
 export async function browserTabCreateToDownload(message) {
@@ -45,9 +45,9 @@ export async function browserTabCreateToDownload(message) {
       delete message.tabId;
     }
   }
-  if (message.options) {
-    let focusNewTab = message.options.focusNewTab;
-    Object.assign(properties, {active: focusNewTab});
+  
+  if (message?.focusNewTab !== undefined) {
+    Object.assign(properties, {active: message.focusNewTab});
   }
 
   let {tabId} = await tabOpCreateNear(properties);
@@ -70,8 +70,7 @@ export async function browserTabCreateToDownload(message) {
  * * @param {Object} message - The message payload.
  * @param {number} [message.tabId] - Optional Tab ID to attach to.
  * @param {string} [message.url] - The URL to open.
- * @param {Object} [message.options] - Additional options.
- * @param {boolean} [message.options.focusNewTab] - Whether the newly created tab should be active.
+ * @param {boolean} [message.focusNewTab] - Whether the newly created tab should be active.
  * @returns {Promise<void>}
  */
 export async function browserTabCreateNearSendMessageToContentJs(message = {}) {
@@ -92,8 +91,8 @@ export async function browserTabCreateNearSendMessageToContentJs(message = {}) {
 
   // Use optional chaining to safely extract nested properties.
   // Only assign 'active' if 'focusNewTab' was explicitly provided.
-  if (message?.options?.focusNewTab !== undefined) {
-    Object.assign(properties, {active: message.options.focusNewTab});
+  if (message?.focusNewTab !== undefined) {
+    Object.assign(properties, {active: message.focusNewTab});
   }
 
   let {tabId} = await tabOpCreateNear(properties);
