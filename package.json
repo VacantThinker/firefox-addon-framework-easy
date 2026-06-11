@@ -1,14 +1,20 @@
 {
   "name": "@vacantthinker/firefox-addon-framework-easy",
-  "version": "2026.0611.0821",
+  "version": "2026.0611.1141",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
   "scripts": {
-    "install_package": "npm install"
+    "install_package": "npm install",
+    "build": "tsc"
   },
   "author": "VacantThinker",
   "license": "AGPL-3.0-only",
@@ -20,7 +26,8 @@
   "bugs": {
     "url": "https://github.com/VacantThinker/firefox-addon-framework-easy/issues"
   },
-  "dependencies": {
+  "devDependencies": {
+    "typescript": "6.0.3",
     "@types/firefox-webext-browser": "^143.0.0"
   }
 }
