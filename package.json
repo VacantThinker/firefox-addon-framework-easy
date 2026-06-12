@@ -1,6 +1,6 @@
 {
   "name": "@vacantthinker/firefox-addon-framework-easy",
-  "version": "2026.0612.1531",
+  "version": "2026.0612.2157",
   "description": "",
   "type": "module",
   "main": "dist/index.js",

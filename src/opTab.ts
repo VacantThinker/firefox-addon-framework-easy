@@ -42,6 +42,27 @@ export async function tabOpCreate(properties: browser.tabs._CreateCreateProperti
   return _create(properties);
 }
 
+/**
+ * Creates a tab in the background (inactive and muted).
+ */
+export async function tabOpCreateActiveFalse(properties: browser.tabs._CreateCreateProperties): Promise<EnhancedTab> {
+  return _create({
+    ...properties,
+    active: false,
+    muted: true,
+  });
+}
+
+/**
+ * Creates a tab in the background (inactive and muted).
+ */
+export async function tabOpCreateActiveTrue(properties: browser.tabs._CreateCreateProperties): Promise<EnhancedTab> {
+  return _create({
+    ...properties,
+    active: true,
+  });
+}
+
 interface TabOpCreateNearOptions {
   properties: browser.tabs._CreateCreateProperties;
   previousTabId: number | undefined;
@@ -64,17 +85,6 @@ export async function tabOpCreateNear(options: TabOpCreateNearOptions): Promise<
   }
 
   return _create(properties);
-}
-
-/**
- * Creates a tab in the background (inactive and muted).
- */
-export async function tabOpCreateActiveFalse(properties: browser.tabs._CreateCreateProperties): Promise<EnhancedTab> {
-  return _create({
-    ...properties,
-    active: false,
-    muted: true,
-  });
 }
 
 /**
