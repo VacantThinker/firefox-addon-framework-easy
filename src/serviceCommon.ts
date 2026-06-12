@@ -1,6 +1,18 @@
-import {browserDownloadByDownlink, DownloadParams} from './browserDownload';
+import {
+  browserDownloadByDownlink,
+  DownloadParams
+} from './browserDownload';
 import {browserNotificationCreate} from './browserNotification';
+import {stoOpClear} from "./opStorage";
+import {browserRuntimeReload} from "./browserRuntime";
 
+/**
+ * clear storage, then raload addon
+ */
+export async function serviceResetAddon() {
+  await stoOpClear();
+  browserRuntimeReload();
+}
 
 /**
  * Service to handle download operations.

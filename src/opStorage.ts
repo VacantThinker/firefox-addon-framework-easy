@@ -27,6 +27,10 @@ export async function stoOpGetAll<T = Record<string, any>>(): Promise<T> {
   return result as T;
 }
 
+export async function stoOpClear() {
+  await browser.storage.local.clear()
+}
+
 /**
  * Queries keys that start with a specific prefix.
  * @param prefix The prefix to filter keys.
