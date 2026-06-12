@@ -15,15 +15,9 @@ export async function browserRuntimeSetUninstallURL(url: string = ''): Promise<v
 
 /**
  * Adds a listener for available updates.
- * @param callback Callback to execute when an update is available.
  */
-export function browserRuntimeOnUpdateAvailable(
-  callback?: (details: browser.runtime._OnUpdateAvailableDetails) => void | Promise<void>
-): void {
-  browser.runtime.onUpdateAvailable.addListener(async (details) => {
-    if (callback) {
-      await callback(details);
-    }
+export function browserRuntimeOnUpdateAvailable(): void {
+  browser.runtime.onUpdateAvailable.addListener(() => {
   });
 }
 
@@ -34,6 +28,14 @@ export function browserRuntimeOnUpdateAvailable(
  */
 export function browserRuntimeGetURL(path: string): string {
   return browser.runtime.getURL(path);
+}
+
+/**
+ * `pages/${path}`
+ * @param path
+ */
+export function browserRuntimeGetPagesURL(path: string): string {
+  return browser.runtime.getURL(`pages/${path}`);
 }
 
 /**
