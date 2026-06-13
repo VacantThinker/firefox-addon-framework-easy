@@ -52,26 +52,6 @@ export abstract class BaseORM<T extends Record<string, any>> {
   }
 
   /**
-   * Safely initialize the default object. Prevents multiple concurrent
-   * requests from writing the default value simultaneously.
-   */
-  private async safeInit(): Promise<void> {
-    // If an initialization is already in progress, wait for it
-    if (this.initPromise) {
-      return this.initPromise;
-    }
-
-    // Start initialization and store the Promise as the lock
-    this.initPromise = this.initDefaultObject()
-      .finally(() => {
-        // Clear the lock whether the initialization succeeds or fails
-        this.initPromise = null;
-      });
-
-    return this.initPromise;
-  }
-
-  /**
    * Overwrite the value of the bound key completely.
    * @param {T} value
    * @returns {Promise<void>}
@@ -91,6 +71,26 @@ export abstract class BaseORM<T extends Record<string, any>> {
     const previousValue = await this.get();
     await stoOpRem(this.storageKey);
     return previousValue;
+  }
+
+  /**
+   * Safely initialize the default object. Prevents multiple concurrent
+   * requests from writing the default value simultaneously.
+   */
+  private async safeInit(): Promise<void> {
+    // If an initialization is already in progress, wait for it
+    if (this.initPromise) {
+      return this.initPromise;
+    }
+
+    // Start initialization and store the Promise as the lock
+    this.initPromise = this.initDefaultObject()
+      .finally(() => {
+        // Clear the lock whether the initialization succeeds or fails
+        this.initPromise = null;
+      });
+
+    return this.initPromise;
   }
 
   private async exists(): Promise<boolean> {

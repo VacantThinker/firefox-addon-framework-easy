@@ -15,7 +15,9 @@ export async function stoOpCheck(key: string): Promise<boolean> {
  */
 export async function stoOpGet<T = any>(key: string): Promise<T | null> {
   const result = await browser.storage.local.get(key);
-  return result[key] !== undefined ? (result[key] as T) : null;
+  return result[key] !== undefined ?
+    (result[key] as T) :
+    null;
 }
 
 /**

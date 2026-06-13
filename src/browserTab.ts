@@ -1,3 +1,13 @@
+export async function browserTabSendMessageMarcoPolo(
+  tabId: number) {
+  await browserTabSendMessage(
+    tabId,
+    {
+      tag: 'marco', status: 'Polo',
+    }
+  );
+}
+
 /**
  * Sends a message to a specific tab.
  */

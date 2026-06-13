@@ -100,7 +100,9 @@ export async function tabOpCreateNear(options: TabOpCreateNearOptions): Promise<
 export async function tabOpCreateByWindow(url: string): Promise<EnhancedTab | undefined> {
   const window = await browser.windows.create({url});
   const tab = window.tabs?.[0];
-  return tab ? tabOpEnhance(tab) ?? undefined : undefined;
+  return tab ?
+    tabOpEnhance(tab) ?? undefined :
+    undefined;
 }
 
 /**
