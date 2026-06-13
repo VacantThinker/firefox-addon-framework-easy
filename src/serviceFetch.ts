@@ -14,15 +14,21 @@ export interface Aria2Request {
  * @param body The request payload.
  * @returns Promise<Response>
  */
-export async function servicePostJson(url: string, body: any): Promise<Response> {
-  return await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-      'Accept': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
+export async function servicePostJson(
+  url: string,
+  body: any
+): Promise<Response> {
+  return await fetch(
+    url,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }
+  );
 }
 
 /**
@@ -49,5 +55,8 @@ export async function serviceSendDataToLocalAria2(request: Aria2Request): Promis
   };
 
   const url = `http://localhost:${rpcPort}/jsonrpc`;
-  return await servicePostJson(url, payload);
+  return await servicePostJson(
+    url,
+    payload
+  );
 }

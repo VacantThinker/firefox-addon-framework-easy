@@ -6,7 +6,10 @@
  * Apply a CSS string globally to the target tab.
  * This is the most efficient way to override styles without traversing the DOM.
  */
-async function applyGlobalCss(tabId: number, css: string): Promise<void> {
+async function applyGlobalCss(
+  tabId: number,
+  css: string
+): Promise<void> {
   await browser.scripting.insertCSS({
     target: {tabId},
     css: css,
@@ -16,19 +19,31 @@ async function applyGlobalCss(tabId: number, css: string): Promise<void> {
 /**
  * Update the text color for all elements globally.
  */
-export async function serviceUpdataALLTextNodeColor(tabId: number, color: string): Promise<void> {
+export async function serviceUpdataALLTextNodeColor(
+  tabId: number,
+  color: string
+): Promise<void> {
   // Use "body, body *" to target all elements, with !important to override existing styles.
   const css = `body, body * { color: ${color} !important; }`;
-  await applyGlobalCss(tabId, css);
+  await applyGlobalCss(
+    tabId,
+    css
+  );
 }
 
 /**
  * Update the background color for all elements globally.
  */
-export async function serviceUpdataALLNodeBackgroundColor(tabId: number, bgColor: string): Promise<void> {
+export async function serviceUpdataALLNodeBackgroundColor(
+  tabId: number,
+  bgColor: string
+): Promise<void> {
   // Apply background-color to all elements.
   const css = `body, body * { background-color: ${bgColor} !important; }`;
-  await applyGlobalCss(tabId, css);
+  await applyGlobalCss(
+    tabId,
+    css
+  );
 }
 
 /**
@@ -42,7 +57,10 @@ interface FontSizeArgs {
  * Adjust font size globally by a delta value.
  * Uses recursive DOM traversal to support Shadow DOM elements.
  */
-export async function serviceIncreaseAllTextFontSize(tabId: number, delta: number): Promise<void> {
+export async function serviceIncreaseAllTextFontSize(
+  tabId: number,
+  delta: number
+): Promise<void> {
   await browser.scripting.executeScript({
     target: {tabId},
     args: [{delta}],
@@ -51,7 +69,10 @@ export async function serviceIncreaseAllTextFontSize(tabId: number, delta: numbe
        * Recursively traverse DOM and Shadow DOM to update font sizes.
        */
       function walk(root: Document | ShadowRoot | HTMLElement): void {
-        const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+        const walker = document.createTreeWalker(
+          root,
+          NodeFilter.SHOW_ELEMENT
+        );
         let node: Node | null;
 
         while ((node = walker.nextNode())) {
@@ -67,7 +88,11 @@ export async function serviceIncreaseAllTextFontSize(tabId: number, delta: numbe
           const currentSize = parseFloat(style.fontSize);
 
           if (!isNaN(currentSize)) {
-            el.style.setProperty('font-size', `${currentSize + delta}px`, 'important');
+            el.style.setProperty(
+              'font-size',
+              `${currentSize + delta}px`,
+              'important'
+            );
           }
         }
       }

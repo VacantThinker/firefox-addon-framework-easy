@@ -47,7 +47,10 @@ export async function stoOpQueryStartWith(prefix: string): Promise<string[]> {
  * @param key The key to set.
  * @param value The value to store.
  */
-export async function stoOpSet(key: string, value: any): Promise<void> {
+export async function stoOpSet(
+  key: string,
+  value: any
+): Promise<void> {
   await browser.storage.local.set({[key]: value});
 }
 
@@ -64,5 +67,8 @@ export async function stoOpRem(key: string): Promise<void> {
  * @param key The key to set to null.
  */
 export async function stoOpSetNull(key: string): Promise<void> {
-  await stoOpSet(key, null);
+  await stoOpSet(
+    key,
+    null
+  );
 }

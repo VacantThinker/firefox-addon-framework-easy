@@ -20,7 +20,8 @@ interface ActionMessage {
   act: string;
 }
 
-interface MagnetLinkMessage extends ActionMessage {
+interface MagnetLinkMessage
+  extends ActionMessage {
   title: string;
   data?: string[];
   handleOption?: 'clipboard' | 'txt' | 'clipboardAndTxt';
@@ -31,12 +32,19 @@ interface MagnetLinkMessage extends ActionMessage {
 /**
  * Captures a tab's screenshot and triggers a local download in the target tab.
  */
-export async function serviceTakeScreenshot({tabId, filename, rect}: {
+export async function serviceTakeScreenshot({
+                                              tabId,
+                                              filename,
+                                              rect
+                                            }: {
   tabId: number;
   filename: string;
   rect: ScreenRect
 }): Promise<void> {
-  const dataURI = await browser.tabs.captureTab(tabId, {rect});
+  const dataURI = await browser.tabs.captureTab(
+    tabId,
+    {rect}
+  );
 
   await browser.scripting.executeScript({
     target: {tabId},
@@ -100,12 +108,19 @@ export async function serviceElementPicker(message: ActionMessage): Promise<void
         const target = e.target as HTMLElement;
         if (target.id === overlayId || !overlay) return;
         const rect = target.getBoundingClientRect();
-        Object.assign(overlay.style, {
-          display: 'block',
-          top: `${rect.top}px`, left: `${rect.left}px`,
-          width: `${rect.width}px`, height: `${rect.height}px`,
-        });
-        document.body.style.setProperty('cursor', 'crosshair', 'important');
+        Object.assign(
+          overlay.style,
+          {
+            display: 'block',
+            top: `${rect.top}px`, left: `${rect.left}px`,
+            width: `${rect.width}px`, height: `${rect.height}px`,
+          }
+        );
+        document.body.style.setProperty(
+          'cursor',
+          'crosshair',
+          'important'
+        );
       }
 
       async function handleElementClick(e: MouseEvent) {
@@ -130,14 +145,30 @@ export async function serviceElementPicker(message: ActionMessage): Promise<void
       }
 
       function stopPickingMode() {
-        document.removeEventListener('mouseover', handleMouseOver, true);
-        document.removeEventListener('click', handleElementClick, true);
+        document.removeEventListener(
+          'mouseover',
+          handleMouseOver,
+          true
+        );
+        document.removeEventListener(
+          'click',
+          handleElementClick,
+          true
+        );
         document.body.style.removeProperty('cursor');
         overlay?.remove();
       }
 
-      document.addEventListener('mouseover', handleMouseOver, true);
-      document.addEventListener('click', handleElementClick, true);
+      document.addEventListener(
+        'mouseover',
+        handleMouseOver,
+        true
+      );
+      document.addEventListener(
+        'click',
+        handleElementClick,
+        true
+      );
     }) as any,
   });
 }
@@ -173,19 +204,21 @@ export async function serviceFindAllMagnetLink(message: MagnetLinkMessage): Prom
       // Type 1: Attribute selectors
       const attrElements = document.querySelectorAll('*[href*="magnet:"], *[data-url*="magnet:"], *[data-magnet*="magnet:"], *[data-href*="magnet:"]');
       attrElements.forEach(el => {
-        Array.from((el as Element).attributes).forEach(attr => {
-          if (attr.value.includes('magnet:?xt=')) magnets.add(attr.value.trim());
-        });
+        Array.from((el as Element).attributes)
+          .forEach(attr => {
+            if (attr.value.includes('magnet:?xt=')) magnets.add(attr.value.trim());
+          });
       });
 
       // Type 2: Text content
-      document.querySelectorAll('div, span, td, p, a, button').forEach(el => {
-        if (el.children.length === 0) {
-          const text = el.textContent?.trim() || '';
-          const match = text.match(/magnet:\?xt=[^\s"'<>]+/);
-          if (match) magnets.add(match[0]);
-        }
-      });
+      document.querySelectorAll('div, span, td, p, a, button')
+        .forEach(el => {
+          if (el.children.length === 0) {
+            const text = el.textContent?.trim() || '';
+            const match = text.match(/magnet:\?xt=[^\s"'<>]+/);
+            if (match) magnets.add(match[0]);
+          }
+        });
 
       await browser.runtime.sendMessage({
         ...message,
@@ -215,11 +248,17 @@ export async function serviceDealWithMagnetLink(message: MagnetLinkMessage): Pro
       await serviceCopyContentToClipboard(content);
       break;
     case 'txt':
-      serviceSaveContentToLocal(content, filename);
+      serviceSaveContentToLocal(
+        content,
+        filename
+      );
       break;
     case 'clipboardAndTxt':
       await serviceCopyContentToClipboard(content);
-      serviceSaveContentToLocal(content, filename);
+      serviceSaveContentToLocal(
+        content,
+        filename
+      );
       break;
   }
 }

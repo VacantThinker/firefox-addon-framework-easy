@@ -1,4 +1,7 @@
-import {browserRuntimeGeckoId, browserRuntimeManifestName} from './browserRuntime';
+import {
+  browserRuntimeGeckoId,
+  browserRuntimeManifestName
+} from './browserRuntime';
 
 /**
  * Creates a browser notification with basic type.
@@ -18,7 +21,10 @@ export async function browserNotificationCreate(
     message: content,
   };
 
-  await browser.notifications.create(notificationId, options);
+  await browser.notifications.create(
+    notificationId,
+    options
+  );
 
   return notificationId;
 }

@@ -1,4 +1,9 @@
-import {stoOpCheck, stoOpGet, stoOpRem, stoOpSet} from './opStorage';
+import {
+  stoOpCheck,
+  stoOpGet,
+  stoOpRem,
+  stoOpSet
+} from './opStorage';
 
 /**
  * Abstract base class BaseORM.
@@ -15,7 +20,11 @@ export abstract class BaseORM<T extends Record<string, any>> {
    * @param id The unique identifier for this instance.
    * @param defaultValue The initial value to use if the key does not exist.
    */
-  protected constructor(prefix: string, id: string, defaultValue: T = {} as T) {
+  protected constructor(
+    prefix: string,
+    id: string,
+    defaultValue: T = {} as T
+  ) {
     if (new.target === BaseORM) {
       throw new TypeError('Cannot construct BaseORM instances directly (Abstract Class).');
     }
@@ -37,14 +46,6 @@ export abstract class BaseORM<T extends Record<string, any>> {
     return this.#fullStorageKey;
   }
 
-  private async exists(): Promise<boolean> {
-    return await stoOpCheck(this.#fullStorageKey);
-  }
-
-  private async initDefaultObject(): Promise<void> {
-    await stoOpSet(this.#fullStorageKey, this.#defaultValue);
-  }
-
   /**
    * Retrieve the value associated with the bound key.
    * @returns {Promise<T>}
@@ -62,7 +63,10 @@ export abstract class BaseORM<T extends Record<string, any>> {
    * @returns {Promise<void>}
    */
   async set(value: T): Promise<void> {
-    await stoOpSet(this.#fullStorageKey, value || this.#defaultValue);
+    await stoOpSet(
+      this.#fullStorageKey,
+      value || this.#defaultValue
+    );
   }
 
   /**
@@ -80,9 +84,23 @@ export abstract class BaseORM<T extends Record<string, any>> {
    * @param {K} key The internal key path inside the main value object.
    * @param {T[K]} value The new value to map to that key.
    */
-  async updateValueKeyValue<K extends keyof T>(key: K, value: T[K]): Promise<void> {
+  async updateValueKeyValue<K extends keyof T>(
+    key: K,
+    value: T[K]
+  ): Promise<void> {
     const data = await this.get();
     data[key] = value;
     await this.set(data);
+  }
+
+  private async exists(): Promise<boolean> {
+    return await stoOpCheck(this.#fullStorageKey);
+  }
+
+  private async initDefaultObject(): Promise<void> {
+    await stoOpSet(
+      this.#fullStorageKey,
+      this.#defaultValue
+    );
   }
 }

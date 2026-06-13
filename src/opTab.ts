@@ -3,7 +3,8 @@ import {serviceGetDomain} from "./serviceGet";
 /**
  * Interface representing a Tab with an explicitly defined tabId.
  */
-export interface EnhancedTab extends browser.tabs.Tab {
+export interface EnhancedTab
+  extends browser.tabs.Tab {
   tabId: number;
 }
 
@@ -28,8 +29,14 @@ async function _create(properties: browser.tabs._CreateCreateProperties): Promis
 /**
  * Internal helper to unify tab updates.
  */
-async function _update(tabId: number, properties: browser.tabs._UpdateUpdateProperties): Promise<EnhancedTab> {
-  const tab = await browser.tabs.update(tabId, properties);
+async function _update(
+  tabId: number,
+  properties: browser.tabs._UpdateUpdateProperties
+): Promise<EnhancedTab> {
+  const tab = await browser.tabs.update(
+    tabId,
+    properties
+  );
   const enhanced = tabOpEnhance(tab);
   if (!enhanced) throw new Error(`Failed to enhance updated tab ${tabId}`);
   return enhanced;
@@ -136,7 +143,8 @@ export async function tabOpQueryDomain(domain: string): Promise<{
  */
 export async function tabOpQueryUrl(urlQuery: string): Promise<number[]> {
   const tabs = await browser.tabs.query({url: urlQuery});
-  return tabs.filter((t) => typeof t.id === 'number').map((t) => t.id!);
+  return tabs.filter((t) => typeof t.id === 'number')
+    .map((t) => t.id!);
 }
 
 /**
@@ -154,8 +162,14 @@ export async function tabOpQueryUrlThenRemove(urlQuery: string): Promise<void> {
  * @param tabId The tab ID to reload.
  * @param bypassCache Whether to bypass the cache.
  */
-export async function tabOpReload(tabId: number, bypassCache: boolean = false): Promise<void> {
-  await browser.tabs.reload(tabId, {bypassCache});
+export async function tabOpReload(
+  tabId: number,
+  bypassCache: boolean = false
+): Promise<void> {
+  await browser.tabs.reload(
+    tabId,
+    {bypassCache}
+  );
 }
 
 /**
@@ -179,14 +193,20 @@ export async function tabOpUpdate(
   tabId: number,
   updateProperties: browser.tabs._UpdateUpdateProperties
 ): Promise<EnhancedTab> {
-  return _update(tabId, updateProperties);
+  return _update(
+    tabId,
+    updateProperties
+  );
 }
 
 /**
  * Updates a tab to be inactive and muted.
  */
 export async function tabOpUpdateActiveFalse(tabId: number): Promise<EnhancedTab> {
-  return _update(tabId, {active: false, muted: true});
+  return _update(
+    tabId,
+    {active: false, muted: true}
+  );
 }
 
 /**
@@ -198,20 +218,13 @@ export async function tabOpFocus(tabId: number): Promise<EnhancedTab> {
     throw new Error(`Tab ${tabId} not found or has no window.`);
   }
 
-  await browser.windows.update(tab.windowId, {focused: true});
-  return _update(tabId, {active: true, highlighted: true});
+  await browser.windows.update(
+    tab.windowId,
+    {focused: true}
+  );
+  return _update(
+    tabId,
+    {active: true, highlighted: true}
+  );
 }
 
-/**
- * Injects CSS code into a page.
- */
-export async function tabOpInsertCssCode(tabId: number, code: string): Promise<void> {
-  await browser.tabs.insertCSS(tabId, {code});
-}
-
-/**
- * Removes CSS code that was previously injected into a page.
- */
-export async function tabOpRemoveCssCode(tabId: number, code: string): Promise<void> {
-  await browser.tabs.removeCSS(tabId, {code});
-}
