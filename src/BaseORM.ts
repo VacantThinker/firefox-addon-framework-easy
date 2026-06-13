@@ -11,15 +11,13 @@ import {
  * Uses Generics (T) to ensure type safety for the stored object structure.
  */
 export abstract class BaseORM<T extends Record<string, any>> {
-  #id: string;
-  #fullStorageKey: string;
-  #defaultValue: T;
+  protected readonly id: string;
+  protected readonly storageKey: string;
+  private readonly defaultValue: T;
 
-  /**
-   * @param prefix The prefix for the storage key.
-   * @param id The unique identifier for this instance.
-   * @param defaultValue The initial value to use if the key does not exist.
-   */
+  // The Mutex "Lock" for preventing race conditions during initialization
+  private initPromise: Promise<void> | null = null;
+
   protected constructor(
     prefix: string,
     id: string,
@@ -32,29 +30,45 @@ export abstract class BaseORM<T extends Record<string, any>> {
       throw new Error('Both prefix and id must be specified.');
     }
 
-    this.#id = id;
-    const formattedPrefix = prefix.endsWith(' ') ? prefix : `${prefix} `;
-    this.#fullStorageKey = `${formattedPrefix}${id}`;
-    this.#defaultValue = JSON.parse(JSON.stringify(defaultValue));
-  }
+    this.id = id;
+    const formattedPrefix = prefix.endsWith(' ') ?
+      prefix :
+      `${prefix} `;
+    this.storageKey = `${formattedPrefix}${id}`;
 
-  get id(): string {
-    return this.#id;
-  }
-
-  get storageKey(): string {
-    return this.#fullStorageKey;
+    this.defaultValue = structuredClone(defaultValue);
   }
 
   /**
    * Retrieve the value associated with the bound key.
    * @returns {Promise<T>}
    */
-  async get(): Promise<T> {
+  protected async get(): Promise<T> {
     if (!(await this.exists())) {
-      await this.initDefaultObject();
+      // Calls the lock-protected initialization instead of initDefaultObject directly
+      await this.safeInit();
     }
-    return (await stoOpGet(this.#fullStorageKey)) as T;
+    return (await stoOpGet(this.storageKey)) as T;
+  }
+
+  /**
+   * Safely initialize the default object. Prevents multiple concurrent
+   * requests from writing the default value simultaneously.
+   */
+  private async safeInit(): Promise<void> {
+    // If an initialization is already in progress, wait for it
+    if (this.initPromise) {
+      return this.initPromise;
+    }
+
+    // Start initialization and store the Promise as the lock
+    this.initPromise = this.initDefaultObject()
+      .finally(() => {
+        // Clear the lock whether the initialization succeeds or fails
+        this.initPromise = null;
+      });
+
+    return this.initPromise;
   }
 
   /**
@@ -62,10 +76,10 @@ export abstract class BaseORM<T extends Record<string, any>> {
    * @param {T} value
    * @returns {Promise<void>}
    */
-  async set(value: T): Promise<void> {
+  protected async set(value: T): Promise<void> {
     await stoOpSet(
-      this.#fullStorageKey,
-      value || this.#defaultValue
+      this.storageKey,
+      value ?? this.defaultValue
     );
   }
 
@@ -73,34 +87,20 @@ export abstract class BaseORM<T extends Record<string, any>> {
    * Wipe the bound key from storage.
    * @returns {Promise<T>}
    */
-  async delete(): Promise<T> {
+  protected async delete(): Promise<T> {
     const previousValue = await this.get();
-    await stoOpRem(this.#fullStorageKey);
+    await stoOpRem(this.storageKey);
     return previousValue;
   }
 
-  /**
-   * Modify a single targeted key-value pair nested deep within the stored object.
-   * @param {K} key The internal key path inside the main value object.
-   * @param {T[K]} value The new value to map to that key.
-   */
-  async updateValueKeyValue<K extends keyof T>(
-    key: K,
-    value: T[K]
-  ): Promise<void> {
-    const data = await this.get();
-    data[key] = value;
-    await this.set(data);
-  }
-
   private async exists(): Promise<boolean> {
-    return await stoOpCheck(this.#fullStorageKey);
+    return await stoOpCheck(this.storageKey);
   }
 
   private async initDefaultObject(): Promise<void> {
     await stoOpSet(
-      this.#fullStorageKey,
-      this.#defaultValue
+      this.storageKey,
+      this.defaultValue
     );
   }
 }
