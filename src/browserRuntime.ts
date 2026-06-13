@@ -39,12 +39,21 @@ export function browserRuntimeGetPagesURL(path: string): string {
 }
 
 /**
+ * `pages/${path}.html`
+ * @param path
+ */
+export function browserRuntimeGetPagesURLNoNeedExtHTML(path: string): string {
+  return browser.runtime.getURL(`pages/${path}.html`);
+}
+
+/**
  * Retrieves the Gecko ID from the manifest.
  * @returns The Gecko ID or empty string if not found.
  */
 export function browserRuntimeGeckoId(): string {
   const manifest = browser.runtime.getManifest() as any;
-  return manifest.browser_specific_settings?.gecko?.id ?? '';
+  return manifest.browser_specific_settings?.gecko?.id ??
+    '';
 }
 
 /**

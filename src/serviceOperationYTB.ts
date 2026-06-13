@@ -8,6 +8,19 @@ export interface YoutubePlaylistInfo {
   playlistId: string;
 }
 
+export type ImageQualityYTB =
+  | 'maxresdefault'
+  | 'sddefault'
+  | 'hqdefault'
+  | 'mqdefault'
+
+export function serviceGetImageURLYTB(
+  vid: string,
+  imageQuality: ImageQualityYTB
+): string {
+  return `https://i.ytimg.com/vi/${vid}/${imageQuality}.jpg`
+}
+
 /**
  * `https://www.youtube.com/watch?v=${vid}`
  * @param vid
