@@ -9,11 +9,21 @@ export interface YoutubePlaylistInfo {
 }
 
 /**
+ * `https://www.youtube.com/watch?v=${vid}`
+ * @param vid
+ */
+export function serviceGetVideolinkByVid(vid: string): string {
+  return `https://www.youtube.com/watch?v=${vid}`
+}
+
+/**
  * Extracts video ID and creates a clean YouTube URL.
  * Supports: youtube.com/watch?v=, youtu.be/, and youtube.com/shorts/
  */
 export function servicePureVideolinkYTB(videolinkOrigin: string): YoutubeVideoInfo | null {
-  if (!videolinkOrigin) return null;
+  if (!videolinkOrigin) {
+    return null;
+  }
 
   try {
     const url = new URL(videolinkOrigin);
@@ -23,19 +33,23 @@ export function servicePureVideolinkYTB(videolinkOrigin: string): YoutubeVideoIn
     vid = url.searchParams.get('v');
 
     // 2. Short URL: youtu.be/ID
-    if (!vid && url.hostname.includes('youtu.be')) {
+    if (!vid &&
+      url.hostname.includes('youtu.be')) {
       vid = url.pathname.slice(1);
     }
 
     // 3. Shorts URL: youtube.com/shorts/ID
-    if (!vid && url.pathname.startsWith('/shorts/')) {
+    if (!vid &&
+      url.pathname.startsWith('/shorts/')) {
       vid = url.pathname.split('/')[2];
     }
 
-    if (!vid) return null;
+    if (!vid) {
+      return null;
+    }
 
     return {
-      videolink: `https://www.youtube.com/watch?v=${vid}`,
+      videolink: serviceGetVideolinkByVid(vid),
       vid,
     };
   } catch {
@@ -47,13 +61,17 @@ export function servicePureVideolinkYTB(videolinkOrigin: string): YoutubeVideoIn
  * Extracts playlist ID and creates a clean YouTube playlist URL.
  */
 export function servicePurePlaylistVideolinkYTB(videolinkOrigin: string): YoutubePlaylistInfo | null {
-  if (!videolinkOrigin) return null;
+  if (!videolinkOrigin) {
+    return null;
+  }
 
   try {
     const url = new URL(videolinkOrigin);
     const playlistId = url.searchParams.get('list');
 
-    if (!playlistId) return null;
+    if (!playlistId) {
+      return null;
+    }
 
     return {
       playlistVideolink: `https://www.youtube.com/playlist?list=${playlistId}`,

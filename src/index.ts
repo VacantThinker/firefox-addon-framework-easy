@@ -10,6 +10,6 @@ export * from './serviceCommon';
 export * from './serviceFetch';
 export * from './serviceGet';
 export * from './serviceOpContent';
+export * from './serviceOperationYTBURL';
 export * from './serviceOpJavascript';
-export * from './servicePure';
 export * from './serviceUpdateTabStyle';
