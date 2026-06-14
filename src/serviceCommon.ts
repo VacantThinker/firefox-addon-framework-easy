@@ -2,7 +2,11 @@ import {
   browserDownloadByDownlink,
   DownloadParams
 } from './browserDownload';
-import {browserNotificationCreate} from './browserNotification';
+import {
+  browserNotificationCreate,
+  browserNotificationCreateBasicMessage,
+  browserNotificationCreateBasicMessageOnly
+} from './browserNotification';
 import {stoOpClear} from "./opStorage";
 import {browserRuntimeReload} from "./browserRuntime";
 
@@ -20,15 +24,20 @@ export async function serviceResetAddon() {
  * * @param params The download parameters.
  */
 export async function serviceDownloadByDownlink(params: DownloadParams): Promise<void> {
-  const {filename, downlink} = params;
+  const {
+    filename,
+    downlink
+  } = params;
 
   try {
     // Attempt 1: Full download with provided parameters
     await browserDownloadByDownlink(params);
-    await browserNotificationCreate(`downloading! ${filename ?? 'file'}`);
+    await browserNotificationCreateBasicMessageOnly(
+      `downloading! ${filename ??
+      'file'}`);
   } catch (error) {
     // Notify about the failure
-    await browserNotificationCreate(`reason=${error}`);
+    await browserNotificationCreateBasicMessageOnly(`reason=${error}`);
 
     // Attempt 2: Fallback retry using only the downlink
     await browserDownloadByDownlink({downlink});

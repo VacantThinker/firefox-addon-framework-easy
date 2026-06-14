@@ -5,6 +5,14 @@ export interface NotificationTwoOptions {
   title?: string,
 }
 
+export async function browserNotificationCreateBasicMessageOnly(
+  message: string
+): Promise<string> {
+  return await browserNotificationCreateBasicMessage(
+    {message}
+  );
+}
+
 /**
  * Creates a browser notification with basic type,
  * if title null use addon manifest name.
