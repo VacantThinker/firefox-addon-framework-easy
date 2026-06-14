@@ -29,7 +29,7 @@ export async function browserNotificationCreateBasicMessage(
 
 export async function browserNotificationCreate(
   notificationOptions: browser.notifications.CreateNotificationOptions
-)
+): Promise<string>
 {
   return await browser.notifications.create(notificationOptions)
 }
