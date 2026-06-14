@@ -110,7 +110,7 @@ export function ctJskeepAlive(tag: string = "", enableLog = false) {
     1000);
 }
 
-export async function ctJsClsoeTab() {
+export async function ctJsCloseTab() {
   await browser.runtime.sendMessage({
     act: 'actRemoveCurrentTab',
   });
