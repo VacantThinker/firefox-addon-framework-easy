@@ -3,7 +3,6 @@ export * from './browserDownload';
 export * from './browserNotification';
 export * from './browserRuntime';
 export * from './browserTab';
-export * from './generate';
 export * from './opStorage';
 export * from './opTab';
 export * from './serviceCommon';
