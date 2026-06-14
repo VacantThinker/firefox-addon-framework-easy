@@ -1,24 +1,29 @@
-export interface YoutubeVideoInfo {
-  videolink: string;
-  vid: string;
+interface VideoLinkInfoYTB {
+    videolink: string;
+    vid: string;
 }
 
-export interface YoutubePlaylistInfo {
-  playlistVideolink: string;
-  playlistId: string;
+export interface PlaylistLinkInfoYTB {
+    playlistId: string;
+    playlistVideolink: string;
 }
+
+export interface PlaylistInfoYTB extends PlaylistLinkInfoYTB {
+    playlistTitle: string;
+}
+
 
 export type ImageQualityYTB =
-  | 'maxresdefault'
-  | 'sddefault'
-  | 'hqdefault'
-  | 'mqdefault'
+    | 'maxresdefault'
+    | 'sddefault'
+    | 'hqdefault'
+    | 'mqdefault'
 
 export function serviceGetImageURLYTB(
-  vid: string,
-  imageQuality: ImageQualityYTB
+    vid: string,
+    imageQuality: ImageQualityYTB
 ): string {
-  return `https://i.ytimg.com/vi/${vid}/${imageQuality}.jpg`
+    return `https://i.ytimg.com/vi/${vid}/${imageQuality}.jpg`
 }
 
 /**
@@ -26,71 +31,71 @@ export function serviceGetImageURLYTB(
  * @param vid
  */
 export function serviceGetVideolinkByVid(vid: string): string {
-  return `https://www.youtube.com/watch?v=${vid}`
+    return `https://www.youtube.com/watch?v=${vid}`
 }
 
 /**
  * Extracts video ID and creates a clean YouTube URL.
  * Supports: youtube.com/watch?v=, youtu.be/, and youtube.com/shorts/
  */
-export function servicePureVideolinkYTB(videolinkOrigin: string): YoutubeVideoInfo | null {
-  if (!videolinkOrigin) {
-    return null;
-  }
-
-  try {
-    const url = new URL(videolinkOrigin);
-    let vid: string | null = null;
-
-    // 1. Standard watch URL: youtube.com/watch?v=ID
-    vid = url.searchParams.get('v');
-
-    // 2. Short URL: youtu.be/ID
-    if (!vid &&
-      url.hostname.includes('youtu.be')) {
-      vid = url.pathname.slice(1);
+export function servicePureVideolinkYTB(videolinkOrigin: string): VideoLinkInfoYTB | null {
+    if (!videolinkOrigin) {
+        return null;
     }
 
-    // 3. Shorts URL: youtube.com/shorts/ID
-    if (!vid &&
-      url.pathname.startsWith('/shorts/')) {
-      vid = url.pathname.split('/')[2];
-    }
+    try {
+        const url = new URL(videolinkOrigin);
+        let vid: string | null = null;
 
-    if (!vid) {
-      return null;
-    }
+        // 1. Standard watch URL: youtube.com/watch?v=ID
+        vid = url.searchParams.get('v');
 
-    return {
-      videolink: serviceGetVideolinkByVid(vid),
-      vid,
-    };
-  } catch {
-    return null; // Invalid URL
-  }
+        // 2. Short URL: youtu.be/ID
+        if (!vid &&
+            url.hostname.includes('youtu.be')) {
+            vid = url.pathname.slice(1);
+        }
+
+        // 3. Shorts URL: youtube.com/shorts/ID
+        if (!vid &&
+            url.pathname.startsWith('/shorts/')) {
+            vid = url.pathname.split('/')[2];
+        }
+
+        if (!vid) {
+            return null;
+        }
+
+        return {
+            videolink: serviceGetVideolinkByVid(vid),
+            vid,
+        };
+    } catch {
+        return null; // Invalid URL
+    }
 }
 
 /**
  * Extracts playlist ID and creates a clean YouTube playlist URL.
  */
-export function servicePurePlaylistVideolinkYTB(videolinkOrigin: string): YoutubePlaylistInfo | null {
-  if (!videolinkOrigin) {
-    return null;
-  }
-
-  try {
-    const url = new URL(videolinkOrigin);
-    const playlistId = url.searchParams.get('list');
-
-    if (!playlistId) {
-      return null;
+export function servicePurePlaylistVideolinkYTB(videolinkOrigin: string): PlaylistLinkInfoYTB | null {
+    if (!videolinkOrigin) {
+        return null;
     }
 
-    return {
-      playlistVideolink: `https://www.youtube.com/playlist?list=${playlistId}`,
-      playlistId,
-    };
-  } catch {
-    return null; // Invalid URL
-  }
+    try {
+        const url = new URL(videolinkOrigin);
+        const playlistId = url.searchParams.get('list');
+
+        if (!playlistId) {
+            return null;
+        }
+
+        return {
+            playlistVideolink: `https://www.youtube.com/playlist?list=${playlistId}`,
+            playlistId,
+        };
+    } catch {
+        return null; // Invalid URL
+    }
 }

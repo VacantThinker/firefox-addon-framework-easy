@@ -9,6 +9,7 @@ export * from './opTab';
 export * from './serviceCommon';
 export * from './serviceFetch';
 export * from './serviceGet';
+export * from './serviceOpContentJsYTB';
 export * from './serviceOpContent';
 export * from './serviceOperationYTB';
 export * from './serviceOpJavascript';
