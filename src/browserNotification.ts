@@ -1,30 +1,35 @@
-import {
-  browserRuntimeGeckoId,
-  browserRuntimeManifestName
-} from './browserRuntime';
+import {browserRuntimeManifestName} from './browserRuntime';
+
+export interface NotificationTwoOptions {
+  message: string,
+  title?: string,
+}
 
 /**
- * Creates a browser notification with basic type.
- * @param content The notification message string.
- * @param title The notification title (defaults to manifest name).
+ * Creates a browser notification with basic type,
+ * if title null use addon manifest name.
  * @returns The notification identifier.
+ * @param notificationTwoOptions
  */
-export async function browserNotificationCreate(
-  content: string,
-  title: string = browserRuntimeManifestName()
+export async function browserNotificationCreateBasicMessage(
+  notificationTwoOptions: NotificationTwoOptions
 ): Promise<string> {
-  const notificationId = `${browserRuntimeGeckoId()}cake-noti`;
-
-  const options: browser.notifications.CreateNotificationOptions = {
+  const notificationOptions: browser.notifications.CreateNotificationOptions = {
+    message: "",
     type: 'basic',
-    title: title,
-    message: content,
+    title: browserRuntimeManifestName()
   };
-
-  await browser.notifications.create(
-    notificationId,
+  const options: browser.notifications.CreateNotificationOptions = {
+    ...notificationOptions, ...notificationTwoOptions
+  }
+  return await browserNotificationCreate(
     options
   );
+}
 
-  return notificationId;
+export async function browserNotificationCreate(
+  notificationOptions: browser.notifications.CreateNotificationOptions
+)
+{
+  return await browser.notifications.create(notificationOptions)
 }
