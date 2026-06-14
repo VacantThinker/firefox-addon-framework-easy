@@ -1,4 +1,4 @@
-export interface VideoInfo {
+interface VideoInfo {
   vid: string;
   videoTitle: string;
 }
@@ -11,7 +11,6 @@ function getMkvMergeNodeScript(
   mkvMergePath: string,
   openCommand: string
 ): string {
-  const {vid, videoTitle} = videoInfo;
 
   return `
 const path = require('path');
