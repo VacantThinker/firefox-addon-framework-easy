@@ -1,3 +1,5 @@
+import {serviceRemoveIllegalWord} from "./serviceOpContent";
+
 interface VideoLinkInfoYTB {
   videolink: string;
   vid: string;
@@ -32,6 +34,20 @@ export function serviceGetImageURLYTB(
  */
 export function serviceGetVideolinkByVid(vid: string): string {
   return `https://www.youtube.com/watch?v=${vid}`
+}
+
+export interface VideoInfoBase {
+  vid: string;
+  videolink: string;
+  title: string;
+}
+
+export function serviceGetVideoInfoBaseYTB(videolinkOrigin: string, titleOrigin: string) {
+  const videolinkYTB = servicePureVideolinkYTB(videolinkOrigin)
+  if (!videolinkYTB) return;
+  const {vid, videolink} = videolinkYTB;
+  const title = serviceRemoveIllegalWord(titleOrigin);
+  return {vid, videolink, title} as VideoInfoBase;
 }
 
 /**
