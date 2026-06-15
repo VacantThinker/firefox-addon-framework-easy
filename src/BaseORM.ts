@@ -10,7 +10,9 @@ import {
  * Provides encapsulated CRUD operations for JSON-serializable Key-Value pairs.
  * Uses Generics (T) to ensure type safety for the stored object structure.
  */
-export abstract class BaseORM<T extends Record<string, any>> {
+// FIX: Expand constraint to 'any[]' so TabMessageStorageData (an array of
+// tuples) is permitted.
+export abstract class BaseORM<T extends Record<string, any> | any[]> {
   protected readonly id: string;
   protected readonly storageKey: string;
   private readonly defaultValue: T;
@@ -21,7 +23,7 @@ export abstract class BaseORM<T extends Record<string, any>> {
   protected constructor(
     prefix: string,
     id: string,
-    defaultValue: T = {} as T
+    defaultValue: T = {} as unknown as T
   ) {
     if (new.target === BaseORM) {
       throw new TypeError('Cannot construct BaseORM instances directly (Abstract Class).');
@@ -45,7 +47,8 @@ export abstract class BaseORM<T extends Record<string, any>> {
    */
   protected async get(): Promise<T> {
     if (!(await this.exists())) {
-      // Calls the lock-protected initialization instead of initDefaultObject directly
+      // Calls the lock-protected initialization instead of initDefaultObject
+      // directly
       await this.safeInit();
     }
     return (await stoOpGet(this.storageKey)) as T;
