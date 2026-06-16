@@ -151,6 +151,28 @@ export async function tabOpQueryUrl(url: string): Promise<number[]> {
 }
 
 /**
+ * browserRuntimeGetPagesURL("optionsALL.html"
+ * @param url
+ */
+export async function tabOpCreateKeepOnlyOneFocusTrue(url: string) {
+  const tabIds = await tabOpQueryUrl(url)
+  let tabId = tabIds.shift();
+  if (tabIds.length >= 1 && tabId) {
+    await tabOpFocus(tabId)
+    await tabOpReload(tabId)
+  } else {
+    await tabOpCreateActiveTrue({url});
+  }
+}
+
+export async function tabOpQueryThenReloadALL(url: string) {
+  const tabIds = await tabOpQueryUrl(url)
+  if (tabIds.length >= 1) {
+    tabIds.forEach(tabId => tabOpReload(tabId))
+  }
+}
+
+/**
  * Finds all tabs matching the URL pattern and removes them simultaneously.
  */
 export async function tabOpQueryUrlThenRemove(url: string): Promise<void> {
