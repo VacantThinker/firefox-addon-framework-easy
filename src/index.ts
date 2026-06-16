@@ -1,4 +1,5 @@
 export * from './BaseORM';
+export * from './browserBrowsingData';
 export * from './browserDownload';
 export * from './browserNotification';
 export * from './browserRuntime';

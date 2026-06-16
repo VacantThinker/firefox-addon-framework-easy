@@ -1,4 +1,5 @@
 import {tabOpFocus} from "./opTab";
+import {browserBrowsingDataRemoveDomainCache} from "./browserBrowsingData";
 
 /**
  * Captures an <img> element from the current document, draws it to a canvas
@@ -133,4 +134,8 @@ export async function ctJsFocusTargetTabUseRuntimeMessage(targetTabId: number) {
 
 export async function ctJsFocusTargetTab(targetTabId: number) {
   await tabOpFocus(targetTabId)
+}
+
+export async function ctJsRemoveDomainCache(domain: string) {
+  await browserBrowsingDataRemoveDomainCache(domain)
 }
