@@ -1,4 +1,6 @@
+export * from './BaseNumberKeyORM';
 export * from './BaseORM';
+export * from './BaseStringKeyORM';
 export * from './browserBrowsingData';
 export * from './browserDownload';
 export * from './browserNotification';
