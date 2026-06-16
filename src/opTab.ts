@@ -151,24 +151,35 @@ export async function tabOpQueryUrl(url: string): Promise<number[]> {
 }
 
 /**
- * browserRuntimeGetPagesURL("optionsALL.html"
+ * Ensures only one tab with the given URL exists, focuses/reloads it,
+ * or creates a new one if it doesn't exist. Closes duplicates if found.
  * @param url
  */
-export async function tabOpCreateKeepOnlyOneFocusTrue(url: string) {
-  const tabIds = await tabOpQueryUrl(url)
-  let tabId = tabIds.shift();
-  if (tabIds.length >= 1 && tabId) {
-    await tabOpFocus(tabId)
-    await tabOpReload(tabId)
+export async function tabOpCreateKeepOnlyOneFocusTrue(url: string): Promise<void> {
+  const tabIds = await tabOpQueryUrl(url);
+
+  if (tabIds.length > 0) {
+    // 1. Pick the first existing tab to focus and reload
+    const targetTabId = tabIds[0];
+    await tabOpFocus(targetTabId);
+    await tabOpReload(targetTabId);
+
+    // 2. Cleanup: If there are accidental duplicates, close them
+    if (tabIds.length > 1) {
+      const extraTabIds = tabIds.slice(1);
+      await tabOpRemove(extraTabIds);
+    }
   } else {
+    // 3. No tabs exist with this URL, create a new one
     await tabOpCreateActiveTrue({url});
   }
 }
 
-export async function tabOpQueryThenReloadALL(url: string) {
-  const tabIds = await tabOpQueryUrl(url)
+export async function tabOpQueryThenReloadALL(url: string): Promise<void> {
+  const tabIds = await tabOpQueryUrl(url);
   if (tabIds.length >= 1) {
-    tabIds.forEach(tabId => tabOpReload(tabId))
+    // Reload all matching tabs concurrently and wait for completion
+    await Promise.all(tabIds.map(tabId => tabOpReload(tabId)));
   }
 }
 
