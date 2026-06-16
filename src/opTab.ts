@@ -143,17 +143,18 @@ export async function tabOpQueryDomain(domain: string): Promise<{
 /**
  * Retrieves an array of tab IDs matching the URL pattern.
  */
-export async function tabOpQueryUrl(urlQuery: string): Promise<number[]> {
-  const tabs = await browser.tabs.query({url: urlQuery});
-  return tabs.filter((t) => typeof t.id === 'number')
+export async function tabOpQueryUrl(url: string): Promise<number[]> {
+  const tabs = await browser.tabs.query({url});
+  return tabs
+    .filter((t) => typeof t.id === 'number')
     .map((t) => t.id!);
 }
 
 /**
  * Finds all tabs matching the URL pattern and removes them simultaneously.
  */
-export async function tabOpQueryUrlThenRemove(urlQuery: string): Promise<void> {
-  const ids = await tabOpQueryUrl(urlQuery);
+export async function tabOpQueryUrlThenRemove(url: string): Promise<void> {
+  const ids = await tabOpQueryUrl(url);
   if (ids.length > 0) {
     await browser.tabs.remove(ids);
   }
