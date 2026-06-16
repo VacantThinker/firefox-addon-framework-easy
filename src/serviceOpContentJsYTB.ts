@@ -1,3 +1,5 @@
+import {tabOpFocus} from "./opTab";
+
 /**
  * Captures an <img> element from the current document, draws it to a canvas
  * matching its expected YouTube aspect ratio dimensions, and triggers a
@@ -114,4 +116,21 @@ export async function ctJsCloseTab() {
   await browser.runtime.sendMessage({
     act: 'actRemoveCurrentTab',
   });
+}
+
+export interface MessagePayloadFocusTargetTab {
+  act: "actFocusTargetTab";
+  targetTabId: number;
+}
+
+export async function ctJsFocusTargetTabUseRuntimeMessage(targetTabId: number) {
+  const message: MessagePayloadFocusTargetTab = {
+    targetTabId,
+    act: 'actFocusTargetTab'
+  };
+  await browser.runtime.sendMessage(message);
+}
+
+export async function ctJsFocusTargetTab(targetTabId: number) {
+  await tabOpFocus(targetTabId)
 }
