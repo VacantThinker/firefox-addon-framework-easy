@@ -176,3 +176,10 @@ export async function ctJsOpenPage(url: string) {
 export async function ctJsOpenPageKeepOnlyOne(url: string) {
   await tabOpCreateKeepOnlyOneFocusTrue(url)
 }
+
+export function ctJsHideElements(selectors: string[]) {
+  selectors.forEach(sel => {
+    Array.from(document.body.querySelectorAll<HTMLElement>(sel))
+      .forEach(ele => ele.hidden = true)
+  })
+}

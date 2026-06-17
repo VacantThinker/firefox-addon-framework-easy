@@ -189,7 +189,7 @@ export async function tabOpQueryThenReloadALL(url: string): Promise<void> {
 export async function tabOpQueryUrlThenRemove(url: string): Promise<void> {
   const ids = await tabOpQueryUrl(url);
   if (ids.length > 0) {
-    await browser.tabs.remove(ids);
+    await tabOpRemove(ids);
   }
 }
 
@@ -249,7 +249,7 @@ export async function tabOpUpdateActiveFalse(tabId: number): Promise<EnhancedTab
  * Focuses the window containing the tab, then highlights and activates the tab.
  */
 export async function tabOpFocus(tabId: number): Promise<EnhancedTab> {
-  const tab = await browser.tabs.get(tabId);
+  const tab = await tabOpGet(tabId);
   if (!tab || typeof tab.windowId !== 'number') {
     throw new Error(`Tab ${tabId} not found or has no window.`);
   }
