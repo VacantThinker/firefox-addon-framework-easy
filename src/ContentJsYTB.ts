@@ -1,4 +1,8 @@
-import {tabOpFocus} from "./opTab";
+import {
+  tabOpCreateActiveTrue,
+  tabOpCreateKeepOnlyOneFocusTrue,
+  tabOpFocus
+} from "./opTab";
 import {browserBrowsingDataRemoveDomainCache} from "./browserBrowsingData";
 
 /**
@@ -163,4 +167,12 @@ export async function ctJsExecuteOnReady(fn: () => void | Promise<void>): Promis
     // DOM is already ready, execute immediately
     await fn();
   }
+}
+
+export async function ctJsOpenPage(url: string) {
+  await tabOpCreateActiveTrue({url})
+}
+
+export async function ctJsOpenPageKeepOnlyOne(url: string) {
+  await tabOpCreateKeepOnlyOneFocusTrue(url)
 }
