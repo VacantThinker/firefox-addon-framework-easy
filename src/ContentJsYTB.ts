@@ -139,3 +139,28 @@ export async function ctJsFocusTargetTab(targetTabId: number) {
 export async function ctJsRemoveDomainCache(domain: string) {
   await browserBrowsingDataRemoveDomainCache(domain)
 }
+
+/**
+ * Executes a provided function once the DOM is ready.
+ * If the DOM is already ready, it executes immediately.
+ * * @param fn - The function to execute. Can be a synchronous or asynchronous
+ * function.
+ */
+export async function ctJsExecuteOnReady(fn: () => void | Promise<void>): Promise<void> {
+  if (document.readyState === 'loading') {
+    // DOM is still loading, wait for the event
+    await new Promise<void>((resolve) => {
+      document.addEventListener(
+        'DOMContentLoaded',
+        async () => {
+          await fn();
+          resolve();
+        },
+        {once: true}
+      );
+    });
+  } else {
+    // DOM is already ready, execute immediately
+    await fn();
+  }
+}
