@@ -2,6 +2,7 @@
 import {browserTabSendMessageMarcoPolo} from "./browserTab";
 import {tabOpFocus, tabOpReload, tabOpRemove} from "./opTab";
 import {MessageActionBaseOptions} from "./types";
+import {browserNotificationCreateBasicContent} from "./browserNotification";
 
 export type ActHandlerFunc = (rest: any, tabId: number | undefined) => Promise<void>;
 
@@ -9,13 +10,19 @@ export type ActHandlerFunc = (rest: any, tabId: number | undefined) => Promise<v
  * Uses <T extends string> so the app can pass its own union type.
  * It defaults to FrameworkBaseAction if no type is passed.
  */
-export function bkJsCreateBaseHandlers<T extends string = MessageActionBaseOptions>(): Map<T, ActHandlerFunc> {
+export function bkJsCreateActionBaseHandlers<T extends string = MessageActionBaseOptions>()
+  : Map<T, ActHandlerFunc> {
+
   // We use `any` internally to set the map up without TS complaining,
   // but we return the strictly typed generic Map.
-  const map = new Map<any, ActHandlerFunc>();
-
+  const map = new Map<MessageActionBaseOptions, ActHandlerFunc>();
+  map.set("actNotification", async (rest) => {
+    if (rest && rest.content) {
+      await browserNotificationCreateBasicContent(rest.content)
+    }
+  })
   map.set('actInfo', async (rest) => {
-    console.log('actInfo', rest);
+    console.info('actInfo', rest);
   });
   map.set('actMarco', async (_rest, tabId) => {
     if (tabId) await browserTabSendMessageMarcoPolo(tabId);

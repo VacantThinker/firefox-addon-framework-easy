@@ -1,7 +1,12 @@
 import {tabOpCreateActiveTrue, tabOpCreateKeepOnlyOneFocusTrue} from "./opTab";
 import {browserBrowsingDataRemoveDomainCache} from "./browserBrowsingData";
 import {browserRuntimeSendMessage} from "./browserRuntime";
-import {MessagePayloadAct, MessagePayloadTargetTab} from "./types";
+import {
+  MessagePayloadAction,
+  MessagePayloadInfo,
+  MessagePayloadNotification,
+  MessagePayloadTargetTab
+} from "./types";
 
 /**
  * Captures an <img> element from the current document, draws it to a canvas
@@ -100,40 +105,6 @@ export function ctJsExtractVideoQualityFromText(text: string): string {
   return Number.isNaN(num) ? 'unknown' : num.toString();
 }
 
-/**
- * Establishes a persistent baseline connection with the background script to
- * maintain runtime context.
- */
-export function ctJskeepAlive(tag: string = "", enableLog = false) {
-  setInterval(
-    async () => {
-      if (enableLog) {
-        console.log(tag, "br send message actMarco")
-      }
-      let message: MessagePayloadAct = {act: 'actMarco'};
-      await browserRuntimeSendMessage(message)
-    },
-    1000);
-}
-
-export async function ctJsCloseTab() {
-  let message: MessagePayloadAct = {
-    act: 'actRemoveCurrentTab',
-  };
-  await browserRuntimeSendMessage(message);
-}
-
-export async function ctJsFocusTargetTab(targetTabId: number) {
-  const message: MessagePayloadTargetTab = {
-    targetTabId,
-    act: 'actFocusTargetTab'
-  };
-  await browserRuntimeSendMessage(message);
-}
-
-export async function ctJsRemoveDomainCache(domain: string) {
-  await browserBrowsingDataRemoveDomainCache(domain)
-}
 
 /**
  * Executes a provided function once the DOM is ready.
@@ -164,6 +135,10 @@ export async function ctJsOpenPage(url: string) {
   await tabOpCreateActiveTrue({url})
 }
 
+export async function ctJsRemoveDomainCache(domain: string) {
+  await browserBrowsingDataRemoveDomainCache(domain)
+}
+
 export async function ctJsOpenPageKeepOnlyOne(url: string) {
   await tabOpCreateKeepOnlyOneFocusTrue(url)
 }
@@ -173,4 +148,60 @@ export function ctJsHideElements(selectors: string[]) {
     Array.from(document.body.querySelectorAll<HTMLElement>(sel))
       .forEach(ele => ele.hidden = true)
   })
+}
+
+//-------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------
+
+/**
+ * Establishes a persistent baseline connection with the background script to
+ * maintain runtime context.
+ */
+export function ctJskeepAlive(tag: string = "", enableLog = true) {
+  setInterval(
+    async () => {
+      if (enableLog) {
+        console.log(tag, "br send message actMarco")
+      }
+      let message: MessagePayloadAction = {act: 'actMarco'};
+      await browserRuntimeSendMessage(message)
+    },
+    1000);
+}
+
+export async function ctJsCloseTab() {
+  let message: MessagePayloadAction = {
+    act: 'actRemoveCurrentTab',
+  };
+  await browserRuntimeSendMessage(message);
+}
+
+export async function ctJsRemoveCurrentTab() {
+  let message: MessagePayloadAction = {
+    act: 'actRemoveCurrentTab',
+  };
+  await browserRuntimeSendMessage(message);
+}
+
+export async function ctJsFocusTargetTab(targetTabId: number) {
+  const message: MessagePayloadTargetTab = {
+    targetTabId,
+    act: 'actFocusTargetTab'
+  };
+  await browserRuntimeSendMessage(message);
+}
+
+export async function ctJsInfoToBackground(info: string) {
+  const message: MessagePayloadInfo = {act: "actInfo", info,}
+  await browserRuntimeSendMessage(message)
+}
+
+export async function ctJsNotification(content: string) {
+  const message: MessagePayloadNotification = {
+    act: "actNotification", content,
+  }
+  await browserRuntimeSendMessage(message)
 }

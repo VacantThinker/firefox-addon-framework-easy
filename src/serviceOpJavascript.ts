@@ -6,7 +6,7 @@ import {
 } from './serviceOpContent';
 import {
   browserNotificationCreate,
-  browserNotificationCreateBasicMessageOnly
+  browserNotificationCreateBasicContent
 } from './browserNotification';
 
 // --- Interfaces ---
@@ -283,7 +283,7 @@ export async function serviceDealWithMagnetLink(message: MagnetLinkMessage): Pro
   if (!Array.isArray(data) ||
     data.length ===
     0) {
-    await browserNotificationCreateBasicMessageOnly('magnet link not found!');
+    await browserNotificationCreateBasicContent('magnet link not found!');
     return;
   }
 

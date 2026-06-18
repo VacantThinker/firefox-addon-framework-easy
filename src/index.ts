@@ -7,7 +7,7 @@ export * from './browserDownload';
 export * from './browserNotification';
 export * from './browserRuntime';
 export * from './browserTab';
-export * from './ContentJsYTB';
+export * from './ContentJs';
 export * from './opStorage';
 export * from './opTab';
 export * from './serviceCommon';
