@@ -2,9 +2,9 @@ import {tabOpCreateActiveTrue, tabOpCreateKeepOnlyOneFocusTrue} from "./opTab";
 import {browserBrowsingDataRemoveDomainCache} from "./browserBrowsingData";
 import {browserRuntimeSendMessage} from "./browserRuntime";
 import {
-  MessagePayloadAction,
+  MessagePayloadAction, MessagePayloadFocusTargetTab,
   MessagePayloadInfo,
-  MessagePayloadNotification,
+  MessagePayloadNotification, MessagePayloadReloadTargetTab,
   MessagePayloadTargetTab
 } from "./types";
 
@@ -205,9 +205,16 @@ export async function ctJsRemoveCurrentTab() {
 }
 
 export async function ctJsFocusTargetTab(targetTabId: number) {
-  await browserRuntimeSendMessage<MessagePayloadTargetTab>({
+  await browserRuntimeSendMessage<MessagePayloadFocusTargetTab>({
     targetTabId: targetTabId,
     act: 'actFocusTargetTab'
+  });
+}
+
+export async function ctJsReloadTargetTab(targetTabId: number) {
+  await browserRuntimeSendMessage<MessagePayloadReloadTargetTab>({
+    targetTabId: targetTabId,
+    act: 'actReloadTargetTab'
   });
 }
 
