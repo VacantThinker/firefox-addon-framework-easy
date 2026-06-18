@@ -1,12 +1,12 @@
-export type MessageActionOptions =
+export type MessageActionBaseOptions =
+  | 'actInfo'
   | "actMarco"
   | "actRemoveCurrentTab"
   | "actFocusTargetTab"
   | "actReloadTargetTab"
 
-
 export interface MessagePayloadAct {
-  act: MessageActionOptions
+  act: MessageActionBaseOptions
 }
 
 export interface MessagePayloadTargetTab extends MessagePayloadAct {

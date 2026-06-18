@@ -1,3 +1,4 @@
+export * from './backgroundJs';
 export * from './BaseNumberKeyORM';
 export * from './BaseORM';
 export * from './BaseStringKeyORM';
