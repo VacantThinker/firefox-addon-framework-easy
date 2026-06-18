@@ -1,8 +1,9 @@
 // --- IN YOUR FRAMEWORK ---
 import {browserTabSendMessageMarcoPolo} from "./browserTab";
 import {tabOpFocus, tabOpReload, tabOpRemove} from "./opTab";
-import {MessageActionBaseOptions} from "./types";
+import {MessageActionBaseOptions, MessagePayloadDownloadInfo} from "./types";
 import {browserNotificationCreateBasicContent} from "./browserNotification";
+import {serviceDownloadByDownlink} from "./serviceCommon";
 
 export type ActHandlerFunc = (rest: any, tabId: number | undefined) => Promise<void>;
 
@@ -16,6 +17,11 @@ export function bkJsCreateActionBaseHandlers<T extends string = MessageActionBas
   // We use `any` internally to set the map up without TS complaining,
   // but we return the strictly typed generic Map.
   const map = new Map<MessageActionBaseOptions, ActHandlerFunc>();
+  map.set("actDownloadFile", async (rest: MessagePayloadDownloadInfo) => {
+    if (rest && rest.downloadParams) {
+      await serviceDownloadByDownlink(rest.downloadParams)
+    }
+  })
   map.set("actNotification", async (rest) => {
     if (rest && rest.content) {
       await browserNotificationCreateBasicContent(rest.content)

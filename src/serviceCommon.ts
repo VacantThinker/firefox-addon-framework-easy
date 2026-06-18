@@ -17,7 +17,8 @@ export async function serviceResetAddon() {
  * only.
  * * @param params The download parameters.
  */
-export async function serviceDownloadByDownlink(params: DownloadParams): Promise<void> {
+export async function serviceDownloadByDownlink(
+  params: DownloadParams): Promise<void> {
   const {
     filename,
     downlink
@@ -27,8 +28,7 @@ export async function serviceDownloadByDownlink(params: DownloadParams): Promise
     // Attempt 1: Full download with provided parameters
     await browserDownloadByDownlink(params);
     await browserNotificationCreateBasicContent(
-      `downloading! ${filename ??
-      'file'}`);
+      `downloading! ${filename ?? 'file'}`);
   } catch (error) {
     // Notify about the failure
     await browserNotificationCreateBasicContent(`reason=${error}`);

@@ -2,10 +2,12 @@ import {tabOpCreateActiveTrue, tabOpCreateKeepOnlyOneFocusTrue} from "./opTab";
 import {browserBrowsingDataRemoveDomainCache} from "./browserBrowsingData";
 import {browserRuntimeSendMessage} from "./browserRuntime";
 import {
-  MessagePayloadAction, MessagePayloadFocusTargetTab,
+  MessagePayloadAction,
+  MessagePayloadDownloadInfo,
+  MessagePayloadFocusTargetTab,
   MessagePayloadInfo,
-  MessagePayloadNotification, MessagePayloadReloadTargetTab,
-  MessagePayloadTargetTab
+  MessagePayloadNotification,
+  MessagePayloadReloadTargetTab
 } from "./types";
 
 /**
@@ -221,6 +223,12 @@ export async function ctJsReloadTargetTab(targetTabId: number) {
 export async function ctJsInfoToBackground(info: string) {
   await browserRuntimeSendMessage<MessagePayloadInfo>(
     {act: "actInfo", info,})
+}
+
+export async function ctJsDownloadFile(downlink: string, filename: string) {
+  await browserRuntimeSendMessage<MessagePayloadDownloadInfo>({
+    act: "actDownloadFile", downloadParams: {downlink, filename}
+  })
 }
 
 export async function ctJsNotification(content: string) {

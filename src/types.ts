@@ -1,4 +1,7 @@
+import {DownloadParams} from "./browserDownload";
+
 export type MessageActionBaseOptions =
+  | "actDownloadFile"
   | "actNotification"
   | 'actInfo'
   | "actMarco"
@@ -8,6 +11,10 @@ export type MessageActionBaseOptions =
 
 export interface MessagePayloadAction {
   act: MessageActionBaseOptions
+}
+
+export interface MessagePayloadDownloadInfo extends MessagePayloadAction {
+  downloadParams: DownloadParams;
 }
 
 export interface MessagePayloadNotification extends MessagePayloadAction {

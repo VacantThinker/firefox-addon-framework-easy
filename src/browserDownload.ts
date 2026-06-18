@@ -6,10 +6,11 @@ export interface DownloadParams {
   filename?: string | null;
 }
 
-export async function browserDownloadByDownlink({
-                                                  downlink,
-                                                  filename = null,
-                                                }: DownloadParams): Promise<void> {
+export async function browserDownloadByDownlink(
+  {
+    downlink,
+    filename = null,
+  }: DownloadParams): Promise<void> {
   const options: browser.downloads._DownloadOptions = {
     url: downlink,
     saveAs: false,
