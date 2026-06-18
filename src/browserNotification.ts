@@ -1,5 +1,9 @@
 import {browserRuntimeManifestName} from './browserRuntime';
 
+export async function browserNotificationCreateBasicMessage(message: string) {
+  await browserNotificationCreateBasicContent(message)
+}
+
 export async function browserNotificationCreateBasicContent(content: string): Promise<string> {
   const notification = ({
     content: content,
