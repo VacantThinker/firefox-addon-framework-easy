@@ -4,6 +4,7 @@
  * @returns The domain/hostname.
  */
 export function serviceGetDomain(url: string): string {
+  if (!url) return '';
   return new URL(url).hostname;
 }
 

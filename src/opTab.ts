@@ -119,25 +119,25 @@ export async function tabOpQueryAll(): Promise<browser.tabs.Tab[]> {
   return await browser.tabs.query({});
 }
 
-/**
- *
- * @param {string} domain
- */
+
 export async function tabOpQueryDomain(domain: string): Promise<{
-  id: number, url: string, title: string
+  id: number;
+  url: string;
+  title: string;
 }[]> {
   const tabs = await tabOpQueryAll();
-
-  if (tabs.length > 0) {
-    return tabs
-      .filter(t => t.url && t.id && serviceGetDomain(t.url) === domain)
-      .map(t => ({
-        id: t.id!,
-        url: t.url!,
-        title: t.title || ''
-      }));
-  }
-  return [];
+  // flatMap allows us to filter and map in a single pass without using
+  // non-null assertions (!)
+  return tabs.flatMap((tab) => {
+    if (tab.id !== undefined && tab.url && serviceGetDomain(tab.url) === domain) {
+      return [{
+        id: tab.id,
+        url: tab.url,
+        title: tab.title ?? ''
+      }];
+    }
+    return [];
+  });
 }
 
 /**
@@ -145,9 +145,9 @@ export async function tabOpQueryDomain(domain: string): Promise<{
  */
 export async function tabOpQueryUrl(url: string): Promise<number[]> {
   const tabs = await browser.tabs.query({url});
-  return tabs
-    .filter((t) => typeof t.id === 'number')
-    .map((t) => t.id!);
+
+  // flatMap handles both the filter and the map in a single pass
+  return tabs.flatMap((tab) => (typeof tab.id === 'number' ? [tab.id] : []));
 }
 
 /**
