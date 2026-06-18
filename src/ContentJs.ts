@@ -90,6 +90,20 @@ export async function ctJsRandomSleep501_800() {
   await ctJsRandomSleep(501, 800);
 }
 
+const SLEEP_RANGES = {
+  vShort: [501, 800],
+  short: [501, 1000],
+  medium: [1001, 1500],
+  long: [1501, 2000],
+  vLong: [2001, 2500],
+} as const;
+
+export async function ctJsPresetSleep(preset: keyof typeof SLEEP_RANGES) {
+  const [min, max] = SLEEP_RANGES[preset];
+  await ctJsRandomSleep(min, max);
+}
+
+// Usage: await ctJsPresetSleep('vLong');
 
 /**
  * Safely isolates numerals from alphanumeric video quality markers (e.g.,
@@ -161,47 +175,54 @@ export function ctJsHideElements(selectors: string[]) {
  * maintain runtime context.
  */
 export function ctJskeepAlive(tag: string = "", enableLog = true) {
-  setInterval(
-    async () => {
-      if (enableLog) {
-        console.log(tag, "br send message actMarco")
-      }
-      let message: MessagePayloadAction = {act: 'actMarco'};
-      await browserRuntimeSendMessage(message)
-    },
-    1000);
+  async function ping() {
+    if (enableLog) {
+      console.log(tag, "actMarco");
+    }
+    try {
+      await browserRuntimeSendMessage<MessagePayloadAction>({act: "actMarco"});
+    } catch (err) {
+      console.error("Keep-alive ping failed:", err);
+    }
+    // Schedule the next execution only after this one completes
+    setTimeout(ping, 1000);
+  }
+
+  // Start the loop
+  setTimeout(ping, 1000);
 }
 
 export async function ctJsCloseTab() {
-  let message: MessagePayloadAction = {
+  await browserRuntimeSendMessage<MessagePayloadAction>({
     act: 'actRemoveCurrentTab',
-  };
-  await browserRuntimeSendMessage(message);
+  });
 }
 
 export async function ctJsRemoveCurrentTab() {
-  let message: MessagePayloadAction = {
+  await browserRuntimeSendMessage<MessagePayloadAction>({
     act: 'actRemoveCurrentTab',
-  };
-  await browserRuntimeSendMessage(message);
+  });
 }
 
 export async function ctJsFocusTargetTab(targetTabId: number) {
-  const message: MessagePayloadTargetTab = {
-    targetTabId,
+  await browserRuntimeSendMessage<MessagePayloadTargetTab>({
+    targetTabId: targetTabId,
     act: 'actFocusTargetTab'
-  };
-  await browserRuntimeSendMessage(message);
+  });
 }
 
 export async function ctJsInfoToBackground(info: string) {
-  const message: MessagePayloadInfo = {act: "actInfo", info,}
-  await browserRuntimeSendMessage(message)
+  await browserRuntimeSendMessage<MessagePayloadInfo>(
+    {act: "actInfo", info,})
 }
 
 export async function ctJsNotification(content: string) {
-  const message: MessagePayloadNotification = {
+  await browserRuntimeSendMessage<MessagePayloadNotification>({
     act: "actNotification", content,
-  }
-  await browserRuntimeSendMessage(message)
+  })
+}
+
+export async function ctJsBrowserRuntimeSendMessage<T extends MessagePayloadAction>
+(message: T) {
+  await browserRuntimeSendMessage<T>(message)
 }

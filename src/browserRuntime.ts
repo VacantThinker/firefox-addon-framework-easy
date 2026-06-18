@@ -82,8 +82,6 @@ export function browserRuntimeManifestName(): string {
   return browser.runtime.getManifest().name;
 }
 
-export async function browserRuntimeSendMessage(
-  message: MessagePayloadAction,
-) {
+export async function browserRuntimeSendMessage<T extends MessagePayloadAction>(message: T) {
   await browser.runtime.sendMessage(message);
 }
