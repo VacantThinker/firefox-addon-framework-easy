@@ -1,7 +1,7 @@
 import {tabOpCreateActiveTrue, tabOpCreateKeepOnlyOneFocusTrue} from "./opTab";
 import {browserBrowsingDataRemoveDomainCache} from "./browserBrowsingData";
 import {browserRuntimeSendMessage} from "./browserRuntime";
-import {MessagePayloadAct, MessagePayloadOperationTargetTab} from "./types";
+import {MessagePayloadAct, MessagePayloadTargetTab} from "./types";
 
 /**
  * Captures an <img> element from the current document, draws it to a canvas
@@ -124,7 +124,7 @@ export async function ctJsCloseTab() {
 }
 
 export async function ctJsFocusTargetTab(targetTabId: number) {
-  const message: MessagePayloadOperationTargetTab = {
+  const message: MessagePayloadTargetTab = {
     targetTabId,
     act: 'actFocusTargetTab'
   };

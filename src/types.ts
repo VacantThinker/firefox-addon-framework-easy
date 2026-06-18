@@ -9,6 +9,9 @@ export interface MessagePayloadAct {
   act: MessageActionOptions
 }
 
-export interface MessagePayloadOperationTargetTab extends MessagePayloadAct {
+export interface MessagePayloadTargetTab extends MessagePayloadAct {
   targetTabId: number;
 }
+
+export type MessagePayloadFocusTargetTab = MessagePayloadTargetTab;
+export type MessagePayloadReloadTargetTab = MessagePayloadTargetTab;
