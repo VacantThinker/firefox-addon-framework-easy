@@ -1,9 +1,7 @@
-import {
-  tabOpCreateActiveTrue,
-  tabOpCreateKeepOnlyOneFocusTrue,
-  tabOpFocus
-} from "./opTab";
+import {tabOpCreateActiveTrue, tabOpCreateKeepOnlyOneFocusTrue} from "./opTab";
 import {browserBrowsingDataRemoveDomainCache} from "./browserBrowsingData";
+import {browserRuntimeSendMessage} from "./browserRuntime";
+import {MessagePayloadAct, MessagePayloadFocusTargetTab} from "./types";
 
 /**
  * Captures an <img> element from the current document, draws it to a canvas
@@ -112,32 +110,25 @@ export function ctJskeepAlive(tag: string = "", enableLog = false) {
       if (enableLog) {
         console.log(tag, "br send message actMarco")
       }
-      await browser.runtime.sendMessage({act: 'actMarco'})
+      let message: MessagePayloadAct = {act: 'actMarco'};
+      await browserRuntimeSendMessage(message)
     },
     1000);
 }
 
 export async function ctJsCloseTab() {
-  await browser.runtime.sendMessage({
+  let message: MessagePayloadAct = {
     act: 'actRemoveCurrentTab',
-  });
+  };
+  await browserRuntimeSendMessage(message);
 }
 
-export interface MessagePayloadFocusTargetTab {
-  act: "actFocusTargetTab";
-  targetTabId: number;
-}
-
-export async function ctJsFocusTargetTabUseRuntimeMessage(targetTabId: number) {
+export async function ctJsFocusTargetTab(targetTabId: number) {
   const message: MessagePayloadFocusTargetTab = {
     targetTabId,
     act: 'actFocusTargetTab'
   };
-  await browser.runtime.sendMessage(message);
-}
-
-export async function ctJsFocusTargetTab(targetTabId: number) {
-  await tabOpFocus(targetTabId)
+  await browserRuntimeSendMessage(message);
 }
 
 export async function ctJsRemoveDomainCache(domain: string) {

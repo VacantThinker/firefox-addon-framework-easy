@@ -16,3 +16,4 @@ export * from './serviceOpContent';
 export * from './serviceOperationYTB';
 export * from './serviceOpJavascript';
 export * from './serviceUpdateTabStyle';
+export * from './types';
