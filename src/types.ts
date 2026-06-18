@@ -2,12 +2,13 @@ export type MessageActionOptions =
   | "actMarco"
   | "actRemoveCurrentTab"
   | "actFocusTargetTab"
+  | "actReloadTargetTab"
 
 
 export interface MessagePayloadAct {
   act: MessageActionOptions
 }
 
-export interface MessagePayloadFocusTargetTab extends MessagePayloadAct {
+export interface MessagePayloadOperationTargetTab extends MessagePayloadAct {
   targetTabId: number;
 }
