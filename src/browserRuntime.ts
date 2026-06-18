@@ -1,5 +1,3 @@
-import {MessagePayloadAction} from "./types";
-
 /**
  * Reloads the current extension.
  */
@@ -82,6 +80,8 @@ export function browserRuntimeManifestName(): string {
   return browser.runtime.getManifest().name;
 }
 
-export async function browserRuntimeSendMessage<T extends MessagePayloadAction>(message: T) {
+export async function browserRuntimeSendMessage<T extends {
+  act: string
+}>(message: T) {
   await browser.runtime.sendMessage(message);
 }

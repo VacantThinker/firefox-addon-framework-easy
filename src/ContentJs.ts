@@ -222,7 +222,8 @@ export async function ctJsNotification(content: string) {
   })
 }
 
-export async function ctJsBrowserRuntimeSendMessage<T extends MessagePayloadAction>
-(message: T) {
-  await browserRuntimeSendMessage<T>(message)
+export async function ctJsBrowserRuntimeSendMessage<T extends {
+  act: string
+}>(message: T) {
+  await browserRuntimeSendMessage<T>(message);
 }
