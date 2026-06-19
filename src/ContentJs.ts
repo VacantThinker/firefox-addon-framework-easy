@@ -14,7 +14,7 @@ import {
  * Bypasses virtual DOM tracking properties to force modern framework
  * listeners to accept assignments
  */
-function ctJsSetInputElementNativeValue(element: HTMLInputElement, value: string) {
+export function ctJsSetInputElementNativeValue(element: HTMLInputElement, value: string) {
   const valueSetter = Object.getOwnPropertyDescriptor(element, 'value')?.set;
   const prototype = Object.getPrototypeOf(element);
   const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set;
