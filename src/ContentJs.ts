@@ -11,6 +11,28 @@ import {
 } from "./types";
 
 /**
+ * Bypasses virtual DOM tracking properties to force modern framework
+ * listeners to accept assignments
+ */
+function ctJsSetInputElementNativeValue(element: HTMLInputElement, value: string) {
+  const valueSetter = Object.getOwnPropertyDescriptor(element, 'value')?.set;
+  const prototype = Object.getPrototypeOf(element);
+  const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set;
+
+  if (prototypeValueSetter && valueSetter !== prototypeValueSetter) {
+    prototypeValueSetter.call(element, value);
+  } else if (valueSetter) {
+    valueSetter.call(element, value);
+  } else {
+    element.value = value;
+  }
+
+  // Dispatch bubbling events to trigger UI framework event tracking maps
+  element.dispatchEvent(new Event('input', {bubbles: true}));
+  element.dispatchEvent(new Event('change', {bubbles: true}));
+}
+
+/**
  * Captures an <img> element from the current document, draws it to a canvas
  * matching its expected YouTube aspect ratio dimensions, and triggers a
  * browser download.
