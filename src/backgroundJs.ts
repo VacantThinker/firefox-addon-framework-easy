@@ -50,7 +50,7 @@ export function bkJsCreateActionBaseHandlers<T extends string = MessageActionBas
 /**
  * Dispatcher also accepts the generic map
  */
-export function bkJsRegisterMessageDispatcher<T extends string>(
+export function bkJsRegisterRuntimeActionDispatcher<T extends string>(
   handlersMap: Map<T, ActHandlerFunc>,
   logTag: string = "background.ts "
 ) {
