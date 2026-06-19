@@ -42,12 +42,33 @@ export interface VideoInfoBase {
   title: string;
 }
 
-export function serviceGetVideoInfoBaseYTB(videolinkOrigin: string, titleOrigin: string) {
+export function serviceGetVideoInfoBaseYTB(
+  videolinkOrigin: string, titleOrigin: string, imageQuality: ImageQualityYTB
+): VideoInfoBase | undefined {
   const videolinkYTB = servicePureVideolinkYTB(videolinkOrigin)
   if (!videolinkYTB) return;
   const {vid, videolink} = videolinkYTB;
   const title = serviceRemoveIllegalWord(titleOrigin);
-  return {vid, videolink, title} as VideoInfoBase;
+  return {vid, videolink, title};
+}
+
+export function serviceGetVideoInfoYTB(
+  videolinkOrigin: string, titleOrigin: string, imageQuality: ImageQualityYTB
+): VideoInfoYTB | undefined {
+  const infoBase = serviceGetVideoInfoBaseYTB(
+    videolinkOrigin, titleOrigin, imageQuality);
+  if (!infoBase) return;
+  const {vid, title} = infoBase;
+  const filenameVideo: string = `${title}.mp4`;
+  const filenameImg: string = `${title}.jpg`;
+  const imageUrl: string = serviceGetImageURLYTB(vid, imageQuality);
+  return {...infoBase, filenameVideo, filenameImg, imageUrl}
+}
+
+export interface VideoInfoYTB extends VideoInfoBase {
+  filenameVideo: string;
+  filenameImg: string;
+  imageUrl: string;
 }
 
 /**
