@@ -18,42 +18,64 @@ import {
  * @param filename
  * @param querySelector - Optional custom selector if you aren't targeting the
  *   first <img>.
+ * @param delayMs
  */
-export function ctJsDownloadYoutubeImageViaCanvas(filename: string, querySelector: string = 'img'): void {
-  const img = document.body.querySelector<HTMLImageElement>(querySelector);
-  if (!img) {
-    console.warn("downloadYoutubeImageViaCanvas: No image element found on the page.");
-    return;
-  }
+export function ctJsDownloadYoutubeImageViaCanvas(
+  filename: string,
+  querySelector: string = 'img',
+  delayMs: number = 300
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const img = document.body.querySelector<HTMLImageElement>(querySelector);
+    if (!img) {
+      console.warn("No image element found on the page.");
+      return resolve();
+    }
 
-  // Map YouTube naturalWidths to their expected canvas proportions (handling
-  // black bars)
-  const sizes = new Map<number, { w: number; h: number }>();
-  sizes.set(1280, {w: 1280, h: 720});
-  sizes.set(320, {w: 1280, h: 720});
-  sizes.set(640, {w: 1280, h: 900});
-  sizes.set(480, {w: 1280, h: 900});
+    const sizes = new Map<number, { w: number; h: number }>();
+    sizes.set(1280, {w: 1280, h: 720});
+    sizes.set(320, {w: 1280, h: 720});
+    sizes.set(640, {w: 1280, h: 900});
+    sizes.set(480, {w: 1280, h: 900});
 
-  const {w, h} = sizes.get(img.naturalWidth) || {
-    w: img.naturalWidth,
-    h: img.naturalHeight
-  };
+    const {w, h} = sizes.get(img.naturalWidth) || {
+      w: img.naturalWidth,
+      h: img.naturalHeight
+    };
 
-  const canvas = document.createElement('canvas');
-  canvas.width = w;
-  canvas.height = h;
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
 
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return resolve();
 
-  ctx.drawImage(img, 0, 0, w, h);
+    ctx.drawImage(img, 0, 0, w, h);
 
-  const canvasUrl = canvas.toDataURL('image/jpeg', 1.0);
+    // BETTER WAY: Use toBlob instead of toDataURL
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        return reject(new Error("Canvas to Blob conversion failed"));
+      }
 
-  const eleA = document.createElement('a');
-  eleA.href = canvasUrl;
-  eleA.download = filename;
-  eleA.click();
+      // Create a temporary local URL for the binary data
+      const blobUrl = URL.createObjectURL(blob);
+
+      const eleA = document.createElement('a');
+      eleA.href = blobUrl;
+      eleA.download = filename;
+      eleA.click();
+
+      // Clean up the memory immediately after the click
+      URL.revokeObjectURL(blobUrl);
+
+      // Wait for the browser to register the download before resolving
+      setTimeout(() => {
+        resolve();
+      }, delayMs);
+
+    }, 'image/jpeg', 1.0);
+  });
 }
 
 /**
