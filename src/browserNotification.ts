@@ -5,21 +5,12 @@ export async function browserNotificationCreateBasicMessage(message: string) {
 }
 
 export async function browserNotificationCreateBasicContent(content: string): Promise<string> {
-  const notification = ({
-    content: content,
-  });
   const notificationOptions: browser.notifications.CreateNotificationOptions = {
-    message: "",
+    message: content,
     type: 'basic',
     title: browserRuntimeManifestName()
   };
-  const options: browser.notifications.CreateNotificationOptions = {
-    ...notificationOptions, ...notification
-  }
-  return await browserNotificationCreate(
-    options
-  );
-
+  return await browserNotificationCreate(notificationOptions);
 }
 
 export async function browserNotificationCreate(
