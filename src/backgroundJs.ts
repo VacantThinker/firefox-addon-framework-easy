@@ -54,7 +54,8 @@ export function bkJsRegisterRuntimeActionDispatcher<T extends string>(
   handlersMap: Map<T, ActHandlerFunc>,
   logTag: string = "background.ts "
 ) {
-  browser.runtime.onMessage.addListener(async (message, sender) => {
+  browser.runtime.onMessage.addListener(
+    async (message, sender) => {
     const {act, ...rest} = message;
     if (!act) return;
 

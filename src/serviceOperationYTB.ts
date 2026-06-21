@@ -14,6 +14,15 @@ export interface PlaylistInfoYTB extends PlaylistLinkInfoYTB {
   playlistTitle: string;
 }
 
+export type VideoQualityYTB =
+  | "144"
+  | "240"
+  | "360"
+  | "480"
+  | "720"
+  | "1080"
+  | "1440"
+  | "2160"
 
 export type ImageQualityYTB =
   | 'maxresdefault'
