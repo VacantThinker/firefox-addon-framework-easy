@@ -39,6 +39,9 @@ export function bkJsCreateActionBaseHandlers<T extends string = MessageActionBas
   map.set('actReloadTargetTab', async (rest) => {
     if (rest) await tabOpReload(rest.targetTabId);
   });
+  map.set('actFocusCurrentTab', async (_rest, tabId) => {
+    if (tabId) await tabOpFocus(tabId);
+  });
   map.set('actRemoveCurrentTab', async (_rest, tabId) => {
     if (tabId) await tabOpRemove(tabId);
   });
@@ -56,22 +59,22 @@ export function bkJsRegisterRuntimeActionDispatcher<T extends string>(
 ) {
   browser.runtime.onMessage.addListener(
     async (message, sender) => {
-    const {act, ...rest} = message;
-    if (!act) return;
+      const {act, ...rest} = message;
+      if (!act) return;
 
-    const tabId = sender?.tab?.id;
-    if (act !== "actMarco") {
-      console.info(logTag, act, `tabId=`, tabId);
-    } else {
-      console.log(logTag, act, `tabId=`, tabId);
-    }
+      const tabId = sender?.tab?.id;
+      if (act !== "actMarco") {
+        console.info(logTag, act, `tabId=`, tabId);
+      } else {
+        console.log(logTag, act, `tabId=`, tabId);
+      }
 
-    // Cast `act` to T so it can be used to query the Map
-    const handler = handlersMap.get(act as T);
-    if (handler) {
-      await handler(rest, tabId);
-    } else {
-      console.warn(act, " not match!");
-    }
-  });
+      // Cast `act` to T so it can be used to query the Map
+      const handler = handlersMap.get(act as T);
+      if (handler) {
+        await handler(rest, tabId);
+      } else {
+        console.warn(act, " not match!");
+      }
+    });
 }

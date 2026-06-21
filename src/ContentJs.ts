@@ -137,11 +137,26 @@ export async function ctJsRandomSleep501_800() {
 }
 
 const SLEEP_RANGES = {
-  vShort: [501, 800],
-  short: [501, 1000],
-  medium: [1001, 1500],
-  long: [1501, 2000],
-  vLong: [2001, 2500],
+  vShort: [
+    501,
+    800
+  ],
+  short: [
+    501,
+    1000
+  ],
+  medium: [
+    1001,
+    1500
+  ],
+  long: [
+    1501,
+    2000
+  ],
+  vLong: [
+    2001,
+    2500
+  ],
 } as const;
 
 export async function ctJsPresetSleep(preset: keyof typeof SLEEP_RANGES) {
@@ -247,6 +262,12 @@ export async function ctJsCloseTab() {
 export async function ctJsRemoveCurrentTab() {
   await browserRuntimeSendMessage<MessagePayloadAction>({
     act: 'actRemoveCurrentTab',
+  });
+}
+
+export async function ctJsFocusCurrentTab() {
+  await browserRuntimeSendMessage<MessagePayloadAction>({
+    act: 'actFocusCurrentTab',
   });
 }
 

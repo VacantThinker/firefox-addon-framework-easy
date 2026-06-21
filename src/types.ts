@@ -6,6 +6,7 @@ export type MessageActionBaseOptions =
   | 'actInfo'
   | "actMarco"
   | "actRemoveCurrentTab"
+  | "actFocusCurrentTab"
   | "actFocusTargetTab"
   | "actReloadTargetTab"
 
