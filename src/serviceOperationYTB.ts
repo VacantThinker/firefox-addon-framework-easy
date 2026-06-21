@@ -32,7 +32,7 @@ export type ImageQualityYTB =
 
 export function serviceGetImageURLYTB(
   vid: string,
-  imageQuality: ImageQualityYTB
+  imageQuality: ImageQualityYTB = "maxresdefault"
 ): string {
   return `https://i.ytimg.com/vi/${vid}/${imageQuality}.jpg`
 }
@@ -52,7 +52,7 @@ export interface VideoInfoBase {
 }
 
 export function serviceGetVideoInfoBaseYTB(
-  videolinkOrigin: string, titleOrigin: string, imageQuality: ImageQualityYTB
+  videolinkOrigin: string, titleOrigin: string
 ): VideoInfoBase | undefined {
   const videolinkYTB = servicePureVideolinkYTB(videolinkOrigin)
   if (!videolinkYTB) return;
@@ -62,22 +62,26 @@ export function serviceGetVideoInfoBaseYTB(
 }
 
 export function serviceGetVideoInfoYTB(
-  videolinkOrigin: string, titleOrigin: string, imageQuality: ImageQualityYTB
+  videolinkOrigin: string, titleOrigin: string,
+  imageQuality: ImageQualityYTB = "maxresdefault",
+  videoQuality: VideoQualityYTB = "720",
 ): VideoInfoYTB | undefined {
-  const infoBase = serviceGetVideoInfoBaseYTB(
-    videolinkOrigin, titleOrigin, imageQuality);
+
+  const infoBase = serviceGetVideoInfoBaseYTB(videolinkOrigin, titleOrigin);
   if (!infoBase) return;
   const {vid, title} = infoBase;
   const filenameVideo: string = `${title}.mp4`;
   const filenameImg: string = `${title}.jpg`;
-  const imageUrl: string = serviceGetImageURLYTB(vid, imageQuality);
-  return {...infoBase, filenameVideo, filenameImg, imageUrl}
+  const imageUrl: string = serviceGetImageURLYTB(vid, imageQuality)
+
+  return {...infoBase, filenameVideo, filenameImg, imageUrl, videoQuality}
 }
 
 export interface VideoInfoYTB extends VideoInfoBase {
   filenameVideo: string;
   filenameImg: string;
   imageUrl: string;
+  videoQuality: VideoQualityYTB;
 }
 
 /**
@@ -124,7 +128,7 @@ export function servicePureVideolinkYTB(videolinkOrigin: string): VideoLinkInfoY
 /**
  * Extracts playlist ID and creates a clean YouTube playlist URL.
  */
-function servicePurePlaylistVideolinkYTB(playlistLinkOrigin: string):
+export function servicePurePlaylistVideolinkYTB(playlistLinkOrigin: string):
   PlaylistLinkInfoYTB | null {
 
   if (!playlistLinkOrigin) {
@@ -147,5 +151,3 @@ function servicePurePlaylistVideolinkYTB(playlistLinkOrigin: string):
     return null; // Invalid URL
   }
 }
-
-export default servicePurePlaylistVideolinkYTB
