@@ -232,6 +232,17 @@ export async function ctJsExecuteOnReady(fn: () => void | Promise<void>): Promis
   }
 }
 
+export async function ctJsElementScrollIntoViewSmoothEnd(targetElement: HTMLElement) {
+  targetElement.scrollIntoView({
+    behavior: 'smooth', block: 'end'
+  })
+}
+
+//===========================================================
+//===========================================================
+//===========================================================
+//===========================================================
+
 export async function ctJsOpenPage(url: string) {
   await tabOpCreateActiveTrue({url})
 }

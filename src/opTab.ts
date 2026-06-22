@@ -78,7 +78,8 @@ interface TabOpCreateNearOptions {
 /**
  * Creates a new tab positioned immediately after a specified existing tab.
  */
-export async function tabOpCreateNear(options: TabOpCreateNearOptions): Promise<EnhancedTab> {
+export async function tabOpCreateNear(
+  options: TabOpCreateNearOptions): Promise<EnhancedTab> {
   const {properties, previousTabId} = options;
 
   if (previousTabId !== undefined) {
@@ -87,7 +88,6 @@ export async function tabOpCreateNear(options: TabOpCreateNearOptions): Promise<
       properties.index = previousTab.index + 1;
       properties.openerTabId = previousTab.id;
     } catch {
-      // Ignore if source tab is invalid
     }
   }
 
@@ -130,11 +130,13 @@ export async function tabOpQueryDomain(domain: string): Promise<{
   // non-null assertions (!)
   return tabs.flatMap((tab) => {
     if (tab.id !== undefined && tab.url && serviceGetDomain(tab.url) === domain) {
-      return [{
-        id: tab.id,
-        url: tab.url,
-        title: tab.title ?? ''
-      }];
+      return [
+        {
+          id: tab.id,
+          url: tab.url,
+          title: tab.title ?? ''
+        }
+      ];
     }
     return [];
   });
