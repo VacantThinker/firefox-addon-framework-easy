@@ -30,9 +30,10 @@ async function _create(properties: browser.tabs._CreateCreateProperties): Promis
  * Internal helper to unify tab updates.
  */
 async function _update(
-  tabId: number,
+  tabId: number | undefined,
   properties: browser.tabs._UpdateUpdateProperties
-): Promise<EnhancedTab> {
+): Promise<EnhancedTab | undefined> {
+  if (tabId == undefined) return;
   const tab = await browser.tabs.update(
     tabId,
     properties
@@ -85,8 +86,10 @@ export async function tabOpCreateNear(
   if (previousTabId !== undefined) {
     try {
       const previousTab = await tabOpGet(previousTabId);
-      properties.index = previousTab.index + 1;
-      properties.openerTabId = previousTab.id;
+      if (previousTab) {
+        properties.index = previousTab.index + 1;
+        properties.openerTabId = previousTab.id;
+      }
     } catch {
     }
   }
@@ -108,7 +111,8 @@ export async function tabOpCreateByWindow(url: string): Promise<EnhancedTab | un
 /**
  * Retrieves details about the specified tab.
  */
-export async function tabOpGet(tabId: number): Promise<browser.tabs.Tab> {
+export async function tabOpGet(tabId: number | undefined): Promise<browser.tabs.Tab | undefined> {
+  if (tabId == undefined) return;
   return await browser.tabs.get(tabId);
 }
 
@@ -201,9 +205,10 @@ export async function tabOpQueryUrlThenRemove(url: string): Promise<void> {
  * @param bypassCache Whether to bypass the cache.
  */
 export async function tabOpReload(
-  tabId: number,
+  tabId: number | undefined,
   bypassCache: boolean = false
 ): Promise<void> {
+  if (tabId == undefined) return;
   await browser.tabs.reload(
     tabId,
     {bypassCache}
@@ -222,7 +227,8 @@ export async function tabOpRemove(
 /**
  * Hides one or more tabs.
  */
-export async function tabOpHide(tabId: number | number[]): Promise<number[]> {
+export async function tabOpHide(tabId: number | number[] | undefined): Promise<number[] | undefined> {
+  if (tabId == undefined) return;
   return await browser.tabs.hide(tabId);
 }
 
@@ -230,9 +236,10 @@ export async function tabOpHide(tabId: number | number[]): Promise<number[]> {
  * Modifies the properties of a tab.
  */
 export async function tabOpUpdate(
-  tabId: number,
+  tabId: number | undefined,
   updateProperties: browser.tabs._UpdateUpdateProperties
-): Promise<EnhancedTab> {
+): Promise<EnhancedTab | undefined> {
+  if (tabId == undefined) return;
   return _update(
     tabId,
     updateProperties
@@ -242,7 +249,8 @@ export async function tabOpUpdate(
 /**
  * Updates a tab to be inactive and muted.
  */
-export async function tabOpUpdateActiveFalse(tabId: number): Promise<EnhancedTab> {
+export async function tabOpUpdateActiveFalse(tabId: number | undefined): Promise<EnhancedTab | undefined> {
+  if (tabId == undefined) return;
   return _update(
     tabId,
     {active: false, muted: true}
@@ -252,7 +260,8 @@ export async function tabOpUpdateActiveFalse(tabId: number): Promise<EnhancedTab
 /**
  * Focuses the window containing the tab, then highlights and activates the tab.
  */
-export async function tabOpFocus(tabId: number): Promise<EnhancedTab> {
+export async function tabOpFocus(tabId: number | undefined): Promise<EnhancedTab | undefined> {
+  if (tabId == undefined) return;
   const tab = await tabOpGet(tabId);
   if (!tab || typeof tab.windowId !== 'number') {
     throw new Error(`Tab ${tabId} not found or has no window.`);
@@ -267,4 +276,3 @@ export async function tabOpFocus(tabId: number): Promise<EnhancedTab> {
     {active: true, highlighted: true}
   );
 }
-
