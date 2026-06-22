@@ -213,7 +213,9 @@ export async function tabOpReload(
 /**
  * Closes one or more tabs.
  */
-export async function tabOpRemove(tabId: number | number[]): Promise<void> {
+export async function tabOpRemove(
+  tabId: number | number[] | undefined): Promise<void> {
+  if (tabId == undefined) return;
   await browser.tabs.remove(tabId);
 }
 
