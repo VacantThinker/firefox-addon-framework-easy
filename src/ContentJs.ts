@@ -232,7 +232,8 @@ export async function ctJsExecuteOnReady(fn: () => void | Promise<void>): Promis
   }
 }
 
-export function ctJsElementScrollIntoViewSmoothEnd(targetElement: HTMLElement) {
+export function ctJsElementScrollIntoViewSmoothEnd(
+  targetElement: HTMLElement) {
   targetElement.scrollIntoView({
     behavior: 'smooth', block: 'end'
   })
