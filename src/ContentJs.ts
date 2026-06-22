@@ -180,6 +180,32 @@ export function ctJsExtractVideoQualityFromText(text: string): string {
   return Number.isNaN(num) ? 'unknown' : num.toString();
 }
 
+/**
+ * Executes a provided function once the entire page (including all dependent
+ * resources such as stylesheets and images) is fully loaded.
+ * If the page is already fully loaded, it executes immediately.
+ * * @param fn - The function to execute. Can be synchronous or asynchronous.
+ */
+export async function ctJsExecuteOnComplete(fn: () => void | Promise<void>): Promise<void> {
+  // 'complete' means the DOM is ready AND all external resources have finished
+  // loading
+  if (document.readyState === 'complete') {
+    await fn();
+  } else {
+    // Wait for the window 'load' event, which fires after all resources are
+    // downloaded
+    await new Promise<void>((resolve) => {
+      window.addEventListener(
+        'load',
+        async () => {
+          await fn();
+          resolve();
+        },
+        {once: true}
+      );
+    });
+  }
+}
 
 /**
  * Executes a provided function once the DOM is ready.
