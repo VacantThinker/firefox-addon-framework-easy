@@ -5,7 +5,10 @@ import {MessageActionBaseOptions, MessagePayloadDownloadInfo} from "./types";
 import {browserNotificationCreateBasicContent} from "./browserNotification";
 import {serviceDownloadByDownlink} from "./serviceCommon";
 
-export type ActHandlerFunc = (rest: any, tabId: number | undefined) => Promise<void>;
+export type ActHandlerFunc = (
+  rest: any,
+  tabId?: number | undefined,
+  tabUrl?: string | undefined) => Promise<void>;
 
 /**
  * Uses <T extends string> so the app can pass its own union type.
@@ -63,6 +66,7 @@ export function bkJsRegisterRuntimeActionDispatcher<T extends string>(
       if (!act) return;
 
       const tabId = sender?.tab?.id;
+      const tabUrl = sender?.tab?.url;
       if (act !== "actMarco") {
         console.info(logTag, act, `tabId=`, tabId);
       } else {
@@ -72,7 +76,7 @@ export function bkJsRegisterRuntimeActionDispatcher<T extends string>(
       // Cast `act` to T so it can be used to query the Map
       const handler = handlersMap.get(act as T);
       if (handler) {
-        await handler(rest, tabId);
+        await handler(rest, tabId, tabUrl);
       } else {
         console.warn(act, " not match!");
       }
