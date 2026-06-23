@@ -2,17 +2,17 @@
  * Interface for the download request parameters.
  */
 export interface DownloadParams {
-  url: string;
+  downlink: string;
   filename?: string;
 }
 
 export async function browserDownloadByDownlink(
   params: DownloadParams): Promise<void> {
-  const {url, filename,} = params;
-  if (url == undefined) return;
+  const {downlink, filename,} = params;
+  if (downlink == undefined) return;
 
   const options: browser.downloads._DownloadOptions = {
-    url
+    url: downlink,
   };
 
   if (filename) {
