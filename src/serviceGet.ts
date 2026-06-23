@@ -1,11 +1,36 @@
 /**
  * Extracts the hostname from a given URL string.
- * @param url The full URL string.
+ * @param targetUrl The full URL string.
  * @returns The domain/hostname.
  */
-export function serviceGetDomain(url: string): string {
-  if (!url) return '';
-  return new URL(url).hostname;
+export function serviceGetDomain(targetUrl: string) {
+  if (targetUrl == undefined) return;
+  const url = serviceParseURL(targetUrl);
+  if (url) return url.hostname;
+  else return;
+}
+
+interface URLBase {
+  domain: string;
+  pathname: string;
+  searchParams: URLSearchParams;
+}
+
+export function serviceParseURLBase(
+  targetUrl: string): URLBase | undefined {
+  if (targetUrl == undefined) return;
+  const url = new URL(targetUrl);
+  const domain = url.hostname
+  const pathname = url.pathname;
+  const searchParams = url.searchParams;
+  return {
+    domain, pathname, searchParams
+  };
+}
+
+export function serviceParseURL(targetUrl: string) {
+  if (targetUrl == undefined) return;
+  return new URL(targetUrl);
 }
 
 /**

@@ -14,7 +14,8 @@ export type ActHandlerFunc = (
  * Uses <T extends string> so the app can pass its own union type.
  * It defaults to FrameworkBaseAction if no type is passed.
  */
-export function bkJsCreateActionBaseHandlers<T extends string = MessageActionBaseOptions>()
+export function bkJsCreateActionBaseHandlers
+<T extends string = MessageActionBaseOptions>()
   : Map<T, ActHandlerFunc> {
 
   // We use `any` internally to set the map up without TS complaining,
