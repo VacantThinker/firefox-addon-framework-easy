@@ -20,12 +20,14 @@ export async function browserDownloadByDownlink(
     options.filename = filename;
   }
 
-  // Inject the Referer header to bypass hotlink protection
-  if (referrer && options.headers) {
-    options.headers.push({
-      name: 'referer',
-      value: referrer
-    })
+  // FIX: Explicitly assign the headers array if a referrer is provided
+  if (referrer) {
+    options.headers = [
+      {
+        name: 'Referer', // Fix spelling: canonical HTTP header name
+        value: referrer
+      }
+    ];
   }
 
   await browser.downloads.download(options);
