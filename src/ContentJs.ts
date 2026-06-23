@@ -9,6 +9,7 @@ import {
   MessagePayloadNotification,
   MessagePayloadReloadTargetTab
 } from "./types";
+import {DownloadParams} from "./browserDownload";
 
 /**
  * Bypasses virtual DOM tracking properties to force modern framework
@@ -328,9 +329,10 @@ export async function ctJsInfoToBackground(info: string) {
     {act: "actInfo", info,})
 }
 
-export async function ctJsDownloadFile(downlink: string, filename: string) {
+export async function ctJsDownloadFile(
+  downloadParams: DownloadParams) {
   await browserRuntimeSendMessage<MessagePayloadDownloadInfo>({
-    act: "actDownloadFile", downloadParams: {downlink, filename}
+    act: "actDownloadFile", downloadParams
   })
 }
 
