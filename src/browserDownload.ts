@@ -8,14 +8,12 @@ export interface DownloadParams {
 }
 
 export async function browserDownloadByDownlink(
-  {
-    downlink,
-    filename,
-    referrer,
-  }: DownloadParams): Promise<void> {
+  params: DownloadParams): Promise<void> {
+  const {downlink, filename, referrer} = params;
+  if (downlink == undefined) return;
+
   const options: browser.downloads._DownloadOptions = {
     url: downlink,
-    saveAs: false,
   };
 
   if (filename) {
@@ -23,13 +21,11 @@ export async function browserDownloadByDownlink(
   }
 
   // Inject the Referer header to bypass hotlink protection
-  if (referrer) {
-    options.headers = [
-      {
-        name: 'Referer',
-        value: referrer
-      }
-    ];
+  if (referrer && options.headers) {
+    options.headers.push({
+      name: 'referer',
+      value: referrer
+    })
   }
 
   await browser.downloads.download(options);
