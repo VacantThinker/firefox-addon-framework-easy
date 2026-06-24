@@ -58,12 +58,13 @@ export function serviceGetCurrentDateYYYYMMDDHHMMSS(): string {
  * extension.
  */
 export function serviceTitleToFilenameLimit(
-  title: string | undefined): string | undefined {
+  title: string | undefined,
+  filenameLength: number = 50
+): string | undefined {
   if (!title) return undefined;
-  const MAX_FILENAME_LENGTH = 50;
   // .slice() safely handles strings shorter than
   // MAX_FILENAME_LENGTH without throwing errors
-  const truncatedTitle = title.slice(0, MAX_FILENAME_LENGTH);
+  const truncatedTitle = title.slice(0, filenameLength);
 
   return serviceAppendExtMP4(truncatedTitle);
 }
