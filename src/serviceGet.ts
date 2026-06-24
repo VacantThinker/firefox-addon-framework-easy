@@ -52,21 +52,31 @@ export function serviceGetCurrentDateYYYYMMDDHHMMSS(): string {
   return `${year}_${month}_${day}_${hours}h_${minutes}m_${seconds}s_${milliseconds}`;
 }
 
+export function serviceContentLimit80(
+  content: string | undefined,
+  numLength: number = 80
+) {
+  return serviceContentLimit(content, numLength)
+}
+
+export function serviceContentLimit50(
+  content: string | undefined,
+  numLength: number = 50
+) {
+  return serviceContentLimit(content, numLength)
+}
 
 /**
- * Truncates a title to a safe length and appends the .mp4
+ * Truncates a content to a safe length and appends the .mp4
  * extension.
  */
-export function serviceTitleToFilenameLimit(
-  title: string | undefined,
-  filenameLength: number = 50
+export function serviceContentLimit(
+  content: string | undefined,
+  numLength: number
 ): string | undefined {
-  if (!title) return undefined;
-  // .slice() safely handles strings shorter than
-  // MAX_FILENAME_LENGTH without throwing errors
-  const truncatedTitle = title.slice(0, filenameLength);
-
-  return serviceAppendExtMP4(truncatedTitle);
+  if (!content || !numLength) return undefined;
+  const contentLimit = content.slice(0, numLength);
+  return serviceAppendExtMP4(contentLimit);
 }
 
 /**
@@ -75,10 +85,7 @@ export function serviceTitleToFilenameLimit(
 export function serviceAppendExtMP4(
   title: string | undefined): string | undefined {
   if (!title) return undefined;
-
-  // Prevents duplicating the extension if it's already there
   let extMP4 = '.mp4';
   if (title.toLowerCase().endsWith(extMP4)) return title;
-
   return `${title}${extMP4}`;
 }
