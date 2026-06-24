@@ -52,16 +52,32 @@ export function serviceGetCurrentDateYYYYMMDDHHMMSS(): string {
   return `${year}_${month}_${day}_${hours}h_${minutes}m_${seconds}s_${milliseconds}`;
 }
 
-export function serviceTitleToFilenameLimit(title: string) {
-  if (title == undefined) return;
-  let num50 = 50;
-  const titleLimit = title.length > num50
-    ? title.substring(0, num50)
-    : title;
-  return serviceAppendExtMP4(titleLimit);
+
+/**
+ * Truncates a title to a safe length and appends the .mp4
+ * extension.
+ */
+export function serviceTitleToFilenameLimit(
+  title: string | undefined): string | undefined {
+  if (!title) return undefined;
+  const MAX_FILENAME_LENGTH = 50;
+  // .slice() safely handles strings shorter than
+  // MAX_FILENAME_LENGTH without throwing errors
+  const truncatedTitle = title.slice(0, MAX_FILENAME_LENGTH);
+
+  return serviceAppendExtMP4(truncatedTitle);
 }
 
-export function serviceAppendExtMP4(title: string) {
-  if (title == undefined) return;
-  return `${title}.mp4`;
+/**
+ * Appends the .mp4 extension to a given string.
+ */
+export function serviceAppendExtMP4(
+  title: string | undefined): string | undefined {
+  if (!title) return undefined;
+
+  // Prevents duplicating the extension if it's already there
+  let extMP4 = '.mp4';
+  if (title.toLowerCase().endsWith(extMP4)) return title;
+
+  return `${title}${extMP4}`;
 }
