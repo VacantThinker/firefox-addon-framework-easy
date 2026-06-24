@@ -7,9 +7,9 @@ export interface DownloadParams {
 }
 
 export async function browserDownloadByDownlink(
-  params: DownloadParams): Promise<void> {
+  params: DownloadParams): Promise<number> {
   const {downlink, filename,} = params;
-  if (downlink == undefined) return;
+  if (downlink == undefined) return -1;
 
   const options: browser.downloads._DownloadOptions = {
     url: downlink,
@@ -18,5 +18,5 @@ export async function browserDownloadByDownlink(
   if (filename) {
     options.filename = filename;
   }
-  await browser.downloads.download(options);
+  return await browser.downloads.download(options);
 }
