@@ -12,7 +12,4 @@ According to the terms of the AGPL-3.0, the source code for this network service
 
 You can download, clone, or view the complete source code for this application here: [Insert your GitHub/GitLab URL].
 
-## API Reference (Auto-Generated)
-
-Below is a list of all public functions found inside the `src` directory:
 

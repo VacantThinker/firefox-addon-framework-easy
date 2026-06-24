@@ -34,8 +34,8 @@ export function serviceParseURL(targetUrl: string) {
 }
 
 /**
- * Generates a timestamp string in the format: YYYY_M_D_Hh_Mm_Ss_ms
- * e.g., 2026_6_11_10h_30m_15s_450
+ * Generates a timestamp string in the format:
+ * YYYY_M_D_Hh_Mm_Ss_ms e.g., 2026_6_11_10h_30m_15s_450
  * @returns The formatted timestamp string.
  */
 export function serviceGetCurrentDateYYYYMMDDHHMMSS(): string {
@@ -50,4 +50,18 @@ export function serviceGetCurrentDateYYYYMMDDHHMMSS(): string {
   const milliseconds = date.getMilliseconds();
 
   return `${year}_${month}_${day}_${hours}h_${minutes}m_${seconds}s_${milliseconds}`;
+}
+
+export function serviceTitleToFilenameLimit(title: string) {
+  if (title == undefined) return;
+  let num50 = 50;
+  const titleLimit = title.length > num50
+    ? title.substring(0, num50)
+    : title;
+  return serviceAppendExtMP4(titleLimit);
+}
+
+export function serviceAppendExtMP4(title: string) {
+  if (title == undefined) return;
+  return `${title}.mp4`;
 }
