@@ -75,8 +75,7 @@ export function serviceContentLimit(
   numLength: number
 ): string | undefined {
   if (!content || !numLength) return undefined;
-  const contentLimit = content.slice(0, numLength);
-  return serviceAppendExtMP4(contentLimit);
+  return content.slice(0, numLength);
 }
 
 /**
