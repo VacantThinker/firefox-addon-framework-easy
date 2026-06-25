@@ -1,11 +1,11 @@
-import {BaseORM} from './BaseORM';
+import {BaseObjectORM} from './BaseObjectORM';
 
 /**
  * Abstract class for ORMs that store Map<number, V> data.
- * Automatically handles the conversion between internal Record<number, V> and
- * Map<number, V>.
+ * Automatically handles the conversion between internal
+ * Record<number, V> and Map<number, V>.
  */
-export abstract class BaseNumberKeyORM<V> extends BaseORM<Record<number, V>> {
+export abstract class BaseNumberKeyORM<V> extends BaseObjectORM<Record<number, V>> {
   protected constructor(prefix: string, id: string) {
     // Hardcode the default value to an empty object
     super(prefix, id, {});
@@ -13,12 +13,14 @@ export abstract class BaseNumberKeyORM<V> extends BaseORM<Record<number, V>> {
 
   /**
    * Fetches data as Record, handles legacy arrays/corruption,
-   * and converts it to Map<number, V> with properly cast number keys.
+   * and converts it to Map<number, V> with properly cast number
+   * keys.
    */
   protected async getMap(): Promise<Map<number, V>> {
     let data = await this.get();
 
-    // Data Migration / Corruption Guard (carried over from your original logic)
+    // Data Migration / Corruption Guard (carried over from your
+    // original logic)
     if (Array.isArray(data)) {
       console.warn(`BaseNumberKeyORM: Old Array data detected for ${this.storageKey}. Migrating to Record.`);
       data = Object.fromEntries(data);
@@ -28,9 +30,13 @@ export abstract class BaseNumberKeyORM<V> extends BaseORM<Record<number, V>> {
       await this.set(data);
     }
 
-    // Convert object entries back to Map, casting string keys to numbers
+    // Convert object entries back to Map, casting string keys to
+    // numbers
     return new Map<number, V>(
-      Object.entries(data).map(([key, value]) => [Number(key), value])
+      Object.entries(data).map(([key, value]) => [
+        Number(key),
+        value
+      ])
     );
   }
 

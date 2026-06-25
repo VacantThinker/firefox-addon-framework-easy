@@ -1,11 +1,11 @@
-import {BaseORM} from './BaseORM';
+import {BaseObjectORM} from './BaseObjectORM';
 
 /**
  * Abstract class for ORMs that store Map<string, V> data.
- * Automatically handles the conversion between internal Record<string, V> and
- * Map<string, V>.
+ * Automatically handles the conversion between internal
+ * Record<string, V> and Map<string, V>.
  */
-export abstract class BaseStringKeyORM<V> extends BaseORM<Record<string, V>> {
+export abstract class BaseStringKeyORM<V> extends BaseObjectORM<Record<string, V>> {
   protected constructor(prefix: string, id: string) {
     // Hardcode the default value to an empty object
     super(prefix, id, {});

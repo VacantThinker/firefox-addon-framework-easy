@@ -1,11 +1,11 @@
-import {BaseORM} from './BaseORM';
+import {BaseObjectORM} from './BaseObjectORM';
 
 /**
  * Abstract class for ORMs that store Map<string, V> data.
  * Automatically handles the conversion between internal
  * Record<string, V> and Map<string, V>.
  */
-export abstract class BaseOneBooleanORM extends BaseORM<Record<string, boolean>> {
+export abstract class BaseOneBooleanORM extends BaseObjectORM<Record<string, boolean>> {
   private readonly state: string = "state";
 
   protected constructor(prefix: string, id: string) {
