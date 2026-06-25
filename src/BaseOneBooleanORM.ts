@@ -13,12 +13,12 @@ export abstract class BaseOneBooleanORM extends BaseORM<Record<string, boolean>>
     // todo here cannot use this.state, why?
   }
 
-  protected async getValue() {
+  public async getValue() {
     const map = await this.getMap();
     return map.get(this.state) || false
   }
 
-  protected async setValue(value: boolean) {
+  public async setValue(value: boolean) {
     const map = await this.getMap();
     map.set(this.state, value)
     await this.setMap(map)
