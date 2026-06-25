@@ -1,114 +1,95 @@
-import {
-  stoOpCheck,
-  stoOpGet,
-  stoOpRem,
-  stoOpSet
-} from './opStorage';
+import { BaseObjectORM } from './BaseObjectORM';
 
 /**
- * Abstract base class BaseORM.
- * Provides encapsulated CRUD operations for JSON-serializable
- * Key-Value pairs. Uses Generics (T) to ensure type safety for
- * the stored object structure.
+ * Abstract class for ORMs that store an Array of items (T[]).
+ * Includes atomic mutation methods to prevent race conditions.
  */
-// FIX: Expand constraint to 'any[]' so TabMessageStorageData (an
-// array of tuples) is permitted.
-abstract class BaseArrayORM<T extends Record<string, any[]> | any[]> {
-  protected readonly id: string;
-  protected readonly storageKey: string;
-  private readonly defaultValue: T;
+export abstract class BaseArrayORM<T> extends BaseObjectORM<T[]> {
 
-  // The Mutex "Lock" for preventing race conditions during
-  // initialization
-  private initPromise: Promise<void> | null = null;
+  // A promise queue acting as a Mutex to serialize array mutations
+  private mutationQueue: Promise<void> = Promise.resolve();
 
-  protected constructor(
-    prefix: string,
-    id: string,
-    defaultValue: T = [] as unknown as T
-  ) {
-    if (new.target === BaseArrayORM) {
-      throw new TypeError('Cannot construct BaseArayORM' +
-        ' instances directly (Abstract Class).');
-    }
-    if (!prefix || !id) {
-      throw new Error('Both prefix and id must be specified.');
-    }
-
-    this.id = id;
-    const formattedPrefix = prefix.endsWith(' ') ?
-      prefix :
-      `${prefix} `;
-    this.storageKey = `${formattedPrefix}${id}`;
-
-    this.defaultValue = structuredClone(defaultValue);
+  protected constructor(prefix: string, id: string) {
+    // Correctly initialize with an empty array.
+    // BaseObjectORM accepts 'any[]' so this is type-safe.
+    super(prefix, id, []);
   }
 
   /**
-   * Retrieve the value associated with the bound key.
-   * @returns {Promise<T>}
+   * Retrieves the current array. Returns a copy to prevent accidental
+   * by-reference mutations outside the ORM.
    */
-  protected async get(): Promise<T> {
-    if (!(await this.exists())) {
-      // Calls the lock-protected initialization instead of
-      // initDefaultObject directly
-      await this.safeInit();
-    }
-    return (await stoOpGet(this.storageKey)) as T;
+  public async getArray(): Promise<T[]> {
+    const data = await this.get();
+    return Array.isArray(data) ? [...data] : [];
   }
 
   /**
-   * Overwrite the value of the bound key completely.
-   * @param {T} value
-   * @returns {Promise<void>}
+   * Safely appends a new item to the array without race conditions.
    */
-  protected async set(value: T): Promise<void> {
-    await stoOpSet(
-      this.storageKey,
-      value ?? this.defaultValue
-    );
+  public async push(item: T): Promise<void> {
+    return this.mutateArray(async (currentArray) => {
+      currentArray.push(item);
+      return currentArray;
+    });
   }
 
   /**
-   * Wipe the bound key from storage.
-   * @returns {Promise<T>}
+   * Safely appends multiple items.
    */
-  protected async delete(): Promise<T> {
-    const previousValue = await this.get();
-    await stoOpRem(this.storageKey);
-    return previousValue;
+  public async pushMany(items: T[]): Promise<void> {
+    return this.mutateArray(async (currentArray) => {
+      return currentArray.concat(items);
+    });
   }
 
   /**
-   * Safely initialize the default object. Prevents multiple
-   * concurrent requests from writing the default value
-   * simultaneously.
+   * Removes items that match the provided predicate function.
+   * @returns {Promise<number>} The number of items removed.
    */
-  private async safeInit(): Promise<void> {
-    // If an initialization is already in progress, wait for it
-    if (this.initPromise) {
-      return this.initPromise;
-    }
-
-    // Start initialization and store the Promise as the lock
-    this.initPromise = this.initDefaultObject()
-      .finally(() => {
-        // Clear the lock whether the initialization succeeds or
-        // fails
-        this.initPromise = null;
-      });
-
-    return this.initPromise;
+  public async remove(predicate: (item: T) => boolean): Promise<number> {
+    let removedCount = 0;
+    await this.mutateArray(async (currentArray) => {
+      const initialLength = currentArray.length;
+      const filtered = currentArray.filter((item) => !predicate(item));
+      removedCount = initialLength - filtered.length;
+      return filtered;
+    });
+    return removedCount;
   }
 
-  private async exists(): Promise<boolean> {
-    return await stoOpCheck(this.storageKey);
+  /**
+   * Completely clears the array.
+   */
+  public async clearArray(): Promise<void> {
+    await this.set([]);
   }
 
-  private async initDefaultObject(): Promise<void> {
-    await stoOpSet(
-      this.storageKey,
-      this.defaultValue
-    );
+  /**
+   * Internal mechanism to queue array mutations sequentially.
+   * Guarantees that concurrent pushes do not result in lost updates.
+   */
+  private async mutateArray(mutator: (currentArray: T[]) => Promise<T[]> | T[]): Promise<void> {
+    this.mutationQueue = this.mutationQueue.then(async () => {
+      try {
+        let currentData = await this.get();
+
+        // Data integrity fallback
+        if (!Array.isArray(currentData)) {
+          console.warn(`BaseArrayORM: Invalid data type for ${this.storageKey}. Resetting to Array.`);
+          currentData = [];
+        }
+
+        const updatedArray = await mutator(currentData);
+        await this.set(updatedArray);
+      } catch (error) {
+        console.error(`BaseArrayORM: Failed to mutate array for ${this.storageKey}`, error);
+        throw error;
+      }
+    }).catch(() => {
+      // Prevents queue deadlocks on individual transaction failures
+    });
+
+    return this.mutationQueue;
   }
 }

@@ -1,35 +1,73 @@
 import {BaseObjectORM} from './BaseObjectORM';
 
+// Define the interface for strict typing
+interface BooleanState {
+  state: boolean;
+}
+
 /**
- * Abstract class for ORMs that store Map<string, V> data.
- * Automatically handles the conversion between internal
- * Record<string, V> and Map<string, V>.
+ * Abstract class for ORMs that store a single boolean state.
+ * Optimized to remove Map overhead and prevent race conditions.
  */
-export abstract class BaseOneBooleanORM extends BaseObjectORM<Record<string, boolean>> {
-  private readonly state: string = "state";
+export abstract class BaseOneBooleanORM extends BaseObjectORM<BooleanState> {
+  private readonly stateKey = 'state';
+
+  // A promise queue acting as a Mutex to serialize write
+  // operations
+  private writeLock: Promise<void> = Promise.resolve();
 
   protected constructor(prefix: string, id: string) {
-    super(prefix, id, {"state": false});
-    // todo here cannot use this.state, why?
+    // Pass the default state directly to the parent
+    super(prefix, id, {state: false});
   }
 
-  public async getValue() {
-    const map = await this.getMap();
-    return map.get(this.state) || false
-  }
-
-  public async setValue(value: boolean) {
-    const map = await this.getMap();
-    map.set(this.state, value)
-    await this.setMap(map)
-  }
-
-  private async getMap(): Promise<Map<string, boolean>> {
+  /**
+   * Retrieves the current boolean value.
+   */
+  public async getValue(): Promise<boolean> {
     const data = await this.get();
-    return new Map<string, boolean>(Object.entries(data || {}));
+    return data?.[this.stateKey] ?? false;
   }
 
-  private async setMap(map: Map<string, boolean>): Promise<void> {
-    await this.set(Object.fromEntries(map));
+  /**
+   * Direct overwrite of the boolean value.
+   * Queued to prevent overwriting a concurrent toggle/update
+   * operation.
+   */
+  public async setValue(value: boolean): Promise<void> {
+    return this.atomicUpdate(() => value);
+  }
+
+  /**
+   * Safely toggles or updates the value based on the previous
+   * state. This guarantees no race conditions during
+   * Read-Modify-Write cycles.
+   */
+  protected async updateValue(updater: (prevValue: boolean) => boolean): Promise<void> {
+    return this.atomicUpdate(updater);
+  }
+
+  /**
+   * Internal mechanism to queue state changes sequentially.
+   */
+  private async atomicUpdate(updater: (prevValue: boolean) => boolean): Promise<void> {
+    this.writeLock = this.writeLock.then(async () => {
+      try {
+        const currentData = await this.get();
+        const currentValue = currentData?.[this.stateKey] ?? false;
+
+        const newValue = updater(currentValue);
+
+        await this.set({[this.stateKey]: newValue});
+      } catch (error) {
+        console.error(`BaseOneBooleanORM: Failed to update state for ${this.storageKey}`, error);
+        throw error;
+      }
+    }).catch(() => {
+      // Catch prevents a single failure from permanently
+      // breaking the queue chain
+    });
+
+    return this.writeLock;
   }
 }
