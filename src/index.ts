@@ -1,5 +1,6 @@
 export * from './backgroundJs';
 export * from './BaseNumberKeyORM';
+export * from './BaseOneBooleanORM';
 export * from './BaseORM';
 export * from './BaseStringKeyORM';
 export * from './browserBrowsingData';
