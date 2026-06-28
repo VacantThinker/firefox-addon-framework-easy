@@ -15,7 +15,9 @@ import {DownloadParams} from "./browserDownload";
  * Bypasses virtual DOM tracking properties to force modern framework
  * listeners to accept assignments
  */
-export function ctJsSetInputElementNativeValue(element: HTMLInputElement, value: string) {
+export function ctJsSetInputElementNativeValue(element: HTMLInputElement,
+                                               value: string
+) {
   const valueSetter = Object.getOwnPropertyDescriptor(element, 'value')?.set;
   const prototype = Object.getPrototypeOf(element);
   const prototypeValueSetter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set;
@@ -274,22 +276,11 @@ export function ctJsHideElements(selectors: string[]) {
  * Establishes a persistent baseline connection with the background script to
  * maintain runtime context.
  */
-export function ctJskeepAlive(tag: string = "", enableLog = true) {
-  async function ping() {
-    if (enableLog) {
-      console.log(tag, "actMarco");
-    }
-    try {
-      await browserRuntimeSendMessage<MessagePayloadAction>({act: "actMarco"});
-    } catch (err) {
-      console.error("Keep-alive ping failed:", err);
-    }
-    // Schedule the next execution only after this one completes
-    setTimeout(ping, 1000);
-  }
-
-  // Start the loop
-  setTimeout(ping, 1000);
+export function ctJskeepAlive(tag: string = "") {
+  setTimeout(() => {
+    browserRuntimeSendMessage<
+      MessagePayloadAction>({act: "actMarco"}).then();
+  }, 1500);
 }
 
 export async function ctJsCloseTab() {
