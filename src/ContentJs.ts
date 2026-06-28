@@ -277,10 +277,10 @@ export function ctJsHideElements(selectors: string[]) {
  * maintain runtime context.
  */
 export function ctJskeepAlive(tag: string = "") {
-  setTimeout(() => {
+  setInterval(() => {
     browserRuntimeSendMessage<
       MessagePayloadAction>({act: "actMarco"}).then();
-  }, 1500);
+  }, 2000);
 }
 
 export async function ctJsCloseTab() {
