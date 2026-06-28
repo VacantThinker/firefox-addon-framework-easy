@@ -276,11 +276,21 @@ export function ctJsHideElements(selectors: string[]) {
  * Establishes a persistent baseline connection with the background script to
  * maintain runtime context.
  */
-export function ctJskeepAlive(tag: string = "") {
-  setInterval(() => {
-    browserRuntimeSendMessage<
-      MessagePayloadAction>({act: "actMarco"}).then();
-  }, 2000);
+export function ctJskeepAlive() {
+// Open a connection to the background script
+  let connectInfo: browser.runtime._ConnectConnectInfo = {
+    name: "marco"
+  };
+  const port = browser.runtime.connect(connectInfo);
+
+// Send data to background
+//   port.postMessage({ status: "DOM_PARSED", data: { /* ... */ } });
+//
+// // Listen for background responses
+//   port.onMessage.addListener((response) => {
+//     console.log("Received from background:", response);
+//   });
+  return port;
 }
 
 export async function ctJsCloseTab() {

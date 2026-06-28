@@ -1,10 +1,7 @@
 export async function browserTabSendMessageMarcoPolo(
   tabId: number) {
   await browserTabSendMessage(
-    tabId,
-    {
-      tag: 'marco', status: 'Polo',
-    }
+    tabId, {tag: 'marco', status: 'Polo',}
   );
 }
 
