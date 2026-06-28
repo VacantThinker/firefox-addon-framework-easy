@@ -1,5 +1,4 @@
 // --- IN YOUR FRAMEWORK ---
-import {browserTabSendMessageMarcoPolo} from "./browserTab";
 import {tabOpFocus, tabOpReload, tabOpRemove} from "./opTab";
 import {MessageActionBaseOptions, MessagePayloadDownloadInfo} from "./types";
 import {browserNotificationCreateBasicContent} from "./browserNotification";
@@ -8,14 +7,15 @@ import {serviceDownloadByDownlink} from "./serviceCommon";
 export type ActHandlerFunc = (
   rest: any,
   tabId?: number | undefined,
-  tabUrl?: string | undefined) => Promise<void>;
+  tabUrl?: string | undefined
+) => Promise<void>;
 
 /**
  * Uses <T extends string> so the app can pass its own union type.
  * It defaults to FrameworkBaseAction if no type is passed.
  */
-export function bkJsCreateActionBaseHandlers
-<T extends string = MessageActionBaseOptions>()
+export function bkJsCreateActionBaseHandlers<
+  T extends string = MessageActionBaseOptions>()
   : Map<T, ActHandlerFunc> {
 
   // We use `any` internally to set the map up without TS complaining,
@@ -34,8 +34,7 @@ export function bkJsCreateActionBaseHandlers
   map.set('actInfo', async (rest) => {
     console.info('actInfo', rest);
   });
-  map.set('actMarco', async (_rest, tabId) => {
-    if (tabId) await browserTabSendMessageMarcoPolo(tabId);
+  map.set('actMarco', async (rest: any, tabId) => {
   });
   map.set('actFocusTargetTab', async (rest) => {
     if (rest) await tabOpFocus(rest.targetTabId);

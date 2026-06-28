@@ -272,32 +272,12 @@ export function ctJsHideElements(selectors: string[]) {
 // -------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------
 
-export type TypectJsName = |"contentJsKeepAlive"
-
-/**
- * Establishes a persistent baseline connection with the background script to
- * maintain runtime context.
- */
-export function ctJskeepAlive(
-  tag: string = "initial...",
-  cb: (response: object) => void =
-  (response) => {
-    console.info('response=', response)
-  }
-) {
-  // Open a connection to the background script
-  let name: TypectJsName = "contentJsKeepAlive";
-  let connectInfo: browser.runtime._ConnectConnectInfo = {
-    name: name
-  };
-  const port = browser.runtime.connect(connectInfo);
-
-// Send data to background
-  port.postMessage({tag,});
-//
-// // Listen for background responses
-  port.onMessage.addListener(cb);
-  return port;
+export function ctJskeepAlive() {
+  setInterval(() => {
+    browserRuntimeSendMessage<MessagePayloadAction>({
+      act: "actMarco",
+    }).then()
+  }, 2000)
 }
 
 export async function ctJsCloseTab() {
