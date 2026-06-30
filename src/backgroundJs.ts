@@ -69,7 +69,8 @@ export function bkJsRegisterRuntimeActionDispatcher<T extends string>(
       const tabUrl = sender?.tab?.url;
       if (act !== "actMarco") {
         console.info(logTag, act, `tabId=`, tabId);
-      } else {
+      }
+      else {
         console.log(logTag, act, `tabId=`, tabId);
       }
 
@@ -77,7 +78,8 @@ export function bkJsRegisterRuntimeActionDispatcher<T extends string>(
       const handler = handlersMap.get(act as T);
       if (handler) {
         await handler(rest, tabId, tabUrl);
-      } else {
+      }
+      else {
         console.warn(act, " not match!");
       }
     });

@@ -1,6 +1,14 @@
 import {DownloadParams} from "./browserDownload";
 
+export interface PayloadUserSettingUpdated {
+  payload: {
+    storageKey: string;
+    value: string;
+  }
+}
+
 export type MessageActionBaseOptions =
+  | "actUserSettingUpdated"
   | "actDownloadFile"
   | "actNotification"
   | 'actInfo'
