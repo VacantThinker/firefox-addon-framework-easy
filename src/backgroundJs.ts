@@ -124,17 +124,20 @@ export function bkJsRegisterAlarmDispatcher<T extends string>(
 }
 
 
-export type AlarmSetupFunc = (name: string) => Promise<void>;
+export type AlarmInfoFunc = (
+  name: string,
+  alarmInfo: browser.alarms._CreateAlarmInfo
+) => Promise<void>;
 
-export function bkJsCreateAlarmSetupMap<T extends string>(): Map<T, AlarmSetupFunc> {
-  return new Map<T, AlarmSetupFunc>();
+export function bkJsCreateAlarmInfoMap<T extends string>(): Map<T, AlarmInfoFunc> {
+  return new Map<T, AlarmInfoFunc>();
 }
 
-export function bkJsMergeAlarmSetupMap<T extends string>(
-  map: Map<T, AlarmSetupFunc>
+export function bkJsMergeAlarmInfoMap<T extends string>(
+  map: Map<T, AlarmInfoFunc>
 ) {
   for (let [key, value] of map.entries()) {
-    value(key)
+    value(key, {})
   }
 }
 
