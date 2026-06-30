@@ -15,8 +15,7 @@ export type ActHandlerFunc = (
  * It defaults to FrameworkBaseAction if no type is passed.
  */
 export function bkJsCreateActionBaseHandlers<
-  T extends string = MessageActionBaseOptions>()
-  : Map<T, ActHandlerFunc> {
+  T extends string = MessageActionBaseOptions>(): Map<T, ActHandlerFunc> {
 
   // We use `any` internally to set the map up without TS complaining,
   // but we return the strictly typed generic Map.
@@ -99,8 +98,7 @@ export type AlarmHandlerFunc = (
  * It defaults to FrameworkBaseAction if no type is passed.
  */
 export function bkJsCreateAlarmBaseHandlers<
-  T extends string>()
-  : Map<T, AlarmHandlerFunc> {
+  T extends string>(): Map<T, AlarmHandlerFunc> {
   const map = new Map<string, AlarmHandlerFunc>();
   return map as Map<T, AlarmHandlerFunc>;
 }
@@ -126,12 +124,18 @@ export function bkJsRegisterAlarmDispatcher<T extends string>(
 }
 
 
-// Allow the function to receive the name as an argument
-export type AlarmSetupFunc<T extends string> = (name: T) => Promise<void>;
+export type AlarmSetupFunc = (name: string) => Promise<void>;
 
-export function bkJsCreateAlarmSetupMap<T extends string>(): Map<T, AlarmSetupFunc<T>> {
-  // Use T instead of string to keep strict typing throughout
-  return new Map<T, AlarmSetupFunc<T>>();
+export function bkJsCreateAlarmSetupMap<T extends string>(): Map<T, AlarmSetupFunc> {
+  return new Map<T, AlarmSetupFunc>();
+}
+
+export function bkJsMergeAlarmSetupMap<T extends string>(
+  map: Map<T, AlarmSetupFunc>
+) {
+  for (let [key, value] of map.entries()) {
+    value(key)
+  }
 }
 
 export function calculateNextDailyOccurrence(timeStr: string): number {
