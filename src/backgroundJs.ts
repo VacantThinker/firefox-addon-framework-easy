@@ -156,3 +156,14 @@ export function bkJsCreateAlarmSetupMap<T extends string>(): Map<T, AlarmSetupFu
 
   return map as unknown as Map<T, AlarmSetupFunc>;
 }
+
+export function calculateNextDailyOccurrence(timeStr: string): number {
+  const [hour, minute] = timeStr.split(':').map(Number);
+  const now = new Date();
+  const nextAlarm = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0);
+
+  if (now.getTime() > nextAlarm.getTime()) {
+    nextAlarm.setDate(nextAlarm.getDate() + 1);
+  }
+  return nextAlarm.getTime();
+}
