@@ -84,3 +84,43 @@ export function bkJsRegisterRuntimeActionDispatcher<T extends string>(
       }
     });
 }
+
+
+//============================================================================
+// alarm area
+//============================================================================
+
+export type AlarmHandlerFunc = (
+  alarm: browser.alarms.Alarm,
+) => Promise<void>;
+
+/**
+ * Uses <T extends string> so the app can pass its own union type.
+ * It defaults to FrameworkBaseAction if no type is passed.
+ */
+export function bkJsCreateAlarmBaseHandlers<
+  T extends string>()
+  : Map<T, AlarmHandlerFunc> {
+  const map = new Map<string, AlarmHandlerFunc>();
+  return map as Map<T, AlarmHandlerFunc>;
+}
+
+/**
+ * Dispatcher also accepts the generic map
+ */
+export function bkJsRegisterAlarmDispatcher<T extends string>(
+  handlersMap: Map<T, AlarmHandlerFunc>,
+  logTag: string = "initialAlarm.ts "
+) {
+  browser.alarms.onAlarm.addListener(async (alarm) => {
+    const {name} = alarm;
+    const handler = handlersMap.get(name as T);
+    console.info(logTag, "name=", name, " triggered")
+    if (handler) {
+      await handler(alarm);
+    }
+    else {
+      console.info(logTag, "name=", name, " not match!")
+    }
+  })
+}
