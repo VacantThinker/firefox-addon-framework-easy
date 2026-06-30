@@ -110,7 +110,7 @@ export function bkJsCreateAlarmBaseHandlers<
  */
 export function bkJsRegisterAlarmDispatcher<T extends string>(
   handlersMap: Map<T, AlarmHandlerFunc>,
-  logTag: string = "initialAlarm.ts "
+  logTag: string = "alarmDispatch.ts "
 ) {
   browser.alarms.onAlarm.addListener(async (alarm) => {
     const {name} = alarm;
@@ -126,35 +126,12 @@ export function bkJsRegisterAlarmDispatcher<T extends string>(
 }
 
 
-// 1. The function now RETURNS the CreateAlarmInfo (or void if they decide not to set an
-// alarm)
-export type AlarmSetupFunc = (
-  name: string
-) => Promise<browser.alarms._CreateAlarmInfo | void>;
+// Allow the function to receive the name as an argument
+export type AlarmSetupFunc<T extends string> = (name: T) => Promise<void>;
 
-export function bkJsCreateAlarmSetupMap<T extends string>(): Map<T, AlarmSetupFunc> {
-  const map = new Map<string, AlarmSetupFunc>();
-  const originalSet = map.set.bind(map);
-
-  map.set = (key: string, originalFunc: AlarmSetupFunc) => {
-
-    // 2. Wrap the function to intercept its return value
-    const wrappedFunc: AlarmSetupFunc = async (name) => {
-
-      // Execute the user's complex logic to get the alarm info
-      const alarmInfo = await originalFunc(name);
-
-      // 3. Auto-inject the creation logic ONLY if they returned valid info
-      if (alarmInfo) {
-        await browser.alarms.create(name, alarmInfo);
-        console.info(`[Framework] Auto-created alarm: ${name}`);
-      }
-    };
-
-    return originalSet(key, wrappedFunc);
-  };
-
-  return map as unknown as Map<T, AlarmSetupFunc>;
+export function bkJsCreateAlarmSetupMap<T extends string>(): Map<T, AlarmSetupFunc<T>> {
+  // Use T instead of string to keep strict typing throughout
+  return new Map<T, AlarmSetupFunc<T>>();
 }
 
 export function calculateNextDailyOccurrence(timeStr: string): number {
