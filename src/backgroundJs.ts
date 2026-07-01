@@ -84,8 +84,28 @@ export function bkJsRegisterRuntimeActionDispatcher<T extends string>(
     });
 }
 
+
 //============================================================================
-// alarm area
+// browser last window onremoved
+//============================================================================
+
+export type TypeLastWindowOnRemovedFunc = (
+  windowId: number,
+) => Promise<void>
+
+export function bkJsRegisterLastWindowRemovedListener(
+  func: TypeLastWindowOnRemovedFunc) {
+  browser.windows.onRemoved.addListener(async (windowId) => {
+    const all = await browser.windows.getAll({});
+    if (all.length != 0) {
+      return;
+    }
+    await func(windowId)
+  })
+}
+
+//============================================================================
+// browser action onClicked
 //============================================================================
 
 export type TypeActionOnClickedFunc = (
