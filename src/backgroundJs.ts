@@ -84,6 +84,25 @@ export function bkJsRegisterRuntimeActionDispatcher<T extends string>(
     });
 }
 
+//============================================================================
+// alarm area
+//============================================================================
+
+export type TypeActionOnClickedFunc = (
+  tab: browser.tabs.Tab,
+  info: browser.action.OnClickData | undefined,
+  tabId: number,
+) => Promise<void>
+
+export function bkJsRegisterActionOnClickedListener(
+  func: TypeActionOnClickedFunc) {
+  browser.action.onClicked.addListener(
+    async (tab, info) => {
+      const tabId = tab.id;
+      if (tabId == undefined) return;
+      await func(tab, info, tabId)
+    })
+}
 
 //============================================================================
 // alarm area
